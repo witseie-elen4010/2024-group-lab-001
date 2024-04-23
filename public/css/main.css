@@ -3,18 +3,18 @@ body {
     background: linear-gradient(270deg, #003167, #0e7efb);
     background-size: 400% 400%;
 
-    -webkit-animation: gradientBackground 30s ease infinite;
+    animation: gradientBackground 30s ease infinite;
     -moz-animation: gradientBackground 30s ease infinite;
     -o-animation: gradientBackground 30s ease infinite;
-    animation: gradientBackground 30s ease infinite;
-
+    -webkit-animation: gradientBackground 30s ease infinite;
+    
+    align-items: center;
+    display: flex;
+    height: 100vh;
     font-family: 'Roboto';
+    justify-content: center;
     margin: 0;
     padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 /* Graident Background */
@@ -42,31 +42,31 @@ body {
 
 /* Home Container */
 .container {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    width: 50%; /* Set width to 60% of the viewport width */
-    height: 75vh; /* Set height to 60% of the viewport height */
-    display: flex; /* Use Flexbox */
-    flex-direction: column; /* Stack items vertically */
-    justify-content: center; /* Center items vertically */
     align-items: center; /* Center items horizontally */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    display: flex; 
+    flex-direction: column; /* Stack items vertically */
+    height: 75vh; 
+    justify-content: center; /* Center items vertically */
+    padding: 20px;
+    text-align: center;
+    width: 50%; /* Set width to 60% of the viewport width */
 }
 
 /* Start Button */
 .btn-start {
-    padding: 10px 20px;
-    margin-bottom: 10px;
-    font-size: 18px;
-    width: 25%;
     background-color: #0E7EFB;
-    color: #fff;
     border: none;
     border-radius: 5px;
+    color: #fff;
     cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 10px 20px;
     transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
+    width: 25%;
 }
 
 .btn-start:hover {
@@ -75,14 +75,14 @@ body {
 
 /* Footer */
 .footer {
-    position: fixed;
     bottom: 0;
-    width: 100%;
-    text-align: center;
-    padding: 10px 0;
+    color: #ffffff;
     font-family: 'Roboto';
     font-size: 14px;
-    color: #ffffff;
+    padding: 10px 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
 }
 
 .footer a {
