@@ -15,6 +15,8 @@ body {
     justify-content: center;
     margin: 0;
     padding: 0;
+
+    flex-direction: column;
 }
 
 /* Graident Background */
@@ -52,7 +54,7 @@ body {
     justify-content: center; /* Center items vertically */
     padding: 20px;
     text-align: center;
-    width: 50%; /* Set width to 60% of the viewport width */
+    width: 50%; 
 }
 
 /* Start Button */
@@ -73,6 +75,47 @@ body {
     background-color:  #003167; /* Darken the button on hover */
 }
 
+/* Header */
+.header {
+    background-color: transparent;
+    padding: 20px 0;
+}
+
+.header-inner {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav ul li:last-child {
+    margin-right: 0;
+}
+
+.nav ul li a {
+    color: #dbdbdb;
+    font-family: 'Roboto';
+    font-size: 16px;
+    text-decoration: none;
+    transition: color 0.3s ease-in;
+}
+
+.nav ul li a:hover {
+    color: #ffffff;
+}
+
 /* Footer */
 .footer {
     bottom: 0;
@@ -86,6 +129,8 @@ body {
 }
 
 .footer a {
-    color: #e9e9e9;
+    color: #dbdbdb;
 }
+
+
 
