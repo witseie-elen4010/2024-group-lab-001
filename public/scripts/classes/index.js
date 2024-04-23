@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const enterWebsiteBtn = document.getElementById("enterWebsiteBtn");
 
     enterWebsiteBtn.addEventListener("click", function() {
-        alert("Button Clicked!");
+        // Redirect to the Account Page
+        window.location.href = "/account";
     });
 });
