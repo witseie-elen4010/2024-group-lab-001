@@ -1,0 +1,79 @@
+/* Account Container */
+.account-container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 20px;
+    max-width: 430px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.account-container .form {
+    background-color: #fff;
+    padding: 30px;
+    transition: margin-left 0.18s ease;
+    width: 50%;
+}
+
+.account-container .form .title {
+    font-size: 27px;
+    font-weight: 600;
+    position: relative;
+}
+
+.account-container .form .title::before {
+    background-color: #4070f4;
+    border-radius: 25px;
+    bottom: 0;
+    content: '';
+    height: 3px;
+    left: 0;
+    position: absolute;
+    width: 30px;
+}
+
+.account-container .forms {
+    align-items: center;
+    display: flex;
+    height: 440px;
+    transition: height 0.2s ease;
+    width: 200%;
+}
+
+.account-container.active .forms {
+    height: 600px;
+}
+
+.account-container.active .login {
+    margin-left: -50%;
+    opacity: 0;
+    transition: margin-left 0.18s ease, opacity 0.15s ease;
+}
+
+.account-container.active .signup {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+/* Account Form */
+.form .input-field {
+    height: 50px;
+    margin-top: 30px;
+    position: relative;
+    width: 100%;
+}
+
+.login-signup {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* CSS */
+* {
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+}

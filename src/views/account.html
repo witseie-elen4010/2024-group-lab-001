@@ -3,11 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miscommunication Mayhem</title>
+    <title>Account - Miscommunication Mayhem</title>
+    <!-- Google Fonts - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/account.css">
     <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-    <h1>Account Page</h1>
-    <script src="/scripts/classes/index.js"></script>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <nav class="nav">
+                <ul>
+                    <li><a href="/">HOME</a></li>
+                    <li><a href="/account">ACCOUNT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Account Login/Signup Container -->
+    <div class="account-container">
+        <div class="forms">
+
+            <!-- Login form -->
+            <div class="form login">
+                <span class="title">Login</span>
+                <!-- Login form fields -->
+                <form action="#">
+                    <!-- Username input field -->
+                    <div class="input-field">
+                        <input type="text" placeholder="Enter your username" required>
+                        <i class="uil uil-user icon"></i>
+                    </div>
+                    <!-- Password input field -->
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Enter your password" required>
+                        <i class="uil uil-lock icon"></i>
+                        <!-- Icon to show/hide password -->
+                        <i class="uil uil-eye-slash showHidePassword"></i>
+                    </div>
+                    <!-- Button -->
+                    <button id="loginButton" class="button account-button">Login</button>
+                </form>
+                <!-- Link to signup form -->
+                <div class="login-signup">
+                    <span class="text">Not registered? <a href="#" class="text signup-link">Signup Now</a></span>
+                </div>
+            </div>
+
+            
+            <!-- Signup form -->
+            <div class="form signup">
+                <span class="title">Registration</span>
+                <!-- Signup form fields -->
+                <form action="#">
+                    <!-- Name input field -->
+                    <div class="input-field">
+                        <input type="text" placeholder="Enter your name" required>
+                        <i class="uil uil-user"></i>
+                    </div>
+                    <!-- Username input field -->
+                    <div class="input-field">
+                        <input type="text" placeholder="Create a username" required>
+                        <i class="uil uil-user icon"></i>
+                    </div>
+                    <!-- Password input field -->
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Create a password" required>
+                        <i class="uil uil-lock icon"></i>
+                    </div>
+                    <!-- Confirm password input field -->
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Confirm a password" required>
+                        <i class="uil uil-lock icon"></i>
+                        <!-- Icon to show/hide password -->
+                        <i class="uil uil-eye-slash showHidePassword"></i>
+                    </div>
+                    <!-- Button -->
+                    <button id="signupButton" class="button account-button">Signup</button>
+                </form>
+                <!-- Link to login form -->
+                <div class="login-signup">
+                    <span class="text">Already a registered? <a href="#" class="text login-link">Login Now</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/classes/account.js"></script>
 </body>
 </html>
+
+<!-- Material used as assistance: [1] CodingNepal,
+    “Login and Registration Form in HTML CSS and JavaScript,” Feb. 13, 2022. 
+    https://www.codingnepalweb.com/login-registration-form-html-css-javascript/
+‌-->
