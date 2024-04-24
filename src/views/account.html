@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Page</title>
+    <title>Account - Miscommunication Mayhem</title>
     <!-- Google Fonts - Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <!-- ===== Iconscout CSS ===== -->
@@ -44,17 +44,61 @@
                         <input type="password" class="password" placeholder="Enter your password" required>
                         <i class="uil uil-lock icon"></i>
                         <!-- Icon to show/hide password -->
-                        <i class="uil uil-eye-slash showHidePw"></i>
+                        <i class="uil uil-eye-slash showHidePassword"></i>
                     </div>
                     <!-- Button -->
                     <button id="loginButton" class="button account-button">Login</button>
                 </form>
                 <!-- Link to signup form -->
                 <div class="login-signup">
-                    <span class="text">Not a member? <a href="#" class="text signup-link">Signup Now</a></span>
+                    <span class="text">Not registered? <a href="#" class="text signup-link">Signup Now</a></span>
                 </div>
             </div>
 
-    <script src="/scripts/classes/script.js"></script>
+            
+            <!-- Signup form -->
+            <div class="form signup">
+                <span class="title">Registration</span>
+                <!-- Signup form fields -->
+                <form action="#">
+                    <!-- Name input field -->
+                    <div class="input-field">
+                        <input type="text" placeholder="Enter your name" required>
+                        <i class="uil uil-user"></i>
+                    </div>
+                    <!-- Username input field -->
+                    <div class="input-field">
+                        <input type="text" placeholder="Create a username" required>
+                        <i class="uil uil-user icon"></i>
+                    </div>
+                    <!-- Password input field -->
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Create a password" required>
+                        <i class="uil uil-lock icon"></i>
+                    </div>
+                    <!-- Confirm password input field -->
+                    <div class="input-field">
+                        <input type="password" class="password" placeholder="Confirm a password" required>
+                        <i class="uil uil-lock icon"></i>
+                        <!-- Icon to show/hide password -->
+                        <i class="uil uil-eye-slash showHidePassword"></i>
+                    </div>
+                    <!-- Button -->
+                    <button id="signupButton" class="button account-button">Signup</button>
+                </form>
+                <!-- Link to login form -->
+                <div class="login-signup">
+                    <span class="text">Already a registered? <a href="#" class="text login-link">Login Now</a></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/classes/account.js"></script>
 </body>
 </html>
+
+<!-- Material used as assistance: [1] CodingNepal,
+    “Login and Registration Form in HTML CSS and JavaScript,” Feb. 13, 2022. 
+    https://www.codingnepalweb.com/login-registration-form-html-css-javascript/
+‌-->
