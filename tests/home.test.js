@@ -5,7 +5,7 @@ test('Navigate to HOME and then to ACCOUNT', async ({ page }) => {
     await page.goto('http://localhost:3000/');
     // Click on the HOME link
     await page.click('text=HOME');
-    // Check if the URL contains '/home'
+    // Check if the URL contains '/'
     expect(page.url()).toContain('/');
     
     // Click on the ACCOUNT link
