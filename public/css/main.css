@@ -1,6 +1,6 @@
 /* HTML Body */
 body {
-    background: linear-gradient(270deg, #003167, #0e7efb);
+    background: linear-gradient(270deg, #003167, #0e7efb); /* 004EA6 */
     background-size: 400% 400%;
 
     animation: gradientBackground 30s ease infinite;
@@ -57,21 +57,29 @@ body {
     width: 50%; 
 }
 
-/* Start Button */
-.btn-start {
+/* Button */
+.button {
     background-color: #0E7EFB;
     border: none;
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
     font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-top: 20px;
     margin-bottom: 10px;
-    padding: 10px 20px;
+    padding: 10px 10px;
     transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
     width: 25%;
 }
 
-.btn-start:hover {
+.account-button {
+    width: 100%;
+    text-align: center;
+}
+
+.button:hover {
     background-color:  #003167; /* Darken the button on hover */
 }
 
@@ -122,7 +130,7 @@ body {
     color: #ffffff;
     font-family: 'Roboto';
     font-size: 14px;
-    padding: 10px 0;
+    padding: 10px 0px;
     position: fixed;
     text-align: center;
     width: 100%;
@@ -132,5 +140,55 @@ body {
     color: #dbdbdb;
 }
 
+/* Input Field */
+.input-field i {
+    color: #999;
+    font-size: 23px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: all 0.2s ease;
+}
 
+.input-field i.icon {
+    left: 0;
+}
 
+.input-field i.showHidePw {
+    cursor: pointer;
+    padding: 10px;
+    right: 0;
+}
+
+.input-field input {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    border-top: 2px solid transparent;
+    font-size: 16px;
+    height: 100%;
+    outline: none;
+    padding: 0 35px;
+    position: absolute;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.input-field input:focus,
+.input-field input:valid {
+    border-bottom-color: #0e7efb;
+}
+
+.input-field input:focus ~ i,
+.input-field input:valid ~ i {
+    color: #0e7efb;
+}
+
+/* Text */
+.text {
+    color: #333;
+    font-size: 14px;
+}
+
+.text:hover {
+    text-decoration: underline;
+}
