@@ -1,0 +1,136 @@
+/* HTML Body */
+body {
+    background: linear-gradient(270deg, #003167, #0e7efb);
+    background-size: 400% 400%;
+
+    animation: gradientBackground 30s ease infinite;
+    -moz-animation: gradientBackground 30s ease infinite;
+    -o-animation: gradientBackground 30s ease infinite;
+    -webkit-animation: gradientBackground 30s ease infinite;
+    
+    align-items: center;
+    display: flex;
+    height: 100vh;
+    font-family: 'Roboto';
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+
+    flex-direction: column;
+}
+
+/* Graident Background */
+
+@-webkit-keyframes gradientBackground {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-moz-keyframes gradientBackground {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@-o-keyframes gradientBackground {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@keyframes gradientBackground {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* Home Container */
+.container {
+    align-items: center; /* Center items horizontally */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    display: flex; 
+    flex-direction: column; /* Stack items vertically */
+    height: 75vh; 
+    justify-content: center; /* Center items vertically */
+    padding: 20px;
+    text-align: center;
+    width: 50%; 
+}
+
+/* Start Button */
+.btn-start {
+    background-color: #0E7EFB;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
+    width: 25%;
+}
+
+.btn-start:hover {
+    background-color:  #003167; /* Darken the button on hover */
+}
+
+/* Header */
+.header {
+    background-color: transparent;
+    padding: 20px 0;
+}
+
+.header-inner {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav ul li:last-child {
+    margin-right: 0;
+}
+
+.nav ul li a {
+    color: #dbdbdb;
+    font-family: 'Roboto';
+    font-size: 16px;
+    text-decoration: none;
+    transition: color 0.3s ease-in;
+}
+
+.nav ul li a:hover {
+    color: #ffffff;
+}
+
+/* Footer */
+.footer {
+    bottom: 0;
+    color: #ffffff;
+    font-family: 'Roboto';
+    font-size: 14px;
+    padding: 10px 0;
+    position: fixed;
+    text-align: center;
+    width: 100%;
+}
+
+.footer a {
+    color: #dbdbdb;
+}
+
+
+

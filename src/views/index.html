@@ -4,11 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miscommunication Mayhem</title>
+    <!-- Google Fonts - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <h2>ELEN4010 - Group 01</h2>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-inner">
+            <nav class="nav">
+                <ul>
+                    <li><a href="/">HOME</a></li>
+                    <li><a href="/account">ACCOUNT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Welcome Container -->
+    <div id="container" class="container">
+        <!-- Lottie Animation -->
+        <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+
+        <dotlottie-player src="https://lottie.host/451f1b46-b7e1-483b-89f5-a15e476d0bb9/2VBNaAa7Xj.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+
+        <!-- Website Title -->
+        <h1 class="h1">MISCOMMUNICATION MAYHEM</h1>
+        
+        <!-- Subtitle -->
+        <p class="lead">A BROKEN TELEPHONE GAME</p>
+        
+        <!-- Button -->
+        <button id="enterWebsiteBtn" class="btn-start">PLAY</button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Miscommunication Mayhem by 
+            <a href="https://github.com/witseie-elen4010/2024-group-lab-001" target="_blank">
+            Group 01 of ELEN4010</a>.</p>
+    </footer>
+
     <script src="/scripts/classes/index.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
