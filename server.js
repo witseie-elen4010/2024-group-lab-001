@@ -15,6 +15,11 @@ app.get('/account', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'account.html'));
 });
 
+// Route for drawing screen draw.html
+app.get('/draw', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src', 'views', 'draw.html'));
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server is Running on Port ${PORT}`);
