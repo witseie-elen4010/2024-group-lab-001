@@ -1,0 +1,20 @@
+/* The .canvas-container class is applied to the container that wraps the title and the canvas. */
+.canvas-container {
+    align-items: center;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 5vh auto;
+}
+
+/* The .title-drawing class applies styles to the title. */
+.canvas-container .title-drawing{
+    margin: 5vh auto;
+}
+
+/* The .drawing-canvas class applies styles to the canvas. */
+.canvas-container .drawing-canvas {
+    height: 70vh;
+    width: 60vw;
+}
