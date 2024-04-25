@@ -6,22 +6,26 @@
     <title>Lobby - Miscommunication Mayhem</title>
     <!-- Google Fonts - Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/lobby.css">
 </head>
 <body>
-    <!-- Welcome Container -->
-    <div id="container" class="container">
-        <!-- Website Title -->
-        <h1 class="h1">Lobby</h1>
+    <!-- Lobby Container -->
+    <div id="lobbyContainer" class="container">
+        <!-- Button -->
+        <button id="createLobbyButton" class="button lobby-button">Create Lobby</button>
+        <div class = "lobby-button-container">
+            <div class = "input-box">
+                <i class="uil uil-keyboard icon"></i>
+                <input type="text" placeholder="Enter lobby code">
+            </div>
+            <!-- Button should be within the div -->
+            <button id="joinLobbyButton" class="button lobby-button">Join</button>
+        </div>
     </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2024 Miscommunication Mayhem by 
-            <a href="https://github.com/witseie-elen4010/2024-group-lab-001" target="_blank">
-            Group 01 of ELEN4010</a>.</p>
-    </footer>
 
     <script src="/scripts/classes/index.js"></script>
 </body>

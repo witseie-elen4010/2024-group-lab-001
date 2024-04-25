@@ -1,0 +1,11 @@
+/* Lobby Button Container */
+.lobby-button-container {
+    display: flex;
+    align-items: center; /* Vertically center items */
+    justify-content: center; /* Center items vertically */
+}
+
+/* Margin to separate the input and button */
+.lobby-button-container  > * {
+    margin-right: 0px;
+}
