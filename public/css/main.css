@@ -42,19 +42,22 @@ body {
     100%{background-position:0% 50%}
 }
 
-/* Home Container */
+/* Container */
 .container {
     align-items: center; /* Center items horizontally */
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 3px 3px 20px #003167; 
+    /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); */
     display: flex; 
     flex-direction: column; /* Stack items vertically */
-    height: 75vh; 
     justify-content: center; /* Center items vertically */
     padding: 20px;
     text-align: center;
-    width: 50%; 
+}
+
+.home-container {
+    width: 50%;
 }
 
 /* Button */
@@ -62,12 +65,13 @@ body {
     background-color: #0E7EFB;
     border: none;
     border-radius: 5px;
+    box-shadow: 3px 3px 0px #003167;
     color: #fff;
     cursor: pointer;
     font-size: 18px;
     font-weight: 500;
     letter-spacing: 1px;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-bottom: 10px;
     padding: 10px 10px;
     transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
@@ -75,8 +79,17 @@ body {
 }
 
 .account-button {
-    width: 100%;
+    border: 2px solid #003167;
+    margin-top: 15px;
     text-align: center;
+    width: 100%;
+}
+
+.lobby-button {
+    border: 2px solid #003167;
+    margin-top: 15px;
+    text-align: center;
+    width: 100%;
 }
 
 .button:hover {
@@ -142,7 +155,7 @@ body {
 
 /* Input Field */
 .input-field i {
-    color: #999;
+    color: #003167;
     font-size: 23px;
     position: absolute;
     top: 50%;
@@ -160,9 +173,33 @@ body {
     right: 0;
 }
 
+.input-box {
+    position: relative; /* Make the input box a positioning context for the icon */
+}
+
+.input-box i {
+    position: absolute; /* Position the icon absolutely inside the input box */
+    color: #003167;
+    font-size: 20px;
+    top: 50%;
+    left:20px; /* Adjust the left position of the icon as needed */
+    transform: translateY(-50%) translateX(-25%);
+    transition: all 0.2s ease;
+}
+
+.input-box input {
+    margin: 5px;
+    border: 2px solid #003167;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 35px; /* Adjust padding to accommodate the icon */
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px #003167; 
+}
+
 .input-field input {
     border: none;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #003167;
     border-top: 2px solid transparent;
     font-size: 16px;
     height: 100%;
