@@ -75,7 +75,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', ( )=> {
         
         const roomId = socket.roomId;
-        playerCount = getPlayerCount(rooms, roomId);
+        playerCount--;
 
         io.to(socket.roomId).emit('player left', { playerId: socket.id, roomId, playerCount}); 
         console.log('User disconnected: '+ socket.id);
