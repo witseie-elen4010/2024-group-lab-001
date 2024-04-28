@@ -31,7 +31,7 @@ app.get('/draw', (req, res) => {
 });
 
 // Route for adding a new user
-const {createNewAccount} = require('./firebase');
+const {createNewAccount} = require('./public/scripts/classes/firebase');
 
 app.post('/api/signup', function (req, res) {
     createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
