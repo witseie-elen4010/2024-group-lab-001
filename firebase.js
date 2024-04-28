@@ -56,7 +56,7 @@ const createNewAccount = async(myEmail, myUsername, myPassword, req, res) =>{
 
     try{
         const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
-        
+        addUserToDB(myEmail, myUsername)
         console.log('User has creted an account');
         monitorAuthState(req, res)
     }
@@ -83,8 +83,24 @@ const monitorAuthState = (req, res) => {
     })
 }
 
+// Function to add new user to the database
+async function addUserToDB(myEmail, myUsername) {
 
+    try{
+        userInformation = doc(firestore, `users/${myEmail}`)
+        const userData ={
+            username: myUsername,
+            email: myEmail
+        }
+        setDoc(userInformation, userData);
 
+        console.log('New user was created in DB');
+    }
+    catch(error){
+        console.log('There was an error creating account DB');
+        console.log(error);
+    }
+}
 
 module.exports = {
     createNewAccount,
