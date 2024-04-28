@@ -1,13 +1,5 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-env:
-  API_KEY = ${{ secrets.API_KEY }}
-  AUTH_DOMAIN = ${{ secrets.APP_ID }}
-  PROJECT_ID = ${{ secrets.AUTH_DOMAIN }}
-  STORAGE_BUCKET = ${{ secrets.MEASSAGING_SENDER_ID }}
-  MEASSAGING_SENDER_ID = ${{ secrets.PROJECT_ID }}
-  APP_ID = ${{ secrets.STORAGE_BUCKET }}
-
 name: Build and deploy Node.js app to Azure Web App - MiscommunicationMayhem
 
 on:
@@ -18,6 +10,15 @@ on:
 
 jobs:
   build:
+
+    env:
+      API_KEY = ${{ secrets.API_KEY }}
+      AUTH_DOMAIN = ${{ secrets.APP_ID }}
+      PROJECT_ID = ${{ secrets.AUTH_DOMAIN }}
+      STORAGE_BUCKET = ${{ secrets.MEASSAGING_SENDER_ID }}
+      MEASSAGING_SENDER_ID = ${{ secrets.PROJECT_ID }}
+      APP_ID = ${{ secrets.STORAGE_BUCKET }}
+      
     runs-on: ubuntu-latest
 
     steps:
