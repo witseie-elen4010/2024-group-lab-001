@@ -15,18 +15,31 @@
 <body>
     <!-- Lobby Container -->
     <div id="lobbyContainer" class="container">
-        <!-- Button -->
-        <button id="createLobbyButton" class="button lobby-button">Create Lobby</button>
+        <!-- Room creation form -->
+        <form id="createRoomForm">
+            <!-- Button -->
+            <button type="submit" id="createLobbyButton" class="button lobby-button">Create Lobby</button>
+        </form>
+
         <div class = "lobby-button-container">
-            <div class = "input-box">
-                <i class="uil uil-keyboard icon"></i>
-                <input type="text" placeholder="Enter lobby code">
-            </div>
-            <!-- Button should be within the div -->
-            <button id="joinLobbyButton" class="button lobby-button">Join</button>
+            <!-- Room joining form -->
+            <form id="joinRoomForm" class = "lobby-button-container">
+                <div class = "input-box">
+                    <i class="uil uil-keyboard icon"></i>
+                    <input type="text" id="roomIdInput" placeholder="Enter lobby code">
+                </div>
+                <!-- Button should be within the div -->
+                <button type="submit" id="joinLobbyButton" class="button lobby-button">Join</button>
+            </form>
         </div>
     </div>
 
-    <script src="/scripts/classes/index.js"></script>
+    <div id="postLobbyCreationScreen" >
+    </div>
+
+    <!-- Load Socket.IO library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/scripts/classes/client.js"></script>
+
 </body>
 </html>
