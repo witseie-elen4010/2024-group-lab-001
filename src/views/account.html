@@ -60,20 +60,20 @@
             <div class="form signup">
                 <span class="title">Registration</span>
                 <!-- Signup form fields -->
-                <form action="#">
+                <form action="api/signup" method="post">
                     <!-- Name input field -->
                     <div class="input-field">
-                        <input type="text" placeholder="Enter your name" required>
+                        <input type="text" id="signupEmail" name="signupEmail" placeholder="Enter your email address" required>
                         <i class="uil uil-user"></i>
                     </div>
                     <!-- Username input field -->
                     <div class="input-field">
-                        <input type="text" placeholder="Create a username" required>
+                        <input type="text" id="signupUsername" name="signupUsername" placeholder="Create a username" required>
                         <i class="uil uil-user icon"></i>
                     </div>
                     <!-- Password input field -->
                     <div class="input-field">
-                        <input type="password" class="password" placeholder="Create a password" required>
+                        <input type="password" id="signupPassword" name="signupPassword" class="password" placeholder="Create a password" required>
                         <i class="uil uil-lock icon"></i>
                     </div>
                     <!-- Confirm password input field -->

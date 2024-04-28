@@ -3,6 +3,11 @@ const path = require('path');
 
 const app = express();
 
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Route for serving index.html
@@ -24,6 +29,13 @@ app.get('/lobby', (req, res) => {
 app.get('/draw', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'draw.html'));
 });
+
+// Route for adding a new user
+const {createNewAccount} = require('./firebase');
+
+app.post('/api/signup', function (req, res) {
+    createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
