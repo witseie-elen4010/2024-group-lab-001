@@ -26,7 +26,7 @@ const {
 const dotenv = require('dotenv')
 
 dotenv.config()
-const{
+/*const{
     API_KEY,
     AUTH_DOMAIN,
     PROJECT_ID,
@@ -44,7 +44,16 @@ const firebaseApp = initializeApp({
     messagingSenderId: MEASSAGING_SENDER_ID,
     appId: APP_ID,
     measurementId: MEASUREMENT_ID
-})
+})*/
+
+const firebaseApp = initializeApp({
+    apiKey: "AIzaSyAyUL73lnqRDZ-1HP_F-3CWhgaXoCYlC_E",
+    authDomain: "miscommunication-mayhem.firebaseapp.com",
+    projectId: "miscommunication-mayhem",
+    storageBucket: "miscommunication-mayhem.appspot.com",
+    messagingSenderId: "619420848727",
+    appId: "1:619420848727:web:9205b82fbb712b71940912"
+  });
   
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
