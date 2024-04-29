@@ -94,6 +94,18 @@ io.on('connection', (socket) => {
             console.log(`Player ${socket.id} left room ${roomId}`);
         }
     });
+
+    socket.on('start-game', roomId => {
+        if (rooms.has(roomId)) {
+            const room = rooms.get(roomId);
+            const playerCount = room.players.size;
+            io.to(socket.roomId).emit('game-started',{playerId:socket.id, roomId,playerCount});
+            console.log('Game has started in room: '+ roomId);
+          } 
+          else {
+            socket.emit('cannot-start-game');
+          }    
+    });
 });
 
 // Route for adding a new user
