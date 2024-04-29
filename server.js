@@ -144,26 +144,33 @@ io.on('connection', (socket) => {
          handleJoinRoom();
     });
     
-    socket.on('disconnect', ( )=> {
+    socket.on('disconnect', () => {
         const roomId = socket.roomId;
         if (rooms.has(roomId)) {
             const room = rooms.get(roomId);
-
+    
             // Remove player from room and adjust the player count
             room.players.delete(socket.id); 
             const playerCount = room.players.size;
-
+    
             // Get the username associated with the disconnected socket ID
-            const username = userNames.get(socket.id);
-
-            // Remove the username from the map
-            userNames.delete(socket.id);
-
-            // Emit 'player left' event with player ID, room ID, and player count to all clients in the room
-            io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount, username}); 
-            console.log(`Player ${socket.id} left room ${roomId}`);
+            const username = room.players.get(socket.id);
+    
+            // Remove the username from the map associated with the room ID
+            if (userNames.has(roomId)) {
+                const usernamesMap = userNames.get(roomId);
+                usernamesMap.delete(socket.id);
+    
+                // Get remaining usernames
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values())
+    
+                // Emit 'player left' event with player ID, room ID, player count, username, and remaining players to all clients in the room
+                io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                console.log(`Player ${socket.id} left room ${roomId}`);
+                console.log(`Remainding users are: ${remainingUsernames}`);
+            }
         }
-    });
+    });    
 
     socket.on('start-game', roomId => {
         if (rooms.has(roomId)) {

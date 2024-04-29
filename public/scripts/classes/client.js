@@ -47,6 +47,8 @@ socket.on("room not found", () => {
 socket.on("player left", data => {
     console.log(`Player ${data.playerId} left the room`);
     console.log(`Player count: ${data.playerCount}`);
+    // Updates Screen when a user disconnects by removing their username.
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
 socket.on('game-started', () => {
