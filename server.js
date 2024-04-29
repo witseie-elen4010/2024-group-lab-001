@@ -62,71 +62,86 @@ function createCode() {
 }
 
 const {getUsername} = require('./public/scripts/classes/firebase');
+const {getUserEmail} = require('./public/scripts/classes/firebase');
 
 // Socket.IO logic
 const userNames = new Map(); // Map to store usernames associated with socket IDs
 
 io.on('connection', (socket) => {
     console.log(`A user connected: ${socket.id}`);
-    
+
     socket.on('create room', () => {
-        // Generate a unique room ID
-        const roomId = createCode(); 
-        
-        // Generate a unique username for the user
-        const username = getUsername();
-        
-        // Store username associated with socket ID
-        userNames.set(socket.id, username);
+        // Inside the event handler, define an async function to use await
+        async function handleCreateRoom() {
+            // Generate a unique room ID
+            const roomId = createCode(); 
 
-        // Create a new room with the generated ID and initialize player count to 0
-        rooms.set(roomId, { players: new Map() }); 
-
-        // Add the room ID to the socket object
-        socket.roomId = roomId; 
-        const room = rooms.get(roomId);
-        
-        // Add player to room
-        room.players.set(socket.id, true); 
-        socket.join(roomId); 
-
-        // Get remaining usernames from the userNames map
-        const remainingUsernames = Array.from(userNames.values())
-
-        // Emit 'room created' event with room ID and player count to the client
-        socket.emit('room created', { roomId, playerCount: room.players.size, remainingUsernames});
-        console.log(`Player ${socket.id} created and joined room ${roomId}`);
-        console.log(`Username: ${username}`);
-    });
-
-    socket.on('join room', roomId => {
-        if (rooms.has(roomId)) {
-            const room = rooms.get(roomId);
+            // Get the username asynchronously
+            const username = await getUsername();
             
-            // Generate a unique username for the user
-            const username = getUsername();
-        
-            // Store username associated with socket ID
-            userNames.set(socket.id, username);
-    
+            // Create a new room with the generated ID and initialize player count to 0
+            rooms.set(roomId, { players: new Map() }); 
+            
+            // Associate the room ID with a map containing username-socket ID pairs
+            userNames.set(roomId, new Map());
+
             // Add player to room
-            room.players.set(socket.id, true); 
-    
+            rooms.get(roomId).players.set(socket.id, username); 
+            
             // Add the room ID to the socket object
             socket.roomId = roomId; 
             socket.join(roomId); 
-            const playerCount = room.players.size;
-    
+
             // Get remaining usernames from the userNames map
-            const remainingUsernames = Array.from(userNames.values())
-    
-            // Emit 'player joined' event with player ID, room ID, player count, username, and remaining usernames to all clients in the room
-            io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
-            console.log(`Player ${socket.id} joined room ${roomId}`);
-        } 
-        else {
-            socket.emit('room not found');
+            const remainingUsernames = Array.from(rooms.get(roomId).players.values())
+
+            // Emit 'room created' event with room ID and player count to the client
+            socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames});
+            console.log(`Player ${socket.id} created and joined room ${roomId}`);
+            console.log(`Username: ${username}`);
         }
+    
+        // Call the async function to handle room creation
+        handleCreateRoom();
+    });
+    
+
+    socket.on('join room', roomId => {
+        async function handleJoinRoom() {
+            if (rooms.has(roomId)) {
+                const room = rooms.get(roomId);
+                
+                // Generate a unique username for the user
+                const username = await getUsername();
+            
+                // Add player to room
+                room.players.set(socket.id, username); 
+    
+                // Associate the room ID with a map containing username-socket ID pairs
+                if (!userNames.has(roomId)) {
+                    userNames.set(roomId, new Map());
+                }
+                userNames.get(roomId).set(socket.id, username);
+        
+                // Add the room ID to the socket object
+                socket.roomId = roomId; 
+                socket.join(roomId); 
+                const playerCount = room.players.size;
+        
+                // Get remaining usernames from the userNames map
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values())
+        
+                // Emit 'player joined' event with player ID, room ID, player count, username, and remaining usernames to all clients in the room
+                io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                console.log(`Player ${socket.id} joined room ${roomId}`);
+            } 
+            else {
+                socket.emit('room not found');
+            }
+        }
+
+         // Call the async function to handle joining a room
+         handleJoinRoom();
     });
     
     socket.on('disconnect', ( )=> {

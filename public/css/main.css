@@ -12,11 +12,10 @@ body {
     display: flex;
     height: 100vh;
     font-family: 'Roboto';
+    flex-direction: column;
     justify-content: center;
     margin: 0;
     padding: 0;
-
-    flex-direction: column;
 }
 
 /* Graident Background */
@@ -60,6 +59,10 @@ body {
     width: 50%;
 }
 
+.lobby-container {
+    flex-direction: row; /* Stack items horizontally */
+}
+
 /* Button */
 .button {
     background-color: #0E7EFB;
@@ -87,6 +90,14 @@ body {
 
 .lobby-button {
     border: 2px solid #003167;
+    margin-top: 15px;
+    text-align: center;
+    width: 100%;
+}
+
+.start-button {
+    border: 2px solid #003167;
+    background-color: #a6a6a6;
     margin-top: 15px;
     text-align: center;
     width: 100%;
