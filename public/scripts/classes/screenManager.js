@@ -1,36 +1,46 @@
 import client from './client.js';
 
-function switchLobbyScreen(roomId,playerCount){
-
+function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Hide the lobby container and display the post lobby creation screen
     document.getElementById('lobbyContainer').style.display = 'none';
     document.getElementById('postLobbyCreationScreen').style.display = 'block';
-    document.getElementById('postLobbyCreationScreen').className = "container"
-
+    document.getElementById('postLobbyCreationScreen').className = "container";
+  
     // Create a paragraph element to display the room code and button to copy the room code
     const lobbyDisplayElement = document.getElementById('postLobbyCreationScreen');
     const roomCode = document.createElement('p');
+    const usernameDisplay = document.createElement('p');
+    const remainingPlayersDisplay = document.createElement('p'); // Add element for remaining players
     const copyButton = document.createElement('button');
-
-    roomCode.className = "room-code-container"
+    roomCode.className = "room-code-container";
     lobbyDisplayElement.innerHTML = ``;
     roomCode.textContent = `Room Code: ${roomId}`;
     lobbyDisplayElement.appendChild(roomCode);
-
+    remainingPlayersDisplay.textContent = `Players: ${remainingUsernames.join(', ')}`; // Display remaining players
+    lobbyDisplayElement.appendChild(remainingPlayersDisplay);
     copyButton.textContent = 'Copy';
-    copyButton.className = "copy-button"
+    copyButton.className = "button lobby-button";
     lobbyDisplayElement.appendChild(copyButton);
     copyToClipboard(copyButton, roomId);
-
+  
+    // Create a container div for the buttons
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'button-container';
+  
     // Create a button element to allow for the host to start the game when there is enough players
     const startgameButton = document.createElement('button');
-    startgameButton.className = 'copy-button startgame-button';
+    startgameButton.className = 'button lobby-button';
     startgameButton.id = 'startgame-button';
     startgameButton.textContent = 'Start Game';
-    startGame(startgameButton,playerCount,roomId);
-    lobbyDisplayElement.appendChild(startgameButton);
-};
-
+    startGame(startgameButton, playerCount, roomId);
+  
+    // Append the buttons to the button container
+    buttonContainer.appendChild(copyButton);
+    buttonContainer.appendChild(startgameButton);
+  
+    // Append the button container to the lobby display element
+    lobbyDisplayElement.appendChild(buttonContainer);
+}
 
 function startGame(startgameButton,playerCount,roomId){
     if(playerCount<3){return};
@@ -42,7 +52,6 @@ function startGame(startgameButton,playerCount,roomId){
 
 function copyToClipboard(copyButton, roomId) {
     copyButton.addEventListener('click', function() {
-
         //  Create a temporary input element
         const tempInput = document.createElement('input');
 

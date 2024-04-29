@@ -127,7 +127,19 @@ const loginEmailPassword = async(myEmail, myPassword, req, res) => {
     }
 }
 
+// Function to retrieve the username of the current user
+const getUsername = function() {
+    const user = auth.currentUser;
+    if(user !== null){
+        return user.email;
+    }
+    else{
+        return null;
+    }
+}
+
 module.exports = {
     createNewAccount,
-    loginEmailPassword
+    loginEmailPassword,
+    getUsername,
 };

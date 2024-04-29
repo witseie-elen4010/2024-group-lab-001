@@ -34,14 +34,50 @@ app.get('/draw', (req, res) => {
     res.sendFile(path.join(__dirname, 'src', 'views', 'draw.html'));
 });
 
+// Route for adding a new user
+const {createNewAccount} = require('./public/scripts/classes/firebase');
+
+app.post('/api/signup', function (req, res) {
+    createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
+})
+
+// Route for logging in a user
+const {loginEmailPassword} = require('./public/scripts/classes/firebase');
+
+app.post('/api/login', function (req, res) {
+    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
+})
+
+function createCode() {
+    let result = '';
+    const length = 6;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
+}
+
+const {getUsername} = require('./public/scripts/classes/firebase');
+
 // Socket.IO logic
+const userNames = new Map(); // Map to store usernames associated with socket IDs
+
 io.on('connection', (socket) => {
-
     console.log(`A user connected: ${socket.id}`);
-
+    
     socket.on('create room', () => {
         // Generate a unique room ID
         const roomId = createCode(); 
+        
+        // Generate a unique username for the user
+        const username = getUsername();
+        
+        // Store username associated with socket ID
+        userNames.set(socket.id, username);
 
         // Create a new room with the generated ID and initialize player count to 0
         rooms.set(roomId, { players: new Map() }); 
@@ -54,29 +90,42 @@ io.on('connection', (socket) => {
         room.players.set(socket.id, true); 
         socket.join(roomId); 
 
+        // Get remaining usernames from the userNames map
+        const remainingUsernames = Array.from(userNames.values())
+
         // Emit 'room created' event with room ID and player count to the client
-        socket.emit('room created', { roomId, playerCount: room.players.size });
+        socket.emit('room created', { roomId, playerCount: room.players.size, remainingUsernames});
         console.log(`Player ${socket.id} created and joined room ${roomId}`);
+        console.log(`Username: ${username}`);
     });
 
     socket.on('join room', roomId => {
         if (rooms.has(roomId)) {
-          const room = rooms.get(roomId);
-
-          // Add player to room
-          room.players.set(socket.id, true); 
-
-          // Add the room ID to the socket object
-          socket.roomId = roomId; 
-          socket.join(roomId); 
-          const playerCount = room.players.size;
-
-          // Emit 'player joined' event with player ID, room ID, and player count to all clients in the room
-          io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount}); 
-          console.log(`Player ${socket.id} joined room ${roomId}`);
+            const room = rooms.get(roomId);
+            
+            // Generate a unique username for the user
+            const username = getUsername();
+        
+            // Store username associated with socket ID
+            userNames.set(socket.id, username);
+    
+            // Add player to room
+            room.players.set(socket.id, true); 
+    
+            // Add the room ID to the socket object
+            socket.roomId = roomId; 
+            socket.join(roomId); 
+            const playerCount = room.players.size;
+    
+            // Get remaining usernames from the userNames map
+            const remainingUsernames = Array.from(userNames.values())
+    
+            // Emit 'player joined' event with player ID, room ID, player count, username, and remaining usernames to all clients in the room
+            io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+            console.log(`Player ${socket.id} joined room ${roomId}`);
         } 
         else {
-          socket.emit('room not found');
+            socket.emit('room not found');
         }
     });
     
@@ -89,8 +138,14 @@ io.on('connection', (socket) => {
             room.players.delete(socket.id); 
             const playerCount = room.players.size;
 
+            // Get the username associated with the disconnected socket ID
+            const username = userNames.get(socket.id);
+
+            // Remove the username from the map
+            userNames.delete(socket.id);
+
             // Emit 'player left' event with player ID, room ID, and player count to all clients in the room
-            io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount}); 
+            io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount, username}); 
             console.log(`Player ${socket.id} left room ${roomId}`);
         }
     });
@@ -108,35 +163,10 @@ io.on('connection', (socket) => {
     });
 });
 
-// Route for adding a new user
-const {createNewAccount} = require('./public/scripts/classes/firebase');
-
-app.post('/api/signup', function (req, res) {
-    createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
-})
-
-// Route for logging in a user
-const {loginEmailPassword} = require('./public/scripts/classes/firebase');
-
-app.post('/api/login', function (req, res) {
-    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
-})
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server is Running on Port ${PORT}`);
 });
 
-function createCode() {
-    let result = '';
-    const length = 6;
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const charactersLength = characters.length;
-    let counter = 0;
-    while (counter < length) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
-      counter += 1;
-    }
-    return result;
-}
 // The createCode function was used obtained from: https://www.programiz.com/javascript/examples/generate-random-strings
