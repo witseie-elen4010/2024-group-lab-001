@@ -53,3 +53,9 @@ test('When lobby screen, copy button should be dynamically added', async ({ page
   expect(copyButtonTextContent).toBe('Copy');
 });
 
+test('test', async ({ page }) => {
+  await page.goto('http://localhost:3000/lobby');
+  await page.getByRole('button', { name: 'Create Lobby' }).click();
+  await expect(page.getByRole('button', { name: 'Start Game' })).toBeVisible();
+});
+
