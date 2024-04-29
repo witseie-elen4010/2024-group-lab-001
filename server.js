@@ -36,7 +36,7 @@ io.on('connection', (socket) => {
 
     socket.on('create room', () => {
         // Generate a unique room ID
-        const roomId = generateRoomId(); 
+        const roomId = createCode(); 
 
         // Create a new room with the generated ID and initialize player count to 0
         rooms.set(roomId, { players: new Map() }); 
@@ -96,8 +96,16 @@ server.listen(PORT, () => {
     console.log(`Server is Running on Port ${PORT}`);
 });
 
-function generateRoomId() {
-    // Generate a random room ID 
-    return Math.random().toString(36).substring(2, 10);
+function createCode() {
+    let result = '';
+    const length = 6;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
+    }
+    return result;
 }
-
+// The createCode function was used obtained from: https://www.programiz.com/javascript/examples/generate-random-strings
