@@ -33,15 +33,15 @@
             <div class="form login">
                 <span class="title">Login</span>
                 <!-- Login form fields -->
-                <form action="#">
+                <form action="api/login" method="post">
                     <!-- Username input field -->
                     <div class="input-field">
-                        <input type="text" placeholder="Enter your username" required>
+                        <input type="text" id="loginEmail" name="loginEmail" placeholder="Enter your username" required>
                         <i class="uil uil-user icon"></i>
                     </div>
                     <!-- Password input field -->
                     <div class="input-field">
-                        <input type="password" class="password" placeholder="Enter your password" required>
+                        <input type="password" id="loginPassword" name="loginPassword" class="password" placeholder="Enter your password" required>
                         <i class="uil uil-lock icon"></i>
                         <!-- Icon to show/hide password -->
                         <i class="uil uil-eye-slash showHidePassword"></i>

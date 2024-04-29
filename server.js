@@ -115,6 +115,13 @@ app.post('/api/signup', function (req, res) {
     createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
 })
 
+// Route for logging in a user
+const {loginEmailPassword} = require('./public/scripts/classes/firebase');
+
+app.post('/api/login', function (req, res) {
+    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
+})
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server is Running on Port ${PORT}`);
