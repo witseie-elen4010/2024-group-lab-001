@@ -80,6 +80,7 @@ const redirect = (req, res) => {
     res.redirect(req.baseUrl + '/lobby');
 };
 
+// Function to monitor the authentication state/ if a user is logged in or out
 const monitorAuthState = (req, res) => {
     onAuthStateChanged(auth, user => {
         if(user){
@@ -111,6 +112,22 @@ async function addUserToDB(myEmail, myUsername) {
     }
 }
 
+// Function to login with email and password
+const loginEmailPassword = async(myEmail, myPassword, req, res) => {
+    const loginEmail = myEmail;
+    const loginPassword = myPassword;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+        console.log('User has logged in');
+        monitorAuthState(req, res);
+    } catch (error) {
+        console.log('There was an error logging in');
+        console.log(error);
+    }
+}
+
 module.exports = {
     createNewAccount,
+    loginEmailPassword
 };
