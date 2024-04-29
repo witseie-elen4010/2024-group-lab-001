@@ -32,24 +32,26 @@ app.get('/draw', (req, res) => {
 // Socket.IO logic
 io.on('connection', (socket) => {
 
-    let playerCount = 0
-
     console.log(`A user connected: ${socket.id}`);
 
     socket.on('create room', () => {
         // Generate a unique room ID
-        const roomId = generateRoomId(); 
+        const roomId = createCode(); 
 
-        // Create a new room with the generated ID and the player who created it
-        rooms.set(roomId, { players: [socket.id] }); 
+        // Create a new room with the generated ID and initialize player count to 0
+        rooms.set(roomId, { players: new Map() }); 
 
         // Add the room ID to the socket object
         socket.roomId = roomId; 
+        const room = rooms.get(roomId);
+        
+        // Add player to room
+        room.players.set(socket.id, true); 
         socket.join(roomId); 
-        playerCount = getPlayerCount(rooms, roomId);
 
-        socket.emit('room created', { roomId, playerCount });
-        console.log(`Player ${socket.id} joined room ${roomId}`);
+        // Emit 'room created' event with room ID and player count to the client
+        socket.emit('room created', { roomId, playerCount: room.players.size });
+        console.log(`Player ${socket.id} created and joined room ${roomId}`);
     });
 
     socket.on('join room', roomId => {
@@ -57,15 +59,16 @@ io.on('connection', (socket) => {
           const room = rooms.get(roomId);
 
           // Add player to room
-          room.players.push(socket.id); 
+          room.players.set(socket.id, true); 
 
           // Add the room ID to the socket object
           socket.roomId = roomId; 
           socket.join(roomId); 
-          playerCount = getPlayerCount(rooms, roomId);
+          const playerCount = room.players.size;
 
+          // Emit 'player joined' event with player ID, room ID, and player count to all clients in the room
           io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount}); 
-          console.log('A player joined the lobby: '+ socket.id);
+          console.log(`Player ${socket.id} joined room ${roomId}`);
         } 
         else {
           socket.emit('room not found');
@@ -73,12 +76,18 @@ io.on('connection', (socket) => {
     });
     
     socket.on('disconnect', ( )=> {
-        
         const roomId = socket.roomId;
-        playerCount--;
+        if (rooms.has(roomId)) {
+            const room = rooms.get(roomId);
 
-        io.to(socket.roomId).emit('player left', { playerId: socket.id, roomId, playerCount}); 
-        console.log('User disconnected: '+ socket.id);
+            // Remove player from room and adjust the player count
+            room.players.delete(socket.id); 
+            const playerCount = room.players.size;
+
+            // Emit 'player left' event with player ID, room ID, and player count to all clients in the room
+            io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount}); 
+            console.log(`Player ${socket.id} left room ${roomId}`);
+        }
     });
 });
 
@@ -87,16 +96,16 @@ server.listen(PORT, () => {
     console.log(`Server is Running on Port ${PORT}`);
 });
 
-function generateRoomId() {
-    // Generate a random room ID 
-    return Math.random().toString(36).substring(2, 6);
-}
-  
-function getPlayerCount(roomStore, roomId) {
-    if (roomStore.has(roomId)) {
-        const room = rooms.get(roomId);
-        return room.players.length;
-    } else {
-        return 0;
+function createCode() {
+    let result = '';
+    const length = 6;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      counter += 1;
     }
+    return result;
 }
+// The createCode function was used obtained from: https://www.programiz.com/javascript/examples/generate-random-strings
