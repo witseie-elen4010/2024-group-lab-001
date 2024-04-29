@@ -30,13 +30,13 @@ socket.on("disconnect", () => {
 socket.on("room created", data => {
     console.log(`Room created with ID: ${data.roomId}`);
     console.log(`Player count: ${data.playerCount}`);
-    screenManager.switchLobbyScreen(data.roomId);
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount);
 });
 
 socket.on("player joined", data => {
     console.log(`Player ${data.playerId} joined the room`);
     console.log(`Player count: ${data.playerCount}`);  
-    screenManager.switchLobbyScreen(data.roomId); 
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount); 
 });
 
 socket.on("room not found", () => {
@@ -47,3 +47,16 @@ socket.on("player left", data => {
     console.log(`Player ${data.playerId} left the room`);
     console.log(`Player count: ${data.playerCount}`);
 });
+
+socket.on('game-started', () => {
+    console.log("Game started");
+    screenManager.switchToDrawingScreen();
+});
+
+socket.on('cannot-start-game', () => {
+    console.log("Cannot start the game")
+});
+
+export default {
+    socket
+};
