@@ -5,6 +5,11 @@ const app = express();
 const server = http.createServer(app);
 const io = require('socket.io')(server);
 
+const bodyParser = require('body-parser');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 const rooms = new Map(); // Map to store active rooms
@@ -90,6 +95,13 @@ io.on('connection', (socket) => {
         }
     });
 });
+
+// Route for adding a new user
+const {createNewAccount} = require('./public/scripts/classes/firebase');
+
+app.post('/api/signup', function (req, res) {
+    createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res);
+})
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
