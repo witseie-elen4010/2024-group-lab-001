@@ -1,22 +1,79 @@
-/* The .canvas-container class is applied to the container that wraps the title and the canvas. */
-.canvas-container {
-    align-items: center;
-    border-radius: 8px;
+/* CSS for the layout */
+.flex-container {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    margin: 5vh auto;
 }
 
-/* The .title-drawing class applies styles to the title. */
-.canvas-container .title-drawing{
-    margin: 5vh auto;
+/* CSS for the tool box */
+.tool-box {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    flex: none;
+    height: auto;
+    margin-right: 1%;
+    margin-top: 0%;
+    padding-right: 10px;
+    width: 10vw;
 }
 
-/* The .drawing-canvas class applies styles to the canvas. */
+/* CSS for the canvas container */
+.canvas-container {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+    flex: none;
+    height: 75vh;
+    margin-right: 1%;
+    margin-top: 0%;
+    width: 65vw;
+    float: left; /* Float the tool box to the left */
+}
+
+/* CSS for the headings */
+.title-drawing {
+    font-size: 27px;
+    font-weight: 600;
+    position: relative;
+}
+
+.title-drawing::before {
+    background-color: #003167;
+    border-radius: 25px;
+    bottom: 0;
+    content: '';
+    height: 3px;
+    left: 0;
+    position: absolute;
+    width: 30px;
+}
+
+/* CSS for the drawing canvas */
 .canvas-container .drawing-canvas {
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     height: 75vh;
     width: 65vw;
+}
+
+/* CSS for the rows inside the tool box */
+.tool-box .row {
+    cursor: pointer;
+    margin-left: 10%; /* Adjust as needed */
+    margin-top: 10%;
+}
+
+/* CSS for the options list */
+.row .options {
+    flex-direction: column;
+    list-style: none;
+    padding: 1%; /* Use em for padding */
+    font-size: 18px;
+}
+
+/* CSS for options list and color options */
+.color-options li,
+.options li {
+    margin-bottom: 5%;
+    margin-right: 5%;
+    padding-bottom: 15px;
 }

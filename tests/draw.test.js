@@ -2,16 +2,29 @@ import { test, expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 
-test('Ensure the title of the drawing page is visible', async ({ page }) => {
-  await page.goto('http://localhost:3000/draw');
-  await expect(page.getByRole('heading', { name: 'Miscommunication Mayhem' })).toBeVisible();
-});
-
 test('Ensure the canvas of the drawing page is visible', async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
   await expect(page.locator('#drawing-canvas')).toBeVisible();
 });
 
+// Test to ensure the toolbox heading is visible
+test("Ensure toolbox heading is visible", async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.getByText('Tool Selection')).toBeVisible();
+});
+
+
+// Test to ensure the toolbox is visible
+test('Ensure the toolbox is visible', async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#tool-box')).toBeVisible();
+});
+
+// Test to ensure a toolbox option is visible
+test("Ensure toolbox tool is visible", async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.getByText('Option 1')).toBeVisible();
+});
 
 test('Ensure canvas has correct dimensions', async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
