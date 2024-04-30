@@ -48,11 +48,11 @@
 }
 
 /* CSS for the drawing canvas */
-.drawing-canvas {
+.canvas-container .drawing-canvas {
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    height: 100%; /* Adjust as needed */
-    width: 100%; /* Adjust as needed */
+    height: 75vh;
+    width: 65vw;
 }
 
 /* CSS for the rows inside the tool box */
