@@ -18,7 +18,7 @@ test('Login redirects user to lobby', async ({ page }) => {
     // Check if the signup form is active
     //await expect(page.$('.account-container.active .login')).resolves.toBeTruthy();
     // Fill the signup fields with test data
-    await page.fill('input[placeholder="Enter your username"]', 'alex@minecraft.test');
+    await page.fill('input[placeholder="Enter your email"]', 'alex@minecraft.test');
     await page.fill('input[placeholder="Enter your password"]', 'alexalex');
     await page.getByRole('button', { name: 'Login' }).click();
 

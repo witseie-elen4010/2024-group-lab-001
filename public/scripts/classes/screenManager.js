@@ -24,7 +24,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Create a button element to copy the room code
     const copyButton = document.createElement('button');
     copyButton.textContent = 'Copy';
-    copyButton.className = "button lobby-button";
+    copyButton.className = "button copy-button";
     copyToClipboard(copyButton,roomId);
     leftDiv.appendChild(copyButton);
 
@@ -32,6 +32,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     const startgameButton = document.createElement('button');
     startgameButton.className = 'button start-button';
     startgameButton.id = 'startgame-button';
+    startgameButton.disabled = true;
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
     leftDiv.appendChild(startgameButton);
@@ -59,6 +60,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 function startGame(startgameButton,playerCount,roomId){
     if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
+    startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
         console.log("Emitting start game");
         client.socket.emit('start-game', roomId);

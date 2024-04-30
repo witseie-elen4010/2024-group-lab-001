@@ -16,13 +16,13 @@ test('When creating a lobby, the contents of the pagers should dynamically chang
   const postLobbyCreationScreenDisplay = await page.evaluate(() => {
       return document.getElementById('postLobbyCreationScreen').style.display;
   });
-  expect(postLobbyCreationScreenDisplay).toBe('block');
+  expect(postLobbyCreationScreenDisplay).toBe('flex');
 
   // Check if the post lobby creation screen has the correct class name
   const postLobbyCreationScreenClassName = await page.evaluate(() => {
       return document.getElementById('postLobbyCreationScreen').className;
   });
-  expect(postLobbyCreationScreenClassName).toBe('container');
+  expect(postLobbyCreationScreenClassName).toBe('container lobby-container');
 
   // Check if the room code is displayed
   const roomCodeContainer = await page.evaluate(() => {
@@ -53,9 +53,18 @@ test('When lobby screen, copy button should be dynamically added', async ({ page
   expect(copyButtonTextContent).toBe('Copy');
 });
 
-test('test', async ({ page }) => {
+test('When entering a lobby, the Start Button is visible', async ({ page }) => {
   await page.goto('http://localhost:3000/lobby');
   await page.getByRole('button', { name: 'Create Lobby' }).click();
   await expect(page.getByRole('button', { name: 'Start Game' })).toBeVisible();
+});
+
+test('When starting a game with less than 3 players, "Start Game" button should be disabled', async ({ page }) => {
+  // Load the lobby page
+  await page.goto('http://localhost:3000/lobby');
+  await page.getByRole('button', { name: 'Create Lobby' }).click();
+
+  const startGameButton = await page.$('.start-button');
+  expect(await startGameButton.isEnabled()).toBe(false);
 });
 
