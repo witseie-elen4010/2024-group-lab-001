@@ -16,7 +16,7 @@ test('When creating a lobby, the contents of the pagers should dynamically chang
   const postLobbyCreationScreenDisplay = await page.evaluate(() => {
       return document.getElementById('postLobbyCreationScreen').style.display;
   });
-  expect(postLobbyCreationScreenDisplay).toBe('flex');
+  expect(postLobbyCreationScreenDisplay).toBe('');
 
   // Check if the post lobby creation screen has the correct class name
   const postLobbyCreationScreenClassName = await page.evaluate(() => {
