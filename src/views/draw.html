@@ -3,16 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/draw.css">
+    <title id="titleDrawing">Draw - Miscommunication Mayhem</title>
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
-    <title id = "titleDrawing"> Draw - Miscommunication Mayhem</title>
+    <link rel="stylesheet" href="/css/draw.css">
+    <!-- Unicons CSS -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 </head>
-<body class="body">
-    <div class = 'canvas-container'>
-        <h1 id = "title-drawing">Miscommunication Mayhem</h1>
-        <canvas class = 'drawing-canvas' id="drawing-canvas"></canvas>
+<body class="body draw-body">
+    <div class="flex-container">
+        <div class='tool-box' id='tool-box'>
+            <div class='row'>
+                <label class='title-drawing'>Tool Selection</label>
+                <ul class='options'>
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-1">
+                        <i class="uil uil-pen"></i>
+                        <span>Option 1</span>
+                    </li>
+
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-2">
+                        <i class="uil uil-edit"></i>
+                        <span>Option 2</span>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class='canvas-container'>
+            <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
+        </div>
     </div>
-    
+
     <script src="/scripts/classes/draw.js"></script>
 </body>
 </html>
