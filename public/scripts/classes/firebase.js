@@ -127,7 +127,37 @@ const loginEmailPassword = async(myEmail, myPassword, req, res) => {
     }
 }
 
+// Function to get the username of the current user
+const getUsername = async function() {
+    const userEmail = getUserEmail();
+    if (userEmail !== null) {
+        const userInformation = doc(firestore, `users/${userEmail}`);
+        const mySnapshot = await getDoc(userInformation);
+        if(mySnapshot.exists()){
+            const docData = mySnapshot.data();
+            console.log(`My data is ${JSON.stringify(docData)}`);
+            const username = docData.username;
+            console.log(`Username is ${username}`);
+
+            return username;
+        }
+    }
+    return "";
+}
+
+// Function to get the email of the current user
+const getUserEmail = function() {
+    const user = auth.currentUser;
+    if (user !== null) {
+        return user.email;
+    } else {
+        return null;
+    }
+}
+
 module.exports = {
     createNewAccount,
-    loginEmailPassword
+    loginEmailPassword,
+    getUsername,
+    getUserEmail,
 };

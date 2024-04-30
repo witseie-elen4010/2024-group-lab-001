@@ -30,13 +30,14 @@ socket.on("disconnect", () => {
 socket.on("room created", data => {
     console.log(`Room created with ID: ${data.roomId}`);
     console.log(`Player count: ${data.playerCount}`);
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount);
+    console.log(`User Logged in: ${data.username}`);
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
 socket.on("player joined", data => {
     console.log(`Player ${data.playerId} joined the room`);
     console.log(`Player count: ${data.playerCount}`);  
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount); 
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
 socket.on("room not found", () => {
@@ -46,6 +47,8 @@ socket.on("room not found", () => {
 socket.on("player left", data => {
     console.log(`Player ${data.playerId} left the room`);
     console.log(`Player count: ${data.playerCount}`);
+    // Updates Screen when a user disconnects by removing their username.
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
 socket.on('game-started', () => {

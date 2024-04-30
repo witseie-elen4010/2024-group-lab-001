@@ -1,39 +1,66 @@
 import client from './client.js';
 
-function switchLobbyScreen(roomId,playerCount){
-
+function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Hide the lobby container and display the post lobby creation screen
-    document.getElementById('lobbyContainer').style.display = 'none';
-    document.getElementById('postLobbyCreationScreen').style.display = 'block';
-    document.getElementById('postLobbyCreationScreen').className = "container"
+    const lobbyContainer = document.getElementById('lobbyContainer');
+    const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen');
+    lobbyContainer.style.display = 'none';
+    postLobbyCreationScreen.style.display = 'flex'; // Make the container a flexbox
+    postLobbyCreationScreen.className = "container lobby-container";
 
-    // Create a paragraph element to display the room code and button to copy the room code
-    const lobbyDisplayElement = document.getElementById('postLobbyCreationScreen');
+    // Clear the contents of postLobbyCreationScreen
+    postLobbyCreationScreen.innerHTML = '';
+
+    // Left div for lobby code and buttons
+    const leftDiv = document.createElement('div');
+    leftDiv.className = 'lobby-left';
+
+    // Create a paragraph element to display the room code
     const roomCode = document.createElement('p');
-    const copyButton = document.createElement('button');
-
-    roomCode.className = "room-code-container"
-    lobbyDisplayElement.innerHTML = ``;
+    roomCode.className = "room-code-container";
     roomCode.textContent = `Room Code: ${roomId}`;
-    lobbyDisplayElement.appendChild(roomCode);
+    leftDiv.appendChild(roomCode);
 
+    // Create a button element to copy the room code
+    const copyButton = document.createElement('button');
     copyButton.textContent = 'Copy';
-    copyButton.className = "copy-button"
-    lobbyDisplayElement.appendChild(copyButton);
-    copyToClipboard(copyButton, roomId);
+    copyButton.className = "button copy-button";
+    copyToClipboard(copyButton,roomId);
+    leftDiv.appendChild(copyButton);
 
-    // Create a button element to allow for the host to start the game when there is enough players
+    // Create a button element to start the game
     const startgameButton = document.createElement('button');
-    startgameButton.className = 'copy-button startgame-button';
+    startgameButton.className = 'button start-button';
     startgameButton.id = 'startgame-button';
+    startgameButton.disabled = true;
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
-    lobbyDisplayElement.appendChild(startgameButton);
-};
+    leftDiv.appendChild(startgameButton);
 
+    // Right div for displaying usernames
+    const rightDiv = document.createElement('div');
+    rightDiv.className = 'lobby-right';
+
+    // Create a paragraph element to display the remaining usernames
+    const usernameDisplay = document.createElement('p');
+    usernameDisplay.className = "room-code-container";
+    usernameDisplay.textContent = `Players:`;
+    remainingUsernames.forEach(username => {
+        const usernameElement = document.createElement('p');
+        usernameElement.textContent = username;
+        usernameDisplay.appendChild(usernameElement);
+    });
+    rightDiv.appendChild(usernameDisplay);
+
+    // Append left and right divs to the lobby display element
+    postLobbyCreationScreen.appendChild(leftDiv);
+    postLobbyCreationScreen.appendChild(rightDiv);
+}
 
 function startGame(startgameButton,playerCount,roomId){
     if(playerCount<3){return};
+    startgameButton.className = 'button lobby-button';
+    startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
         console.log("Emitting start game");
         client.socket.emit('start-game', roomId);
@@ -42,7 +69,6 @@ function startGame(startgameButton,playerCount,roomId){
 
 function copyToClipboard(copyButton, roomId) {
     copyButton.addEventListener('click', function() {
-
         //  Create a temporary input element
         const tempInput = document.createElement('input');
 
