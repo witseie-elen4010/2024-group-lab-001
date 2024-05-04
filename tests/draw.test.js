@@ -23,7 +23,7 @@ test('Ensure the toolbox is visible', async ({ page }) => {
 // Test to ensure a toolbox option is visible
 test("Ensure toolbox tool is visible", async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
-  await expect(page.getByText('Option 1')).toBeVisible();
+  await expect(page.getByText('Pen')).toBeVisible();
 });
 
 test('Ensure canvas has correct dimensions', async ({ page }) => {
@@ -83,4 +83,18 @@ test('User is capable of drawing on the drawing screen', async ({ page }) => {
   if (!pixelDataMatches) {
     test.skip('Pixel data does not match the expected color.');
   }
+});
+
+// Test to check if the user can click the pen tool 
+test('User able to click pen tool', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('li').filter({ hasText: 'Pen' }).click();
+
+  let strokeStyleColour = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(strokeStyleColour).toBe('#0000ff');
 });
