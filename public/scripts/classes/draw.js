@@ -56,7 +56,6 @@ function draw(event)
     {
         return;
     }
-    updateDrawingParameters();
     ctx.lineTo(event.offsetX,event.offsetY);
     ctx.stroke();
 };
@@ -68,4 +67,13 @@ function updateDrawingParameters()
     ctx.lineCap = drawingShape;
     ctx.strokeStyle = drawingColor;
     ctx.fillStyle = drawingColor;
+}
+
+// Set the pen in use
+function pen()
+{
+   console.log("Pen tool selected");
+   drawingColor = 'blue';
+   drawingShape = 'round';
+   updateDrawingParameters();
 }

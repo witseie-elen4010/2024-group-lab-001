@@ -77,3 +77,9 @@
     margin-right: 5%;
     padding-bottom: 15px;
 }
+
+/* SVG styling */
+.svg {
+    height: 10%;
+    width: 10%;
+}
