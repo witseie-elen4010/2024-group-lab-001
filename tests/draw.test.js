@@ -21,9 +21,15 @@ test('Ensure the toolbox is visible', async ({ page }) => {
 });
 
 // Test to ensure a toolbox option is visible
-test("Ensure toolbox tool is visible", async ({ page }) => {
+test("Ensure toolbox tool pen is visible", async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
   await expect(page.getByText('Pen')).toBeVisible();
+});
+
+// Test to ensure a toolbox option is visible
+test("Ensure toolbox tool eraser is visible", async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.getByText('Eraser')).toBeVisible();
 });
 
 test('Ensure canvas has correct dimensions', async ({ page }) => {
@@ -97,4 +103,18 @@ test('User able to click pen tool', async ({page}) => {
   }); 
 
   expect(strokeStyleColour).toBe('#0000ff');
+});
+
+// Test to check if the user can click the eraser tool
+test('User able to click eraser tool', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('li').filter({ hasText: 'Eraser' }).click();
+
+  let strokeStyleColour = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(strokeStyleColour).toBe('#ffffff');
 });
