@@ -77,3 +77,12 @@ function pen()
    drawingShape = 'round';
    updateDrawingParameters();
 }
+
+// Set the eraser 
+function eraser()
+{
+    console.log("Eraser tool selected");
+    drawingColor = "white";
+    drawingShape = 'round';
+    updateDrawingParameters();
+}
