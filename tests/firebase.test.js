@@ -21,3 +21,12 @@ test('Login redirects user to lobby', async ({ page }) => {
 
     expect(page.url()).toContain('/lobby');
 });
+
+test('Guest username field can be filled', async ({ page }) => {
+    await page.goto('http://localhost:3000/account');
+    // Click the signup link
+    await page.getByRole('link', { name: 'Continue as a Guest' }).click();
+    
+    // Fill the signup fields with test data
+    await page.fill('input[placeholder="Enter temporary username"]', 'alex');
+});
