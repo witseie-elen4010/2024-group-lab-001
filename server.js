@@ -45,7 +45,12 @@ app.post('/api/signup', function (req, res) {
 const {loginEmailPassword} = require('./public/scripts/classes/firebase');
 
 app.post('/api/login', function (req, res) {
-    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
+    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res);
+})
+
+const {loginGuest} = require('./public/scripts/classes/firebase');
+app.post('/api/guestLogin', function (req, res) {
+    loginGuest(req.body.guestUsername, req, res);
 })
 
 function createCode() {
