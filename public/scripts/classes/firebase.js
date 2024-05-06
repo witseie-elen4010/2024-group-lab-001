@@ -20,10 +20,12 @@ const {
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword,
     onAuthStateChanged,
-    signOut
+    signOut,
+    signInAnonymously
 } = require('firebase/auth');
 
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { sign } = require('crypto');
 
 dotenv.config()
 /*const{
@@ -97,10 +99,12 @@ const monitorAuthState = (req, res) => {
 async function addUserToDB(myEmail, myUsername) {
 
     try{
-        userInformation = doc(firestore, `users/${myEmail}`)
+        const userUID = getUserUID();
+        userInformation = doc(firestore, `users/${userUID}`)
         const userData ={
             username: myUsername,
-            email: myEmail
+            email: myEmail,
+            uid: userUID
         }
         setDoc(userInformation, userData);
 
@@ -129,9 +133,10 @@ const loginEmailPassword = async(myEmail, myPassword, req, res) => {
 
 // Function to get the username of the current user
 const getUsername = async function() {
-    const userEmail = getUserEmail();
-    if (userEmail !== null) {
-        const userInformation = doc(firestore, `users/${userEmail}`);
+    //const userEmail = getUserEmail();
+    const userUID = getUserUID();
+    if (userUID !== null) {
+        const userInformation = doc(firestore, `users/${userUID}`);
         const mySnapshot = await getDoc(userInformation);
         if(mySnapshot.exists()){
             const docData = mySnapshot.data();
@@ -155,8 +160,26 @@ const getUserEmail = function() {
     }
 }
 
+const getUserUID = function() {
+    const user = auth.currentUser;
+    if (user !== null) {
+        return user.uid;
+    } else {
+        return null;
+    }
+}
+
 const loginGuest = async(myUsername, req, res) => {
     console.log("Guest sign in with username: " + myUsername);
+    try {
+        const userCredential = await signInAnonymously(auth);
+        console.log('Guest User has logged in');
+        monitorAuthState(req, res);
+        addUserToDB(null, myUsername);
+    } catch (error) {
+        console.log('There was an error logging in guest');
+        console.log(error);
+    }
 }
 
 module.exports = {
