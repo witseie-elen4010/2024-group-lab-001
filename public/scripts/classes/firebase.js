@@ -20,10 +20,12 @@ const {
     signInWithEmailAndPassword, 
     createUserWithEmailAndPassword,
     onAuthStateChanged,
-    signOut
+    signOut,
+    signInAnonymously
 } = require('firebase/auth');
 
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
+const { sign } = require('crypto');
 
 dotenv.config()
 /*const{
@@ -157,6 +159,14 @@ const getUserEmail = function() {
 
 const loginGuest = async(myUsername, req, res) => {
     console.log("Guest sign in with username: " + myUsername);
+    try {
+        const userCredential = await signInAnonymously(auth);
+        console.log('Guest User has logged in');
+        monitorAuthState(req, res);
+    } catch (error) {
+        console.log('There was an error logging in guest');
+        console.log(error);
+    }
 }
 
 module.exports = {
