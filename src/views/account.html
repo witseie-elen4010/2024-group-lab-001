@@ -25,80 +25,83 @@
         </div>
     </header>
 
-    <!-- Account Login/Signup Container -->
-    <div class="account-container">
-        <div class="forms">
+    <!-- Guest container -->
+    <div class="guest-container">
+        <span class="title">Guest Information</span>
+        <!-- Button -->
+        <button id="guestButton" class="button account-button">Continue as Guest</button>
+        <!-- Link to login form -->
+        <div class="login-signup">
+            <span class="text">Already registered? <a href="#" class="text guest-to-login">Login Now</a></span>
+        </div>
+    </div>
 
-            <!-- Login form -->
-            <div class="form login">
-                <span class="title">Login</span>
-                <!-- Login form fields -->
-                <form action="api/login" method="post">
-                    <!-- Username input field -->
-                    <div class="input-field">
-                        <input type="text" id="loginEmail" name="loginEmail" placeholder="Enter your email" required>
-                        <i class="uil uil-user icon"></i>
-                    </div>
-                    <!-- Password input field -->
-                    <div class="input-field">
-                        <input type="password" id="loginPassword" name="loginPassword" class="password" placeholder="Enter your password" required>
-                        <i class="uil uil-lock icon"></i>
-                        <!-- Icon to show/hide password -->
-                        <i class="uil uil-eye-slash showHidePassword"></i>
-                    </div>
-                    <!-- Button -->
-                    <button id="loginButton" class="button account-button">Login</button>
-                </form>
-                <!-- Link to signup form -->
-                <div class="login-signup">
-                    <span class="text">Not registered? <a href="#" class="text signup-link">Signup Now</a></span>
-                </div>
+    <!-- Login Container -->
+    <div class="login-container">
+        <span class="title">Login</span>
+        <!-- Login form fields -->
+        <form action="api/login" method="post">
+            <!-- Username input field -->
+            <div class="input-field">
+                <input type="text" id="loginEmail" name="loginEmail" placeholder="Enter your email" required>
+                <i class="uil uil-user icon"></i>
             </div>
+            <!-- Password input field -->
+            <div class="input-field">
+                <input type="password" id="loginPassword" name="loginPassword" class="password" placeholder="Enter your password" required>
+                <i class="uil uil-lock icon"></i>
+                <!-- Icon to show/hide password -->
+                <i class="uil uil-eye-slash showHidePassword"></i>
+            </div>
+            <!-- Button -->
+            <button id="loginButton" class="button account-button">Login</button>
+        </form>
+        <!-- Link to guest form -->
+        <div class="login-signup">
+            <span class="text">Don't want to create an account? <a href="#" class="text guest-link">Continue as a Guest</a></span>
+        </div>
+        <!-- Link to sign up form -->
+        <div class="login-signup">
+            <span class="text">Not registered? <a href="#" class="text signup-link">Signup Now</a></span>
+        </div>
+    </div>
 
-            
-            <!-- Signup form -->
-            <div class="form signup">
-                <span class="title">Registration</span>
-                <!-- Signup form fields -->
-                <form action="api/signup" method="post">
-                    <!-- Name input field -->
-                    <div class="input-field">
-                        <input type="text" id="signupEmail" name="signupEmail" placeholder="Enter your email address" required>
-                        <i class="uil uil-user"></i>
-                    </div>
-                    <!-- Username input field -->
-                    <div class="input-field">
-                        <input type="text" id="signupUsername" name="signupUsername" placeholder="Create a username" required>
-                        <i class="uil uil-user icon"></i>
-                    </div>
-                    <!-- Password input field -->
-                    <div class="input-field">
-                        <input type="password" id="signupPassword" name="signupPassword" class="password" placeholder="Create a password" required>
-                        <i class="uil uil-lock icon"></i>
-                    </div>
-                    <!-- Confirm password input field -->
-                    <div class="input-field">
-                        <input type="password" class="password" placeholder="Confirm a password" required>
-                        <i class="uil uil-lock icon"></i>
-                        <!-- Icon to show/hide password -->
-                        <i class="uil uil-eye-slash showHidePassword"></i>
-                    </div>
-                    <!-- Button -->
-                    <button id="signupButton" class="button account-button">Signup</button>
-                </form>
-                <!-- Link to login form -->
-                <div class="login-signup">
-                    <span class="text">Already a registered? <a href="#" class="text login-link">Login Now</a></span>
-                </div>
+    <!-- Signup Container -->
+    <div class="signup-container">
+        <span class="title">Registration</span>
+        <!-- Signup form fields -->
+        <form action="api/signup" method="post">
+            <!-- Name input field -->
+            <div class="input-field">
+                <input type="text" id="signupEmail" name="signupEmail" placeholder="Enter your email address" required>
+                <i class="uil uil-user"></i>
             </div>
+            <!-- Username input field -->
+            <div class="input-field">
+                <input type="text" id="signupUsername" name="signupUsername" placeholder="Create a username" required>
+                <i class="uil uil-user icon"></i>
+            </div>
+            <!-- Password input field -->
+            <div class="input-field">
+                <input type="password" id="signupPassword" name="signupPassword" class="password" placeholder="Create a password" required>
+                <i class="uil uil-lock icon"></i>
+            </div>
+            <!-- Confirm password input field -->
+            <div class="input-field">
+                <input type="password" class="password" placeholder="Confirm a password" required>
+                <i class="uil uil-lock icon"></i>
+                <!-- Icon to show/hide password -->
+                <i class="uil uil-eye-slash showHidePassword"></i>
+            </div>
+            <!-- Button -->
+            <button id="signupButton" class="button account-button">Signup</button>
+        </form>
+        <!-- Link to login form -->
+        <div class="login-signup">
+            <span class="text">Already registered? <a href="#" class="text login-link">Login Now</a></span>
         </div>
     </div>
 
     <script src="/scripts/classes/account.js"></script>
 </body>
 </html>
-
-<!-- Material used as assistance: [1] CodingNepal,
-    “Login and Registration Form in HTML CSS and JavaScript,” Feb. 13, 2022. 
-    https://www.codingnepalweb.com/login-registration-form-html-css-javascript/
-‌-->
