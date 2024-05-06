@@ -27,9 +27,16 @@
 
     <!-- Guest container -->
     <div class="guest-container">
-        <span class="title">Guest Information</span>
-        <!-- Button -->
-        <button id="guestButton" class="button account-button">Continue as Guest</button>
+        <span class="title">Guest Login</span>
+        <form action="api/guestLogin" method="post">
+            <!-- Username input field -->
+            <div class="input-field">
+                <input type="text" id="guestUsername" name="guestUsername" placeholder="Enter temporary username" required>
+                <i class="uil uil-user icon"></i>
+            </div>
+            <!-- Button -->
+            <button id="guestButton" class="button account-button">Continue as Guest</button>
+        </form>
         <!-- Link to login form -->
         <div class="login-signup">
             <span class="text">Already registered? <a href="#" class="text guest-to-login">Login Now</a></span>

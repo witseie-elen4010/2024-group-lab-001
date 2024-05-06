@@ -12,7 +12,7 @@ test('Test Login and Signup flows', async ({ page }) => {
   
   // Test guest login flow
   await page.getByRole('link', { name: 'Continue as a Guest' }).click();
-  await page.getByText('Guest Information Continue as').click();
+  await page.getByText('Guest Login Continue as').click();
   
   // Test signup flow
   await page.getByRole('link', { name: 'Login Now' }).click();

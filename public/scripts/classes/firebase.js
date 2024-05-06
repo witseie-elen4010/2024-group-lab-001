@@ -155,9 +155,14 @@ const getUserEmail = function() {
     }
 }
 
+const loginGuest = async(myUsername, req, res) => {
+    console.log("Guest sign in with username: " + myUsername);
+}
+
 module.exports = {
     createNewAccount,
     loginEmailPassword,
     getUsername,
     getUserEmail,
+    loginGuest,
 };
