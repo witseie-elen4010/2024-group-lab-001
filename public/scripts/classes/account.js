@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const container = document.querySelector(".account-container"),
-          passwordShowHide = document.querySelectorAll(".showHidePassword"),
-          passwordFields = document.querySelectorAll(".password"),
-          signUp = document.querySelector(".signup-link"),
-          login = document.querySelector(".login-link");
+    const loginContainer = document.querySelector(".login-container");
+    const signupContainer = document.querySelector(".signup-container");
+    const guestContainer = document.querySelector(".guest-container");
+    const passwordShowHide = document.querySelectorAll(".showHidePassword");
+    const passwordFields = document.querySelectorAll(".password");
+    const signUp = document.querySelector(".signup-link");
+    const login = document.querySelector(".login-link");
+    const guestToLogin = document.querySelector(".guest-to-login");
+    const guest = document.querySelector(".guest-link");
 
     // Show/hide Password and Change Icon
     passwordShowHide.forEach(eyeIcon => {
@@ -13,23 +17,37 @@ document.addEventListener("DOMContentLoaded", function() {
                     pwField.type = "text";
                     passwordShowHide.forEach(icon => {
                         icon.classList.replace("uil-eye-slash", "uil-eye");
-                    })
+                    });
                 } else {
                     pwField.type = "password";
                     passwordShowHide.forEach(icon => {
                         icon.classList.replace("uil-eye", "uil-eye-slash");
-                    })
+                    });
                 }
-            })
-        })
+            });
+        });
     });
 
-    // Switch Between Signup and Login Form
+    // Switch to and from Guest Container
+    guest.addEventListener("click", () => {
+        guestContainer.style.display = "block";
+        loginContainer.style.display = "none";
+    });
+
+    // Switch Between Signup and Login Containers
     signUp.addEventListener("click", () => {
-        container.classList.add("active");
+        loginContainer.style.display = "none";
+        signupContainer.style.display = "block";
+    });
+
+    guestToLogin.addEventListener("click", () => {
+        signupContainer.style.display = "none";
+        guestContainer.style.display = "none";
+        loginContainer.style.display = "block";
     });
 
     login.addEventListener("click", () => {
-        container.classList.remove("active");
+        signupContainer.style.display = "none";
+        loginContainer.style.display = "block";
     });
 });

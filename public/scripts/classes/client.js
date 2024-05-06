@@ -3,6 +3,7 @@ import screenManager from './screenManager.js';
 const socket = io();    
 const createRoomForm = document.getElementById("createRoomForm");
 const joinRoomForm = document.getElementById("joinRoomForm");
+let gameStarted = false; // Flag to track game state
 
 createRoomForm.addEventListener("submit", event => {
     event.preventDefault(); // Prevent form submission
@@ -48,11 +49,18 @@ socket.on("player left", data => {
     console.log(`Player ${data.playerId} left the room`);
     console.log(`Player count: ${data.playerCount}`);
     // Updates Screen when a user disconnects by removing their username.
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+    if (gameStarted) {
+        // Handle disconnection during game
+        // For example, display a message to the user indicating the disconnection
+    } else {
+        // Switch back to lobby screen if the game hasn't started
+        screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+    }
 });
 
 socket.on('game-started', () => {
     console.log("Game started");
+    gameStarted = true;
     screenManager.switchToDrawingScreen();
 });
 
