@@ -1,4 +1,3 @@
-import { start } from 'repl';
 import client from './client.js';
 let isHost = false; 
 
@@ -78,12 +77,11 @@ function createTimer(roomId){
   // Paragraph for "Starting Game In"
   const startingText = document.createElement('p');
   startingText.innerText = "Starting Game In";
-  startingText.className = 'room-code-container';
   rightDiv.appendChild(startingText); // Add startingText to rightDiv
 
   // Paragraph for countdown
   const counter = document.createElement('p');
-  counter.className = 'room-code-container'; 
+  counter.className = 'lobby-right'; 
   rightDiv.appendChild(counter); // Add counter to rightDiv
 
   postLobbyCreationScreen.appendChild(rightDiv); // Add rightDiv to postLobbyCreationScreen
