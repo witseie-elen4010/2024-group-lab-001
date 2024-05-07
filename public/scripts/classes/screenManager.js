@@ -39,8 +39,8 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     leftDiv.appendChild(startgameButton);
 
     // Right div for displaying usernames
-    const rightDiv = document.createElement('div');
-    rightDiv.className = 'lobby-right';
+    const centerDiv = document.createElement('div');
+    centerDiv.className = 'lobby-right';
 
     // Create a paragraph element to display the remaining usernames
     const usernameDisplay = document.createElement('p');
@@ -51,11 +51,11 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
         usernameElement.textContent = username;
         usernameDisplay.appendChild(usernameElement);
     });
-    rightDiv.appendChild(usernameDisplay);
+    centerDiv.appendChild(usernameDisplay);
 
     // Append left and right divs to the lobby display element
     postLobbyCreationScreen.appendChild(leftDiv);
-    postLobbyCreationScreen.appendChild(rightDiv);
+    postLobbyCreationScreen.appendChild(centerDiv);
 }
 
 function startGame(startgameButton,playerCount,roomId){
@@ -68,25 +68,26 @@ function startGame(startgameButton,playerCount,roomId){
     });
 };
 
-function createTimer(roomId){
+function createTimer (roomId) {
   // Right div for displaying usernames
-  const rightDiv = document.createElement('div');
-  rightDiv.className = 'lobby-right';
-  const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen');
+  const timerDiv = document.createElement('div')
+  timerDiv.className = '.lobby-right'
+  const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
 
   // Paragraph for "Starting Game In"
-  const startingText = document.createElement('p');
-  startingText.innerText = "Starting Game In";
-  rightDiv.appendChild(startingText); // Add startingText to rightDiv
+  const startingText = document.createElement('p')
+  startingText.className = 'room-code-container start-time-container'
+  startingText.innerText = 'Game Starting In:'
+  timerDiv.appendChild(startingText) // Add startingText to rightDiv
 
   // Paragraph for countdown
-  const counter = document.createElement('p');
-  counter.className = 'lobby-right'; 
-  rightDiv.appendChild(counter); // Add counter to rightDiv
+  const counter = document.createElement('p')
+  counter.className = 'room-code-container start-time-container'
+  timerDiv.appendChild(counter) // Add counter to rightDiv
 
-  postLobbyCreationScreen.appendChild(rightDiv); // Add rightDiv to postLobbyCreationScreen
+  postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
 
-  updateTimer(counter,roomId);
+  updateTimer(counter, roomId)
 }
 
 function updateTimer(counter,roomId){
@@ -149,6 +150,7 @@ function switchToDrawingScreen()
 export default {
     switchLobbyScreen,
     switchToDrawingScreen,
-    createTimer
+    createTimer,
+    updateTimer
 };
 
