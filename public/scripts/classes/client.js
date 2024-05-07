@@ -68,6 +68,11 @@ socket.on('cannot-start-game', () => {
     console.log("Cannot start the game")
 });
 
+socket.on('create-timer-user', data =>{
+    console.log("User is receiving timer creation")
+    screenManager.createTimer(data.roomId);
+});
+
 export default {
     socket
 };

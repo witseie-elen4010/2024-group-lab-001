@@ -1,4 +1,5 @@
 import client from './client.js';
+let isHost = false; 
 
 function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Hide the lobby container and display the post lobby creation screen
@@ -38,8 +39,8 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     leftDiv.appendChild(startgameButton);
 
     // Right div for displaying usernames
-    const rightDiv = document.createElement('div');
-    rightDiv.className = 'lobby-right';
+    const centerDiv = document.createElement('div');
+    centerDiv.className = 'lobby-right';
 
     // Create a paragraph element to display the remaining usernames
     const usernameDisplay = document.createElement('p');
@@ -50,11 +51,11 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
         usernameElement.textContent = username;
         usernameDisplay.appendChild(usernameElement);
     });
-    rightDiv.appendChild(usernameDisplay);
+    centerDiv.appendChild(usernameDisplay);
 
     // Append left and right divs to the lobby display element
     postLobbyCreationScreen.appendChild(leftDiv);
-    postLobbyCreationScreen.appendChild(rightDiv);
+    postLobbyCreationScreen.appendChild(centerDiv);
 }
 
 function startGame(startgameButton,playerCount,roomId){
@@ -62,10 +63,49 @@ function startGame(startgameButton,playerCount,roomId){
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
+      isHost = true; 
+      client.socket.emit("create-timer");
+    });
+};
+
+function createTimer (roomId) {
+  // Right div for displaying usernames
+  const timerDiv = document.createElement('div')
+  timerDiv.className = '.lobby-right'
+  const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
+
+  // Paragraph for "Starting Game In"
+  const startingText = document.createElement('p')
+  startingText.className = 'room-code-container start-time-container'
+  startingText.innerText = 'Game Starting In:'
+  timerDiv.appendChild(startingText) // Add startingText to rightDiv
+
+  // Paragraph for countdown
+  const counter = document.createElement('p')
+  counter.className = 'room-code-container start-time-container'
+  timerDiv.appendChild(counter) // Add counter to rightDiv
+
+  postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
+
+  updateTimer(counter, roomId)
+}
+
+function updateTimer(counter,roomId){
+  // Start countdown
+let countdown = 10; // Set countdown time in seconds
+const countdownInterval = setInterval(() => {
+    counter.innerText = countdown + " seconds"; // Update counter text with countdown
+    countdown--;
+
+    if (countdown < 0 && isHost) {
+        counter.innerText = "Game started"; // Update counter text when game starts
         console.log("Emitting start game");
         client.socket.emit('start-game', roomId);
-        });
-};
+        clearInterval(countdownInterval);
+        console.log("Game started");
+    }
+  }, 1000);
+}
 
 function copyToClipboard(copyButton, roomId) {
     copyButton.addEventListener('click', function() {
@@ -109,6 +149,8 @@ function switchToDrawingScreen()
 
 export default {
     switchLobbyScreen,
-    switchToDrawingScreen
+    switchToDrawingScreen,
+    createTimer,
+    updateTimer
 };
 
