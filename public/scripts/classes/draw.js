@@ -1,3 +1,7 @@
+// Number of seconds for drawing time 
+let countdown = 60; // Set countdown time in seconds
+const counter = document.getElementById('countdownTimer');
+
 const canvas = document.getElementById('drawing-canvas');
 
 // Allow for different screen size scaling
@@ -30,7 +34,9 @@ canvas.addEventListener('mousedown', (event)=>{
     ctx.beginPath();
     ctx.moveTo(event.offsetX,event.offsetY); // Move to current position of users cursor 
     event.preventDefault();      // Reduces offset of drawing and mouse 
-    draw(event);
+    if(countdown > 0){
+            draw(event);
+    }
 });
 
 // Stop drawing if user releases M1 key
@@ -40,7 +46,11 @@ canvas.addEventListener('mouseup', ()=>{
 });
 
 // Track movement of user's cursor when moving 
-canvas.addEventListener('mousemove',draw);
+canvas.addEventListener('mousemove',(event)=>{
+    if(isDrawing && countdown > 0) {
+           draw(event);
+    }
+});
 
 // Check if user is moving inside the canvas 
 canvas.addEventListener('mouseleave', ()=>{
@@ -86,3 +96,16 @@ function eraser()
     drawingShape = 'round';
     updateDrawingParameters();
 }
+
+// Timer to end the session of drawing 
+const countdownInterval = setInterval(() => {
+    counter.innerText = countdown + " seconds"; // Update counter text with countdown
+    countdown--;
+    
+    if (countdown < 0) {
+        counter.innerText = "Drawing Time is Up"; // Update counter text when game starts
+        console.log("Drawing is finished");
+        clearInterval(countdownInterval);
+        isDrawing = false; 
+    }
+}, 1000);
