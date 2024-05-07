@@ -46,7 +46,11 @@ canvas.addEventListener('mouseup', ()=>{
 });
 
 // Track movement of user's cursor when moving 
-canvas.addEventListener('mousemove',draw);
+canvas.addEventListener('mousemove',(event)=>{
+    if(isDrawing && countdown > 0) {
+           draw(event);
+    }
+});
 
 // Check if user is moving inside the canvas 
 canvas.addEventListener('mouseleave', ()=>{
