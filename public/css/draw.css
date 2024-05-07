@@ -83,3 +83,8 @@
     height: 10%;
     width: 10%;
 }
+
+.countdown-timer{
+    font-family: 'Roboto';
+    font-size: 18px; 
+}

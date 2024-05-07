@@ -1,3 +1,7 @@
+// Number of seconds for drawing time 
+let countdown = 10; // Set countdown time in seconds
+const counter = document.getElementById('countdownTimer');
+
 const canvas = document.getElementById('drawing-canvas');
 
 // Allow for different screen size scaling
@@ -86,3 +90,16 @@ function eraser()
     drawingShape = 'round';
     updateDrawingParameters();
 }
+
+// Timer to end the session of drawing 
+const countdownInterval = setInterval(() => {
+    counter.innerText = countdown + " seconds"; // Update counter text with countdown
+    countdown--;
+    
+    if (countdown < 0) {
+        counter.innerText = "Drawing Time is Up"; // Update counter text when game starts
+        console.log("Drawing is finished");
+        clearInterval(countdownInterval);
+        isDrawing = false; 
+    }
+}, 1000);
