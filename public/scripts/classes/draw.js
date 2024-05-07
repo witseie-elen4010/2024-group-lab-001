@@ -1,5 +1,5 @@
 // Number of seconds for drawing time 
-let countdown = 10; // Set countdown time in seconds
+let countdown = 60; // Set countdown time in seconds
 const counter = document.getElementById('countdownTimer');
 
 const canvas = document.getElementById('drawing-canvas');
@@ -34,7 +34,9 @@ canvas.addEventListener('mousedown', (event)=>{
     ctx.beginPath();
     ctx.moveTo(event.offsetX,event.offsetY); // Move to current position of users cursor 
     event.preventDefault();      // Reduces offset of drawing and mouse 
-    draw(event);
+    if(countdown > 0){
+            draw(event);
+    }
 });
 
 // Stop drawing if user releases M1 key
