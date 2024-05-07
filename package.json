@@ -5,8 +5,7 @@
   "main": "server.js",
   "directories": {
     "doc": "docs",
-    "test": "tests",
-    "unit": "__tests__"
+    "test": "tests"
   },
   "scripts": {
     "start": "node server.js",

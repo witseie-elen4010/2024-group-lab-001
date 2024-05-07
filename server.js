@@ -188,6 +188,11 @@ io.on('connection', (socket) => {
             socket.emit('cannot-start-game');
           }    
     });
+
+    socket.on('create-timer', ()=>{
+        console.log("Timer creation starting");
+        io.to(socket.roomId).emit('create-timer-user',{roomId:socket.roomId});
+    })
 });
 
 
