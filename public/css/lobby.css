@@ -39,7 +39,7 @@
     padding: 20px;
 }
 
-.lobby-right {
+.lobby-center {
     align-items: center; /* Vertically center items */
     border-left: 2px solid #ccc;
     border-right: 2px solid #ccc;
@@ -51,7 +51,7 @@
     margin-left: 10px;
     padding: 20px;
 }
-.lobby-right-right {
+.lobby-right {
     align-items: center; /* Vertically center items */
     display: flex;
     flex: 1;
