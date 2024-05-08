@@ -60,40 +60,46 @@ const firebaseApp = initializeApp({
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
 
-// Function to create a new account
-const createNewAccount = async(myEmail, myUsername, myPassword, req, res) =>{
-    const loginEmail = myEmail
-    const loginPassword = myPassword
+// Variable to track if redirection has been performed
+let isRedirected = false;
 
-    try{
+// Function to create a new account
+const createNewAccount = async (myEmail, myUsername, myPassword, req, res) => {
+    const loginEmail = myEmail;
+    const loginPassword = myPassword;
+
+    try {
         const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
-        addUserToDB(myEmail, myUsername)
-        console.log('Firebase: A user has creted an account.');
-        monitorAuthState(req, res)
-    }
-    catch(error){
+        await addUserToDB(myEmail, myUsername); // Wait for addUserToDB to complete
+        console.log('Firebase: A user has created an account.');
+        monitorAuthState(req, res); // Now call monitorAuthState after addUserToDB completes
+    } catch (error) {
         console.log('Firebase: There was an error creating account.');
         console.log(error);
     }
 }
 
-// Function to redirect user to the lobby after signup or login
 const redirect = (req, res) => {
     res.redirect(req.baseUrl + '/lobby');
-};
-
-// Function to monitor the authentication state/ if a user is logged in or out
+  };
+  
 const monitorAuthState = (req, res) => {
+    let redirected = false; // Flag to indicate if redirect has been performed
+  
     onAuthStateChanged(auth, user => {
-        if(user){
-            console.log('Auth State: User is Logged In.');
-            redirect(req, res)
-        }
-        else{
+        if (user && user.isAnonymous && !redirected) {
+            console.log('Auth State: Guest User is Logged In.');
+            redirect(req, res);
+            redirected = true;
+        } else if (user && !user.isAnonymous && !redirected) {
+            console.log('Auth State: Regular User is Logged In.');
+            redirect(req, res);
+            redirected = true;
+        } else if (!user) {
             console.log('Auth State: User is Logged Out.');
         }
-    })
-}
+    });
+};
 
 // Function to add new user to the database
 async function addUserToDB(myEmail, myUsername) {
