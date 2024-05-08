@@ -68,11 +68,11 @@ const createNewAccount = async(myEmail, myUsername, myPassword, req, res) =>{
     try{
         const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
         addUserToDB(myEmail, myUsername)
-        console.log('User has creted an account');
+        console.log('Firebase: A user has creted an account.');
         monitorAuthState(req, res)
     }
     catch(error){
-        console.log('There was an error creating account');
+        console.log('Firebase: There was an error creating account.');
         console.log(error);
     }
 }
@@ -86,11 +86,11 @@ const redirect = (req, res) => {
 const monitorAuthState = (req, res) => {
     onAuthStateChanged(auth, user => {
         if(user){
-            console.log('Auth State: User is logged in');
+            console.log('Auth State: User is Logged In.');
             redirect(req, res)
         }
         else{
-            console.log('Auth State: User is logged out');
+            console.log('Auth State: User is Logged Out.');
         }
     })
 }
@@ -108,10 +108,10 @@ async function addUserToDB(myEmail, myUsername) {
         }
         setDoc(userInformation, userData);
 
-        console.log('New user was created in DB');
+        console.log('Firebase: A new user account was created.');
     }
     catch(error){
-        console.log('There was an error creating account DB');
+        console.log('Firebase: There was an error creating a new user account.');
         console.log(error);
     }
 }
@@ -123,10 +123,10 @@ const loginEmailPassword = async(myEmail, myPassword, req, res) => {
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-        console.log('User has logged in');
+        console.log('Firebase: A user has logged in.');
         monitorAuthState(req, res);
     } catch (error) {
-        console.log('There was an error logging in');
+        console.log('Firebase: There was an error logging in.');
         console.log(error);
     }
 }

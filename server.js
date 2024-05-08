@@ -2,8 +2,8 @@ const express = require('express');
 const path = require('path');
 const http = require('http');
 const app = express();
+const session = require('express-session')
 const server = http.createServer(app);
-const io = require('socket.io')(server);
 
 const bodyParser = require('body-parser');
 
@@ -12,15 +12,27 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const rooms = new Map(); // Map to store active rooms
+// Set-up Express Session
+const sessionMiddleware = session({
+    secret: "averylongsecretkeythatshouldnotbeexposedtoanyone",
+    resave: true,
+    saveUninitialized: true,
+  });
+  
+  app.use(sessionMiddleware);
+
+const io = require('socket.io')(server);
+io.engine.use(sessionMiddleware);
 
 // Route for serving index.html
 app.get('/', (req, res) => {
+    console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/\'`);
     res.sendFile(path.join(__dirname, 'src', 'views', 'index.html'));
 });
 
 // Route for serving account.html
 app.get('/account', (req, res) => {
+    console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/account\'`);
     res.sendFile(path.join(__dirname, 'src', 'views', 'account.html'));
 });
 
@@ -31,6 +43,7 @@ app.get('/lobby', (req, res) => {
 
 // Route for serving draw.html
 app.get('/draw', (req, res) => {
+    console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/draw\'`);
     res.sendFile(path.join(__dirname, 'src', 'views', 'draw.html'));
 });
 
@@ -70,16 +83,29 @@ const {getUsername} = require('./public/scripts/classes/firebase');
 const {getUserEmail} = require('./public/scripts/classes/firebase');
 
 // Socket.IO logic
+
+function getSessionID(socket) {
+    if (socket.request && socket.request.sessionID) {
+        return socket.request.sessionID;
+    }
+    return null;
+}
+
 const userNames = new Map(); // Map to store usernames associated with socket IDs
+const rooms = new Map(); // Map to store active rooms
 
 io.on('connection', (socket) => {
-    console.log(`A user connected: ${socket.id}`);
-
+    console.log(`User: ${socket.id} has now connected to the server.`);
+    let sessionID = getSessionID(socket);
+    console.log(`Route Session ID: ${sessionID}`);
+    
     socket.on('create room', () => {
         // Inside the event handler, define an async function to use await
         async function handleCreateRoom() {
             // Generate a unique room ID
             const roomId = createCode(); 
+
+            const sessionId = getSessionID(socket);
 
             // Get the username asynchronously
             const username = await getUsername();
@@ -91,7 +117,7 @@ io.on('connection', (socket) => {
             userNames.set(roomId, new Map());
 
             // Add player to room
-            rooms.get(roomId).players.set(socket.id, username); 
+            rooms.get(roomId).players.set(sessionId, username); 
             
             // Add the room ID to the socket object
             socket.roomId = roomId; 
@@ -102,7 +128,7 @@ io.on('connection', (socket) => {
 
             // Emit 'room created' event with room ID and player count to the client
             socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames});
-            console.log(`Player ${socket.id} created and joined room ${roomId}`);
+            console.log(`Player ${sessionId} created and joined room ${roomId}`);
             console.log(`Username: ${username}`);
         }
     
