@@ -18,9 +18,9 @@ app.get('/account', (req, res) => {
 });
 
 // Route for serving lobby.html
-app.get('/lobby', (req, res) => {
-    console.log('Route: Lobby')
-    res.sendFile(path.join(__dirname, '..', 'views', 'lobby.html'));
+app.get('/game', (req, res) => {
+    console.log('Route: game')
+    res.sendFile(path.join(__dirname, '..', 'views', 'game.html'));
 });
 
 // Route for serving draw.html

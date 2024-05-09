@@ -80,7 +80,7 @@ const createNewAccount = async (myEmail, myUsername, myPassword, req, res) => {
 }
 
 const redirect = (req, res) => {
-    res.redirect(req.baseUrl + '/lobby');
+    res.redirect(req.baseUrl + '/game');
   };
   
 const monitorAuthState = (req, res) => {

@@ -1,4 +1,4 @@
-import screenManager from './screenManager.js';
+import screenManager from './game.js';
 
 const socket = io();    
 const createRoomForm = document.getElementById("createRoomForm");
