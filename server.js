@@ -26,6 +26,24 @@ serverLogic(io, userNames, rooms);
 const routes = require('./src/routes/routes');
 app.use('/', routes);
 
+// Route to handle cookie consent
+app.post('/accept-cookies', (req, res) => {
+    // Set a session variable to indicate user's consent
+    req.session.cookiesAccepted = true;
+    console.log('Cookie consent accepted.');
+});
+
+// Middleware to check consent on each request
+app.use((req, res, next) => {
+    // Check if the user has previously accepted cookies
+    if (!req.session.cookiesAccepted) {
+        // Render a cookie consent banner here or take appropriate action
+        // For simplicity, let's just log a message
+        console.log('Cookie consent not yet accepted.');
+    }
+    next();
+});
+
 // Route for adding a new user
 const { createNewAccount } = require('./public/scripts/classes/firebase');
 

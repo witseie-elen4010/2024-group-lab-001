@@ -75,16 +75,6 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
         centerDiv.appendChild(usernameButton);
     });
 
-    // const usernameDisplay = document.createElement('p');
-    // usernameDisplay.className = "lobby-container-text";
-    // usernameDisplay.textContent = ``;
-    // remainingUsernames.forEach(username => {
-    //     const usernameElement = document.createElement('p');
-    //     usernameElement.textContent = username;
-    //     usernameDisplay.appendChild(usernameElement);
-    // });
-    // centerDiv.appendChild(usernameDisplay);
-
     // Append left and right divs to the lobby display element
     horizontalDiv.appendChild(leftDiv);
     horizontalDiv.appendChild(centerDiv);
@@ -124,7 +114,7 @@ function createTimer (roomId) {
 
 function updateTimer(counter,roomId){
   // Start countdown
-let countdown = 3; // Set countdown time in seconds
+let countdown = 5; // Set countdown time in seconds
 const countdownInterval = setInterval(() => {
     counter.innerText = countdown + " seconds"; // Update counter text with countdown
     countdown--;
@@ -134,7 +124,7 @@ const countdownInterval = setInterval(() => {
         console.log("Emitting start game");
         client.socket.emit('start-game', roomId);
         clearInterval(countdownInterval);
-        console.log("Game started");
+        console.log("Game: A Game session has started.");
     }
   }, 1000);
 }
