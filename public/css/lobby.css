@@ -15,19 +15,34 @@
     margin-right: 0px;
 }
 
-.room-code-container {
+.room-code-heading {
+    align-items: left; /* Vertically center items */
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    /* font-size: larger; */
+    font-weight: bolder;
+    justify-content: left; /* Center items vertically */
+    margin: 0;
+    padding-bottom: 5px;
+    text-align: left; /* Align text to the left */
+}
+
+.lobby-container-text {
     align-items: center; /* Vertically center items */
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
-    font-size: larger;
+    /* font-size: larger; */
+    font-size: 18px;
     font-weight: bolder;
     justify-content: center; /* Center items vertically */
     margin: 0;
-    padding: 0;
+    padding-bottom: 5px;
+    text-align: left; /* Align text to the left */
 }
 
 .start-time-container {
-    justify-content: left; /* Center items vertically */
+    justify-content: center; /* Center items vertically */
+    text-align: center; /* Align text to the center */
 }
 
 .lobby-left {
@@ -35,8 +50,10 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    justify-content: center; /* Center items vertically */
+    height: 100%;
+    justify-content: top; /* Center items vertically */
     padding: 20px;
+    width: 50%;
 }
 
 .lobby-center {
@@ -51,12 +68,23 @@
     margin-left: 10px;
     padding: 20px;
 }
+
 .lobby-right {
     align-items: center; /* Vertically center items */
     display: flex;
     flex: 1;
     flex-direction: column;
-    justify-content: center; /* Center items vertically */
+    height: 100%;
+    justify-content: top; /* Center items vertically */
     padding: 20px;
+    width: 50%;
+}
+
+.horizontal-container {
+    align-items: center; /* Vertically center items */
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center items vertically */
+    width: 100%;
 }
 

@@ -64,7 +64,11 @@ body {
 }
 
 .lobby-container {
-    flex-direction: row; /* Stack items horizontally */
+    align-items: center; /* Vertically center items */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center items vertically */
+    width: 25%;
 }
 
 /* Button */
@@ -120,6 +124,23 @@ body {
     margin-bottom: 0px;
     padding: 10px 10px;
     text-align: center;
+    width: 100%;
+}
+
+.room-code-button {
+    background-color: #cdcdcd;
+    border: 2px solid #707070;
+    border-radius: 5px;
+    box-shadow: 3px 3px 0px #707070;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    padding: 10px 10px;
+    text-align: left;
+    transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
     width: 100%;
 }
 
@@ -257,4 +278,21 @@ body {
 
 .text:hover {
     text-decoration: underline;
+}
+
+.title {
+    font-size: 27px;
+    font-weight: 600;
+    position: relative;
+}
+
+.title::before {
+    background-color: #003167;
+    border-radius: 25px;
+    bottom: 0;
+    content: '';
+    height: 3px;
+    left: 0;
+    position: absolute;
+    width: 30px;
 }
