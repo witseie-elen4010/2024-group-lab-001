@@ -36,13 +36,13 @@ module.exports = (io, userNames, rooms) => {
                 
                 rooms.set(roomId, { players: new Map() }); 
                 userNames.set(roomId, new Map());
-                rooms.get(roomId).players.set(sessionId, username); 
+                rooms.get(roomId).players.set(socket.id, username); 
                 socket.roomId = roomId; 
                 socket.join(roomId); 
 
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values());
                 socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames });
-                console.log(`Player with Session ID: ${sessionId} and Username: ${username}, has created and joined a room.${roomId}`);
+                console.log(`Player with Socket ID: ${socket.id} and Username: ${username}, has created and joined a room.${roomId}`);
             } catch (error) {
                 console.error('Error creating room:', error);
                 socket.emit('Room Creation Failed', { error: error.message });

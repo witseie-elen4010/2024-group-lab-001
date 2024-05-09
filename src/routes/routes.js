@@ -3,6 +3,17 @@ const path = require('path');
 const router = express.Router();
 const app = require('../../app');
 
+// Middleware for Login - Cannot access /game without being logged in
+const requireLogin = (req, res, next) => {
+    if (req.session && req.session.isLoggedIn) {
+        // User is authenticated, proceed to the next middleware
+        next();
+    } else {
+        // User is not authenticated, redirect to login page or send an error response
+        res.status(401).send('Unauthorized. Please login first.');
+    }
+};
+
 // Route for serving index.html
 app.get('/', (req, res) => {
     console.log('Route: Home')
@@ -18,7 +29,7 @@ app.get('/account', (req, res) => {
 });
 
 // Route for serving lobby.html
-app.get('/game', (req, res) => {
+app.get('/game', requireLogin, (req, res) => {
     console.log('Route: game')
     res.sendFile(path.join(__dirname, '..', 'views', 'game.html'));
 });
