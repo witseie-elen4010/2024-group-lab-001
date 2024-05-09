@@ -11,8 +11,55 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/lobby.css">
+    <link rel="stylesheet" href="/css/draw.css">
 </head>
 <body>
+    <div id="drawingScreen" class="flex-container" style="display: none;">
+        <div class='tool-box' id='tool-box'>
+            <div class='row'>
+                <label class='title-drawing'>Tool Selection</label>
+                <ul class='options'>
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-1" onClick = 'pen()'>
+                        <!-- Icon for pen -->
+                        <img class="svg" id = 'pen-option' src="/images/pen.svg" alt="">
+                        <!-- Label for pen -->
+                        <span>Pen</span>
+                    </li>
+
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-2" onClick = 'eraser()'>
+                        <!-- Icon for eraser -->
+                        <img class="svg" id = 'eraser-option' src="/images/eraser.svg" alt="">
+                        <!-- Label for eraser -->
+                        <span>Eraser</span>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class='canvas-container'>
+            <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
+        </div>
+
+        <div class = 'tool-box timer-container'>
+            <div class='row'>
+            <p class = 'title-drawing' id = 'timer-label'> Time Remaining:</p>
+            <p class = 'countdown-timer' id = "countdownTimer"></p>
+            </div>
+        </div>
+        
+    </div>
+
     <!-- Lobby Container -->
     <div id="lobbyContainer" class="container">
         <!-- Room creation form -->
@@ -37,12 +84,8 @@
     <div id="postLobbyCreationScreen">
     </div>
 
-    <div id="drawingScreen">
-    </div>
-
     <!-- Load Socket.IO library -->
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="/scripts/classes/client.js"></script>
-
 </body>
 </html>

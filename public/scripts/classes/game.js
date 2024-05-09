@@ -59,7 +59,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
+    // if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -92,7 +92,7 @@ function createTimer (roomId) {
 
 function updateTimer(counter,roomId){
   // Start countdown
-let countdown = 10; // Set countdown time in seconds
+let countdown = 3; // Set countdown time in seconds
 const countdownInterval = setInterval(() => {
     counter.innerText = countdown + " seconds"; // Update counter text with countdown
     countdown--;
@@ -130,21 +130,17 @@ function copyToClipboard(copyButton, roomId) {
     });
 }
 
-function switchToDrawingScreen()
-{
+function switchToDrawingScreen() {
     console.log("Function being called");
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    fetch('/draw')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('drawingScreen').innerHTML = data;
-            const script = document.createElement('script');
-            script.src = '/scripts/classes/draw.js'; // Replace with the path to your script file
-
-            // Append the script element to the body or head
-            document.body.appendChild(script);
-        })
-        .catch(error => console.error(error));
+    document.getElementById('drawingScreen').style.display = 'flex'; // Show the drawing screen
+    
+    // Create script element
+    var scriptElement = document.createElement('script');
+    scriptElement.setAttribute('src', '/scripts/classes/draw.js');
+    
+    // Append script element to drawingScreen div
+    document.getElementById('drawingScreen').appendChild(scriptElement);
 }
 
 export default {
