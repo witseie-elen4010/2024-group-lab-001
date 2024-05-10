@@ -177,21 +177,120 @@ function copyToClipboard(copyButton, roomId) {
     });
 }
 
-function switchToDrawingScreen() {
+
+function switchingGameScreen(data)
+{
+    if(data.gameState == 'promptEntry')
+    {
+        switchToPromptEntryScreen();
+    }
+    else if(data.gameState == 'drawing')
+    {
+        switchToDrawingScreen({prompt:data.info.prompt});
+    }
+    else if(data.gameState == 'promptDrawing')
+    {
+        switchToGuessingScreen({drawing:data.info.drawing});
+    }
+    else if(data.gameState == 'waiting')
+    {
+        switchToWaitingScreen();
+    }
+    else{
+        endGame();
+    }
+}
+function switchToWaitingScreen(){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
+}
+
+function switchToGuessingScreen(data){
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'flex'; //Show the prompt entering screen
+
+    const imageContainer = document.getElementById('canvas-data');
+    imageContainer.innerHTML = ""; // Clear the contents of the html 
+    // Create a new image object
+    var img = new Image();
+
+    // When the image loads, create a new canvas and draw the image onto it
+    img.onload = function() {
+        // Create a new canvas
+        var newCanvas = document.createElement('canvas');
+        newCanvas.width = img.width;
+        newCanvas.height = img.height;
+
+        // Get the context of the new canvas
+        var ctx = newCanvas.getContext('2d');
+
+        // Draw the image onto the new canvas
+        ctx.drawImage(img, 0, 0);
+
+        // Append the new canvas to the image container
+        imageContainer.appendChild(newCanvas);
+    };
+
+    // Set the src of the image to the data URL
+    img.src = data.drawing;
+}
+
+function switchToPromptEntryScreen()
+{
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
+}
+
+function switchToDrawingScreen(data) {
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById('drawingScreen').style.display = 'flex';
-    
+
+    console.log("Prompt to be draw: " + data.prompt);
+
     // Create script element
     var scriptElement = document.createElement('script');
     scriptElement.setAttribute('src', '/scripts/classes/draw.js');
     
     // Append script element to drawingScreen div
     document.getElementById('drawingScreen').appendChild(scriptElement);
+
+    // Need to clear the canvas 
+    // Assuming you have a reference to the canvas
+    var canvas = document.getElementById('drawing-canvas');
+    var ctx = canvas.getContext('2d');
+    
+    // Fill the canvas with white color
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function endGame() {
+    // Hide other screens
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
+    document.getElementById('drawingScreen').style.display = 'none';
+
+    // Show the end game screen
+    document.getElementById('endGameScreen').style.display = 'flex';
 }
 
 export default {
     switchLobbyScreen,
-    switchToDrawingScreen,
+    switchingGameScreen,
     createTimer,
     updateTimer,
     updateRemainingUsernames
