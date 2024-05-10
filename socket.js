@@ -41,6 +41,7 @@ module.exports = (io, userNames, rooms) => {
                 socket.join(roomId); 
 
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                // const remainingUsernames = Array.from(rooms.get(roomId).players.values()).filter(name => name !== username);
                 socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames });
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username}, has created and joined a room.${roomId}`);
             } catch (error) {
@@ -108,7 +109,8 @@ module.exports = (io, userNames, rooms) => {
 
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
-                io.to(socket.roomId).emit('game-started',{playerId:socket.id, roomId, playerCount});
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                io.to(socket.roomId).emit('game-started',{playerId:socket.id, roomId, playerCount, remainingUsernames});
                 console.log('Game has started in room: '+ roomId);
             } catch (error) {
                 console.error('Error starting game:', error);

@@ -5,6 +5,31 @@ import client from './client.js';
 
 // Variables
 let isHost = false; 
+let remainingUsernamesList = [];
+
+// Function to update the list of remaining usernames
+function updateRemainingUsernames(usernames) {
+    remainingUsernamesList = usernames;
+    const drawPlayerContainer = document.getElementById('usernameDisplayOnDraw');
+    drawPlayerContainer.innerHTML = '';
+    
+    // Create a paragraph element to display the remaining usernames
+    const usernameHeading = document.createElement('p');
+    usernameHeading.className = "title room-code-heading";
+    usernameHeading.textContent = `Players`;
+    drawPlayerContainer.appendChild(usernameHeading);
+
+    // Loop through each username in remainingUsernames array
+    remainingUsernamesList.forEach(username => {
+        // Create a button element for each username
+        const usernameButton = document.createElement('button');
+        usernameButton.textContent = username;
+        usernameButton.className = "room-code-button";
+        console.log(username);
+        // Append the username button to the centerDiv
+        drawPlayerContainer.appendChild(usernameButton);
+    });
+}
 
 function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Hide the lobby container and display the post lobby creation screen
@@ -61,7 +86,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Create a paragraph element to display the remaining usernames
     const usernameHeading = document.createElement('p');
     usernameHeading.className = "title room-code-heading";
-    usernameHeading.textContent = `Players:`;
+    usernameHeading.textContent = `Players`;
     centerDiv.appendChild(usernameHeading);
 
     // Loop through each username in remainingUsernames array
@@ -168,6 +193,7 @@ export default {
     switchLobbyScreen,
     switchToDrawingScreen,
     createTimer,
-    updateTimer
+    updateTimer,
+    updateRemainingUsernames
 };
 

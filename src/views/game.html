@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lobby - Miscommunication Mayhem</title>
+    <title>Miscommunication Mayhem</title>
     <!-- Google Fonts - Roboto -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <!-- ===== Iconscout CSS ===== -->
@@ -51,10 +51,17 @@
             <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
         </div>
 
-        <div class = 'tool-box timer-container'>
-            <div class='row'>
-            <p class = 'title-drawing' id = 'timer-label'> Time Remaining:</p>
-            <p class = 'countdown-timer' id = "countdownTimer"></p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class = 'tool-box timer-container'>
+                <div class='row'>
+                <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
+                <p class = 'countdown-timer' id = "countdownTimer"></p>
+                </div>
+            </div>
+
+            <div class = 'tool-box player-container'>
+                <div id="usernameDisplayOnDraw" class='row'>
+                </div>
             </div>
         </div>
         
