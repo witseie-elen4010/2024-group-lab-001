@@ -14,6 +14,32 @@
     <link rel="stylesheet" href="/css/draw.css">
 </head>
 <body>
+    <!-- Lobby Container -->
+    <div id="lobbyContainer" class="container">
+        <!-- Room creation form -->
+        <form id="createRoomForm">
+            <!-- Button -->
+            <button type="submit" id="createLobbyButton" class="button lobby-button">Create Lobby</button>
+        </form>
+
+        <div class = "lobby-button-container">
+            <!-- Room joining form -->
+            <form id="joinRoomForm" class = "lobby-button-container">
+                <div class = "input-box">
+                    <i class="uil uil-keyboard icon"></i>
+                    <input type="text" id="roomIdInput" placeholder="Enter lobby code">
+                </div>
+                <!-- Button should be within the div -->
+                <button type="submit" id="joinLobbyButton" class="button lobby-button">Join</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post lobby screen -->
+    <div id="postLobbyCreationScreen">
+    </div>
+
+    <!-- Drawing screen -->
     <div id="drawingScreen" class="flex-container" style="display: none;">
         <div class='tool-box' id='tool-box'>
             <div class='row'>
@@ -56,6 +82,7 @@
                 <div class='row'>
                 <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
                 <p class = 'countdown-timer' id = "countdownTimer"></p>
+            <button id='submitDrawing' class='button draw-button'>Submit Drawing</button>
                 </div>
             </div>
 
@@ -67,28 +94,34 @@
         
     </div>
 
-    <!-- Lobby Container -->
-    <div id="lobbyContainer" class="container">
-        <!-- Room creation form -->
-        <form id="createRoomForm">
-            <!-- Button -->
-            <button type="submit" id="createLobbyButton" class="button lobby-button">Create Lobby</button>
-        </form>
+    <!-- Intial prompt screen -->
+    <div id = 'intialPromptScreen' class = 'flex-container' style="display: none;">
+        <div class = 'prompt-box'>
+            <h1 class = 'prompt-title'>Drawing Prompt you would like to Enter</h1>
+            <input type='text' id='prompt-input' class='prompt-input' placeholder='Enter the prompt you want players to draw'>
+            <!-- Add your button here -->
+            <button id='prompt-button' class='button prompt-button'>Submit</button>
+        </div>
+    </div>  
 
-        <div class = "lobby-button-container">
-            <!-- Room joining form -->
-            <form id="joinRoomForm" class = "lobby-button-container">
-                <div class = "input-box">
-                    <i class="uil uil-keyboard icon"></i>
-                    <input type="text" id="roomIdInput" placeholder="Enter lobby code">
-                </div>
-                <!-- Button should be within the div -->
-                <button type="submit" id="joinLobbyButton" class="button lobby-button">Join</button>
-            </form>
+    <!-- Waiting screen -->
+    <div id='waitingScreen' class='flex-container' style="display: none;">
+        <div class='waiting-box'>
+            <h1 class='waiting-title'>Waiting for players...</h1>
         </div>
     </div>
 
-    <div id="postLobbyCreationScreen">
+    <!-- Guessing screen -->
+    <div id='guessingScreen' class='flex-container' style="display: none;">
+        <div class='guessing-box'>
+            <h1 class='guessing-title'>Guess the Drawing</h1>
+            <!-- Canvas data will be loaded into this div -->
+            <div id='canvas-data' class='canvas-data'></div>
+            <!-- Text input field for guessing -->
+            <input type='text' id='guess-input' class='guess-input' placeholder='Enter your guess here'>
+            <!-- Submit guess button -->
+            <button id='guess-button' class='button guess-button'>Submit Guess</button>
+        </div>
     </div>
 
     <!-- Load Socket.IO library -->
