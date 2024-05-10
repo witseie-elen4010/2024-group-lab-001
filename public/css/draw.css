@@ -16,6 +16,14 @@
     width: 10vw;
 }
 
+.timer-container {
+    height: 30%;
+}
+
+.player-container {
+    height: auto;
+}
+
 /* CSS for the canvas container */
 .canvas-container {
     background: white;

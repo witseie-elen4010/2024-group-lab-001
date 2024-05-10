@@ -13,3 +13,11 @@ test('Navigate to HOME and then to ACCOUNT', async ({ page }) => {
     // Check if the URL contains '/account'
     expect(page.url()).toContain('/account');
 });
+
+test('Cookie Bar and Accepting Cookies Warning', async ({ page }) => {
+    await page.goto('http://localhost:3000/');
+    await page.waitForSelector('text=This website uses cookies to');
+    await page.click('text=This website uses cookies to');
+    await page.waitForSelector('button:has-text("Accept")');
+    await page.click('button:has-text("Accept")');
+});

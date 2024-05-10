@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miscommunication Mayhem</title>
+    <!-- Google Fonts - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- ===== Iconscout CSS ===== -->
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/lobby.css">
+    <link rel="stylesheet" href="/css/draw.css">
+</head>
+<body>
+    <div id="drawingScreen" class="flex-container" style="display: none;">
+        <div class='tool-box' id='tool-box'>
+            <div class='row'>
+                <label class='title-drawing'>Tool Selection</label>
+                <ul class='options'>
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-1" onClick = 'pen()'>
+                        <!-- Icon for pen -->
+                        <img class="svg" id = 'pen-option' src="/images/pen.svg" alt="">
+                        <!-- Label for pen -->
+                        <span>Pen</span>
+                    </li>
+
+                    <!-- Tool option -->
+                    <li class='tool-option' id="tool-option-2" onClick = 'eraser()'>
+                        <!-- Icon for eraser -->
+                        <img class="svg" id = 'eraser-option' src="/images/eraser.svg" alt="">
+                        <!-- Label for eraser -->
+                        <span>Eraser</span>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
+                    </li>
+
+                    <!-- Button option -->
+                    <li class='tool-option'>
+                        <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class='canvas-container'>
+            <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class = 'tool-box timer-container'>
+                <div class='row'>
+                <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
+                <p class = 'countdown-timer' id = "countdownTimer"></p>
+                </div>
+            </div>
+
+            <div class = 'tool-box player-container'>
+                <div id="usernameDisplayOnDraw" class='row'>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- Lobby Container -->
+    <div id="lobbyContainer" class="container">
+        <!-- Room creation form -->
+        <form id="createRoomForm">
+            <!-- Button -->
+            <button type="submit" id="createLobbyButton" class="button lobby-button">Create Lobby</button>
+        </form>
+
+        <div class = "lobby-button-container">
+            <!-- Room joining form -->
+            <form id="joinRoomForm" class = "lobby-button-container">
+                <div class = "input-box">
+                    <i class="uil uil-keyboard icon"></i>
+                    <input type="text" id="roomIdInput" placeholder="Enter lobby code">
+                </div>
+                <!-- Button should be within the div -->
+                <button type="submit" id="joinLobbyButton" class="button lobby-button">Join</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="postLobbyCreationScreen">
+    </div>
+
+    <!-- Load Socket.IO library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="/scripts/classes/client.js"></script>
+</body>
+</html>

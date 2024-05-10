@@ -1,4 +1,4 @@
-import screenManager from './screenManager.js';
+import screenManager from './game.js';
 
 const socket = io();    
 const createRoomForm = document.getElementById("createRoomForm");
@@ -52,15 +52,17 @@ socket.on("player left", data => {
     if (gameStarted) {
         // Handle disconnection during game
         // For example, display a message to the user indicating the disconnection
+        screenManager.updateRemainingUsernames(data.remainingUsernames);
     } else {
         // Switch back to lobby screen if the game hasn't started
         screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
     }
 });
 
-socket.on('game-started', () => {
+socket.on('game-started', data => {
     console.log("Game started");
     gameStarted = true;
+    screenManager.updateRemainingUsernames(data.remainingUsernames);
     screenManager.switchToDrawingScreen();
 });
 

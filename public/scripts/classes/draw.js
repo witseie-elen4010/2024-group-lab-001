@@ -37,6 +37,7 @@ canvas.addEventListener('mousedown', (event)=>{
     if(countdown > 0){
             draw(event);
     }
+    console.log(event.offsetX,event.offsetY)
 });
 
 // Stop drawing if user releases M1 key

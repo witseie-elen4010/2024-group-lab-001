@@ -35,23 +35,6 @@
     transition: transform 0.5s ease-in-out;
 }
 
-.title {
-    font-size: 27px;
-    font-weight: 600;
-    position: relative;
-}
-
-.title::before {
-    background-color: #003167;
-    border-radius: 25px;
-    bottom: 0;
-    content: '';
-    height: 3px;
-    left: 0;
-    position: absolute;
-    width: 30px;
-}
-
 .input-field {
     height: 50px;
     margin-top: 30px;

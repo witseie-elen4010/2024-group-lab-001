@@ -1,5 +1,35 @@
+// game.js
+
+// Module Imports
 import client from './client.js';
+
+// Variables
 let isHost = false; 
+let remainingUsernamesList = [];
+
+// Function to update the list of remaining usernames
+function updateRemainingUsernames(usernames) {
+    remainingUsernamesList = usernames;
+    const drawPlayerContainer = document.getElementById('usernameDisplayOnDraw');
+    drawPlayerContainer.innerHTML = '';
+    
+    // Create a paragraph element to display the remaining usernames
+    const usernameHeading = document.createElement('p');
+    usernameHeading.className = "title room-code-heading";
+    usernameHeading.textContent = `Players`;
+    drawPlayerContainer.appendChild(usernameHeading);
+
+    // Loop through each username in remainingUsernames array
+    remainingUsernamesList.forEach(username => {
+        // Create a button element for each username
+        const usernameButton = document.createElement('button');
+        usernameButton.textContent = username;
+        usernameButton.className = "room-code-button";
+        console.log(username);
+        // Append the username button to the centerDiv
+        drawPlayerContainer.appendChild(usernameButton);
+    });
+}
 
 function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Hide the lobby container and display the post lobby creation screen
@@ -12,14 +42,25 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     // Clear the contents of postLobbyCreationScreen
     postLobbyCreationScreen.innerHTML = '';
 
+    // horizontal div for the lobby code and players
+    const horizontalDiv = document.createElement('div');
+    horizontalDiv.className = 'horizontal-container';
+    postLobbyCreationScreen.appendChild(horizontalDiv);
+
     // Left div for lobby code and buttons
     const leftDiv = document.createElement('div');
     leftDiv.className = 'lobby-left';
 
     // Create a paragraph element to display the room code
-    const roomCode = document.createElement('p');
-    roomCode.className = "room-code-container";
-    roomCode.textContent = `Room Code: ${roomId}`;
+    const roomCodeHeading = document.createElement('p');
+    roomCodeHeading.className = "title room-code-heading";
+    roomCodeHeading.textContent = `Room Code`; // ${roomId}
+    leftDiv.appendChild(roomCodeHeading);
+
+    // Create a button element to display the room code
+    const roomCode = document.createElement('button');
+    roomCode.textContent = `${roomId}`;
+    roomCode.className = "room-code-button";
     leftDiv.appendChild(roomCode);
 
     // Create a button element to copy the room code
@@ -43,23 +84,29 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     centerDiv.className = 'lobby-right';
 
     // Create a paragraph element to display the remaining usernames
-    const usernameDisplay = document.createElement('p');
-    usernameDisplay.className = "room-code-container";
-    usernameDisplay.textContent = `Players:`;
+    const usernameHeading = document.createElement('p');
+    usernameHeading.className = "title room-code-heading";
+    usernameHeading.textContent = `Players`;
+    centerDiv.appendChild(usernameHeading);
+
+    // Loop through each username in remainingUsernames array
     remainingUsernames.forEach(username => {
-        const usernameElement = document.createElement('p');
-        usernameElement.textContent = username;
-        usernameDisplay.appendChild(usernameElement);
+        // Create a button element for each username
+        const usernameButton = document.createElement('button');
+        usernameButton.textContent = username;
+        usernameButton.className = "room-code-button";
+        
+        // Append the username button to the centerDiv
+        centerDiv.appendChild(usernameButton);
     });
-    centerDiv.appendChild(usernameDisplay);
 
     // Append left and right divs to the lobby display element
-    postLobbyCreationScreen.appendChild(leftDiv);
-    postLobbyCreationScreen.appendChild(centerDiv);
+    horizontalDiv.appendChild(leftDiv);
+    horizontalDiv.appendChild(centerDiv);
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
+    // if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -76,7 +123,7 @@ function createTimer (roomId) {
 
   // Paragraph for "Starting Game In"
   const startingText = document.createElement('p')
-  startingText.className = 'room-code-container start-time-container'
+  startingText.className = 'lobby-container-text start-time-container'
   startingText.innerText = 'Game Starting In:'
   timerDiv.appendChild(startingText) // Add startingText to rightDiv
 
@@ -92,7 +139,7 @@ function createTimer (roomId) {
 
 function updateTimer(counter,roomId){
   // Start countdown
-let countdown = 10; // Set countdown time in seconds
+let countdown = 5; // Set countdown time in seconds
 const countdownInterval = setInterval(() => {
     counter.innerText = countdown + " seconds"; // Update counter text with countdown
     countdown--;
@@ -102,7 +149,7 @@ const countdownInterval = setInterval(() => {
         console.log("Emitting start game");
         client.socket.emit('start-game', roomId);
         clearInterval(countdownInterval);
-        console.log("Game started");
+        console.log("Game: A Game session has started.");
     }
   }, 1000);
 }
@@ -130,27 +177,23 @@ function copyToClipboard(copyButton, roomId) {
     });
 }
 
-function switchToDrawingScreen()
-{
-    console.log("Function being called");
+function switchToDrawingScreen() {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    fetch('/draw')
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('drawingScreen').innerHTML = data;
-            const script = document.createElement('script');
-            script.src = '/scripts/classes/draw.js'; // Replace with the path to your script file
-
-            // Append the script element to the body or head
-            document.body.appendChild(script);
-        })
-        .catch(error => console.error(error));
+    document.getElementById('drawingScreen').style.display = 'flex';
+    
+    // Create script element
+    var scriptElement = document.createElement('script');
+    scriptElement.setAttribute('src', '/scripts/classes/draw.js');
+    
+    // Append script element to drawingScreen div
+    document.getElementById('drawingScreen').appendChild(scriptElement);
 }
 
 export default {
     switchLobbyScreen,
     switchToDrawingScreen,
     createTimer,
-    updateTimer
+    updateTimer,
+    updateRemainingUsernames
 };
 

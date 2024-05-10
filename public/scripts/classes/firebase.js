@@ -60,40 +60,40 @@ const firebaseApp = initializeApp({
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
 
-// Function to create a new account
-const createNewAccount = async(myEmail, myUsername, myPassword, req, res) =>{
-    const loginEmail = myEmail
-    const loginPassword = myPassword
+// Variable to track if redirection has been performed
+let isRedirected = false;
 
-    try{
+// Function to create a new account
+const createNewAccount = async (myEmail, myUsername, myPassword, req, res) => {
+    const loginEmail = myEmail;
+    const loginPassword = myPassword;
+
+    try {
         const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
-        addUserToDB(myEmail, myUsername)
-        console.log('User has creted an account');
-        monitorAuthState(req, res)
-    }
-    catch(error){
-        console.log('There was an error creating account');
+        await addUserToDB(myEmail, myUsername); // Wait for addUserToDB to complete
+        console.log('Firebase: A user has created an account.');
+        monitorAuthState(req, res); // Now call monitorAuthState after addUserToDB completes
+    } catch (error) {
+        console.log('Firebase: There was an error creating account.');
         console.log(error);
     }
 }
 
-// Function to redirect user to the lobby after signup or login
 const redirect = (req, res) => {
-    res.redirect(req.baseUrl + '/lobby');
+    res.redirect(req.baseUrl + '/game');
 };
-
-// Function to monitor the authentication state/ if a user is logged in or out
+  
 const monitorAuthState = (req, res) => {
     onAuthStateChanged(auth, user => {
-        if(user){
-            console.log('Auth State: User is logged in');
-            redirect(req, res)
+        if (user && user.isAnonymous) {
+            console.log('Auth State: Guest User is Authenticated & Logged In.');
+        } else if (user && !user.isAnonymous) {
+            console.log('Auth State: Regular User is Authenticated & Logged In.');
+        } else {
+            console.log('Auth State: User is Authenticated & Logged Out.');
         }
-        else{
-            console.log('Auth State: User is logged out');
-        }
-    })
-}
+    });
+};
 
 // Function to add new user to the database
 async function addUserToDB(myEmail, myUsername) {
@@ -108,26 +108,28 @@ async function addUserToDB(myEmail, myUsername) {
         }
         setDoc(userInformation, userData);
 
-        console.log('New user was created in DB');
+        console.log('Firebase: A new user account was created.');
     }
     catch(error){
-        console.log('There was an error creating account DB');
+        console.log('Firebase: There was an error creating a new user account.');
         console.log(error);
     }
 }
 
 // Function to login with email and password
-const loginEmailPassword = async(myEmail, myPassword, req, res) => {
+const loginEmailPassword = async (myEmail, myPassword, req, res) => {
     const loginEmail = myEmail;
     const loginPassword = myPassword;
 
     try {
         const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-        console.log('User has logged in');
+        console.log('Firebase: A user has logged in.');
         monitorAuthState(req, res);
+        return; // Return here to prevent further execution
     } catch (error) {
-        console.log('There was an error logging in');
+        console.log('Firebase: There was an error logging in.');
         console.log(error);
+        res.status(401).send('Login failed'); // Send response for login failure
     }
 }
 
@@ -140,9 +142,9 @@ const getUsername = async function() {
         const mySnapshot = await getDoc(userInformation);
         if(mySnapshot.exists()){
             const docData = mySnapshot.data();
-            console.log(`My data is ${JSON.stringify(docData)}`);
+            // console.log(`My data is ${JSON.stringify(docData)}`);
             const username = docData.username;
-            console.log(`Username is ${username}`);
+            // console.log(`Username is ${username}`);
 
             return username;
         }
@@ -170,14 +172,13 @@ const getUserUID = function() {
 }
 
 const loginGuest = async(myUsername, req, res) => {
-    console.log("Guest sign in with username: " + myUsername);
     try {
         const userCredential = await signInAnonymously(auth);
-        console.log('Guest User has logged in');
+        console.log("Firebase: Guest Login with Username: " + myUsername);
         monitorAuthState(req, res);
         addUserToDB(null, myUsername);
     } catch (error) {
-        console.log('There was an error logging in guest');
+        console.log('There was an error for guest login.');
         console.log(error);
     }
 }

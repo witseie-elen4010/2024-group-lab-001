@@ -19,7 +19,7 @@ test('Login redirects user to lobby', async ({ page }) => {
     await page.fill('input[placeholder="Enter your password"]', 'alexalex');
     await page.getByRole('button', { name: 'Login' }).click();
 
-    expect(page.url()).toContain('/lobby');
+    expect(page.url()).toContain('/game');
 });
 
 test('Guest username field can be filled', async ({ page }) => {
@@ -40,5 +40,5 @@ test('Login as guest redirects player to lobby', async ({ page }) => {
     await page.fill('input[placeholder="Enter temporary username"]', 'alex');
 
     await page.getByRole('button', { name: 'Continue as Guest' }).click();
-    expect(page.url()).toContain('/lobby');
+    expect(page.url()).toContain('/game');
 });
