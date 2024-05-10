@@ -177,7 +177,9 @@ function copyToClipboard(copyButton, roomId) {
     });
 }
 
-
+// Function to switch between different screens. screens specified by data.gameState and the 
+// additional information can be passeed in through data.info either being data.info.prompt or data.info.drawing
+// This is the only function that is exported and allows access to other functions if corresponding data.gameState and data.info is passed into the function
 function switchingGameScreen(data)
 {
     if(data.gameState == 'promptEntry')
@@ -188,7 +190,7 @@ function switchingGameScreen(data)
     {
         switchToDrawingScreen({prompt:data.info.prompt});
     }
-    else if(data.gameState == 'promptDrawing')
+    else if(data.gameState == 'promptEntryToDrawing')
     {
         switchToGuessingScreen({drawing:data.info.drawing});
     }
@@ -200,6 +202,8 @@ function switchingGameScreen(data)
         endGame();
     }
 }
+
+// Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
 function switchToWaitingScreen(){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById('drawingScreen').style.display = 'none';
@@ -208,6 +212,7 @@ function switchToWaitingScreen(){
     document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
 }
 
+// Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
 function switchToGuessingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById('drawingScreen').style.display = 'none';
@@ -241,6 +246,7 @@ function switchToGuessingScreen(data){
     img.src = data.drawing;
 }
 
+// Function to switch to the intial prompt entry of the first player in the game loop
 function switchToPromptEntryScreen()
 {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -250,6 +256,7 @@ function switchToPromptEntryScreen()
     document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
 }
 
+// Function to switch to the drawing screen and a prompt is provided to the player to ensure that they have a prompt to draw. 
 function switchToDrawingScreen(data) {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById("intialPromptScreen").style.display = 'none'; 
@@ -276,6 +283,7 @@ function switchToDrawingScreen(data) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 }
 
+// Function to make the div containing the endgame screen allowing for additional functionality such as displaying all drawings and prompts 
 function endGame() {
     // Hide other screens
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 

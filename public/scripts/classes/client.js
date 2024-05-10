@@ -6,9 +6,9 @@ const joinRoomForm = document.getElementById("joinRoomForm");
 let gameStarted = false; // Flag to track game state
 
 // Buttons for game loop 
-const promptEntry = document.getElementById("prompt-button");
-const drawingEntry = document.getElementById("submitDrawing");
-const guessingDrawingEntry = document.getElementById("guess-button");
+const promptEntry = document.getElementById("prompt-button"); // Button for player who is entering the intial prompt
+const drawingEntry = document.getElementById("submitDrawing"); // Button to submit the players drawing of a giving prompt 
+const guessingDrawingEntry = document.getElementById("guess-button"); // Button to submit the prompt obtained from a giving drawing.
 
 createRoomForm.addEventListener("submit", event => {
     event.preventDefault(); // Prevent form submission
@@ -24,13 +24,13 @@ joinRoomForm.addEventListener("submit", event => {
     }
 });
 
-// Button listeners to emit corresponding information back to the server 
+// Button listeners to emit corresponding information back to the server when user has completed their prompt 
 promptEntry.addEventListener("click", event =>{
     event.preventDefault();
     socket.emit('gameplay-loop',{prompt:document.getElementById("prompt-input").value});
 });
 
-// Button listener to emit corresponding information back to the server 
+// Button listener to emit corresponding information back to the server when user has compelted their drawing from a giving prompt 
 drawingEntry.addEventListener("click", event =>{
     event.preventDefault();
     var canvas = document.getElementById('drawing-canvas');
@@ -38,7 +38,7 @@ drawingEntry.addEventListener("click", event =>{
     socket.emit('gameplay-loop',{drawing:data});
 });
 
-// Button listener to emit corresponding information back to the server
+// Button listener to emit corresponding information back to the server when user has compeleted their prompt from a giving drawing 
 guessingDrawingEntry.addEventListener("click", event =>{
     event.preventDefault();
     socket.emit('gameplay-loop',{prompt:document.getElementById('guess-input').value})
@@ -101,6 +101,9 @@ socket.on('create-timer-user', data =>{
 });
 
 // Sockets listeneres for when the server sends out the response of the players in the room 
+
+// Socket listener to send the change the screen of the player to a screen provided by data.gameState and required information from data.info 
+// containing either data.info.prompt or data.info.drawing 
 socket.on('gameplay-loop', data => {
     screenManager.switchingGameScreen({gameState:data.gameState,info:data.info});
 });

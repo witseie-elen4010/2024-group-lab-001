@@ -27,16 +27,17 @@ function assigningRoles(numberPlayers)
    let roles = [];
    for(let i = 0; i < numberPlayers; i++)
     {
+        // First player will always have to enter a prompt to begin drawing sequency 
         if(i == 0)
         {
             roles.push("promptEntry");
         }
-        // Odd 
+        // Odd numbered turn is always providing a prompt for a provided drawing 
         else if((i+1)%2 != 0)
         {
-            roles.push("promptDrawing"); 
+            roles.push("promptEntryToDrawing"); 
         }
-        // Even
+        // Even numbered turn is always a user drawing for a provided prompt 
         else 
         {
             roles.push("drawing");
@@ -45,6 +46,7 @@ function assigningRoles(numberPlayers)
     return roles; 
 }
 
+// Randomize the order of players by randomizing the index positions of each player 
 function randomizePlayerOrder(numberPlayers)
 {
     let playerOrder = [];
@@ -73,7 +75,7 @@ module.exports = (io, userNames, rooms) => {
     const GameState = {
         promptEntry: "promptEntry", 
         drawing: "drawing",
-        promptGuessing: "promptDrawing",
+        promptGuessing: "promptEntryToDrawing",
         WAITING: "waiting"
     }
 
@@ -167,20 +169,29 @@ module.exports = (io, userNames, rooms) => {
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values());
 
                 // Send events to each player to begin the game 
-                let players = Array.from(room.players.keys())
+
+                // Convert players to an array. Map stores sequential order of when added to the map so array would be in a sequential order of when user joined the room.
+                // Starting with user that created the room.
+                let players = Array.from(room.players.keys()) 
                 console.log(players)
+
+                // Randomize the order of the players and assign roles to each player
                 room.playerOrder = randomizePlayerOrder(playerCount); 
                 room.roles = assigningRoles(playerCount);
                 room.turn = 1; 
                 console.log(room.roles)
                 console.log(room.playerOrder)
+
+                // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
                     if(i == 0)
                     {
+                    // First players index in the playerOrder array is emitted the role of providing the first prompt entry. 
                     io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:room.roles[i],remainingUsernames:remainingUsernames})
                     }
                     else
                     {
+                    // Rest of the players are assinged the waiting screen as it is not their turn. 
                     io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames})
                     }
                 }
@@ -204,27 +215,31 @@ module.exports = (io, userNames, rooms) => {
             }
         });
 
-        // Events to handle the responses from the player for the gameplay loop 
-        // Need to make an adjustment here so that we store the data of the users prompt and switch to corresponding 
-        //Screen 
-        // Event for when players responds by sending a drawing prompt 
+        // Events to handle the responses from the player for the gameplay loop
+        // Event for when players responds by sending a drawing prompt back or sending a drawing from a giving prompt 
         socket.on('gameplay-loop', (data) => {
             try {
+                // Ensure the room exists 
                 if(rooms.has(socket.roomId))
                 {
+                    // Checking to ensure the number of turns have not been exceeded meaning all players have not played yet
                     if(rooms.get(socket.roomId).turn < rooms.get(socket.roomId).players.size)
                     {
+                    // Data provided can either be data.prompt or data.drawing based on the emit from the clients visible screen
                     let userprompt = data; 
-                    if(data.prompt)
-                    {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt);}
-                    else if(data.drawing)
-                    {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing);}
-                    let room = rooms.get(socket.roomId);
-                    let players = Array.from(room.players.keys());
 
-                    // Emit to the specific players turn that he needs to go to the next screen set rest of the players to waiting
+                    // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
+                    if(data.prompt)
+                    {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + "Received prompt at: " + new Date().toISOString())}
+                    else if(data.drawing)
+                    {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + "Received drawing at: " + new Date().toISOString())}
+                    let room = rooms.get(socket.roomId);
+                    let players = Array.from(room.players.keys()); // Getting the players socket.ids within a specific room in sequential order of who entererd the room first.
+
+                    // Emit to the specific players turn that they need to go to the next screen and set rest of the players to waiting
                     io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:userprompt});
 
+                    // Loop through the rest of players and set them to waiting as it is not their turn 
                     for(let i = 0; i < players.length; i++)
                     {
                         if(i != room.turn)
@@ -233,15 +248,20 @@ module.exports = (io, userNames, rooms) => {
                             io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING});
                         }
                     }
+
+                    // Increase room.turn as a player has completed their task.
                     room.turn = room.turn + 1; 
                     }
                     else
                     {
+                        // Logging final users data that was received when odd players will be a data.prompt but when even users will be data.drawing 
                         if(data.prompt)
-                            {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt);}
+                            {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + "Received prompt at: " + new Date().toISOString())}
                             else if(data.drawing)
-                            {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing);}
+                            {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + "Received prompt at: " + new Date().toISOString());}
                         console.log("Eng of the Game :" + socket.roomId);
+
+                        // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
                         io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
                     }
                 }
