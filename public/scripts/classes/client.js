@@ -7,7 +7,7 @@ let gameStarted = false; // Flag to track game state
 
 // Buttons for game loop 
 const promptEntry = document.getElementById("prompt-button"); // Button for player who is entering the intial prompt
-const drawingEntry = document.getElementById("submitDrawing"); // Button to submit the players drawing of a giving prompt 
+const drawingEntry = document.getElementById("submit-drawing-button"); // Button to submit the players drawing of a giving prompt 
 const guessingDrawingEntry = document.getElementById("guess-button"); // Button to submit the prompt obtained from a giving drawing.
 
 createRoomForm.addEventListener("submit", event => {
