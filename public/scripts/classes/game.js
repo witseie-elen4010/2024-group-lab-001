@@ -106,7 +106,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    // if(playerCount<3){return};
+    if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -177,21 +177,130 @@ function copyToClipboard(copyButton, roomId) {
     });
 }
 
-function switchToDrawingScreen() {
+// Function to switch between different screens. screens specified by data.gameState and the 
+// additional information can be passeed in through data.info either being data.info.prompt or data.info.drawing
+// This is the only function that is exported and allows access to other functions if corresponding data.gameState and data.info is passed into the function
+function switchingGameScreen(data)
+{
+    if(data.gameState == 'promptEntry')
+    {
+        switchToPromptEntryScreen();
+    }
+    else if(data.gameState == 'drawing')
+    {
+        switchToDrawingScreen({prompt:data.info.prompt});
+    }
+    else if(data.gameState == 'promptEntryToDrawing')
+    {
+        switchToGuessingScreen({drawing:data.info.drawing});
+    }
+    else if(data.gameState == 'waiting')
+    {
+        switchToWaitingScreen();
+    }
+    else{
+        endGame();
+    }
+}
+
+// Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
+function switchToWaitingScreen(){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'flex';
-    
+    document.getElementById('entireDrawingScreen').style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
+}
+
+// Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
+function switchToGuessingScreen(data){
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById('entireDrawingScreen').style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'flex'; //Show the prompt entering screen
+
+    const imageContainer = document.getElementById('canvas-data');
+    imageContainer.innerHTML = ""; // Clear the contents of the html 
+    // Create a new image object
+    var img = new Image();
+
+    // When the image loads, create a new canvas and draw the image onto it
+    img.onload = function() {
+        // Create a new canvas
+        var newCanvas = document.createElement('canvas');
+        newCanvas.width = img.width;
+        newCanvas.height = img.height;
+
+        // Get the context of the new canvas
+        var ctx = newCanvas.getContext('2d');
+
+        // Draw the image onto the new canvas
+        ctx.drawImage(img, 0, 0);
+
+        // Append the new canvas to the image container
+        imageContainer.appendChild(newCanvas);
+    };
+
+    // Set the src of the image to the data URL
+    img.src = data.drawing;
+}
+
+// Function to switch to the intial prompt entry of the first player in the game loop
+function switchToPromptEntryScreen()
+{
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById('entireDrawingScreen').style.display = 'none';
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none';
+    document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
+}
+
+// Function to switch to the drawing screen and a prompt is provided to the player to ensure that they have a prompt to draw. 
+function switchToDrawingScreen(data) {
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
+    document.getElementById('entireDrawingScreen').style.display = 'flex';
+
+    console.log("Prompt to be draw: " + data.prompt);
+
+    document.getElementById("header-drawing-prompt").innerHTML = "Your Drawing Prompt is: " + data.prompt;
+
     // Create script element
     var scriptElement = document.createElement('script');
     scriptElement.setAttribute('src', '/scripts/classes/draw.js');
     
     // Append script element to drawingScreen div
-    document.getElementById('drawingScreen').appendChild(scriptElement);
+    document.getElementById('entireDrawingScreen').appendChild(scriptElement);
+
+    // Need to clear the canvas 
+    // Assuming you have a reference to the canvas
+    var canvas = document.getElementById('drawing-canvas');
+    var ctx = canvas.getContext('2d');
+    
+    // Fill the canvas with white color
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+// Function to make the div containing the endgame screen allowing for additional functionality such as displaying all drawings and prompts 
+function endGame() {
+    // Hide other screens
+    document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
+    document.getElementById("intialPromptScreen").style.display = 'none'; 
+    document.getElementById("waitingScreen").style.display = 'none'; 
+    document.getElementById("guessingScreen").style.display = 'none'; 
+    document.getElementById('entireDrawingScreen').style.display = 'none';
+
+    // Show the end game screen
+    document.getElementById('endGameScreen').style.display = 'flex';
 }
 
 export default {
     switchLobbyScreen,
-    switchToDrawingScreen,
+    switchingGameScreen,
     createTimer,
     updateTimer,
     updateRemainingUsernames
