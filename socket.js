@@ -91,7 +91,7 @@ module.exports = (io, userNames, rooms) => {
                 const sessionId = getSessionID(socket);
                 const username = await getUsername();
                 
-                rooms.set(roomId, { players: new Map(), turn: 1 , playerOrder: [] , roles: [], logs: []}); 
+                rooms.set(roomId, { players: new Map(), turn: 0 , playerOrder: [] , roles: [], logs: []}); 
                 userNames.set(roomId, new Map());
                 rooms.get(roomId).players.set(socket.id, username); 
                 socket.roomId = roomId; 
@@ -154,6 +154,11 @@ module.exports = (io, userNames, rooms) => {
                     console.log(`Player ${socket.id} left room ${roomId}`);
                     console.log(`Remaining users: ${remainingUsernames}`);
                 }
+
+                // There are three cases for when a player disconnects during the game play loop 
+
+                // The player has already played and they decide to leave 
+
             }
         });    
 
@@ -178,21 +183,19 @@ module.exports = (io, userNames, rooms) => {
                 // Randomize the order of the players and assign roles to each player
                 room.playerOrder = randomizePlayerOrder(playerCount); 
                 room.roles = assigningRoles(playerCount);
-                room.turn = 1; 
+                room.turn = 0; 
                 console.log(room.roles)
                 console.log(room.playerOrder)
 
+                // Emit to the first player that their role 
+                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames});
+
                 // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
-                    if(i == 0)
-                    {
-                    // First players index in the playerOrder array is emitted the role of providing the first prompt entry. 
-                    io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:room.roles[i],remainingUsernames:remainingUsernames})
-                    }
-                    else
+                    if(i != room.turn)
                     {
                     // Rest of the players are assinged the waiting screen as it is not their turn. 
-                    io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames})
+                    io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames});
                     }
                 }
                 
@@ -222,20 +225,29 @@ module.exports = (io, userNames, rooms) => {
                 // Ensure the room exists 
                 if(rooms.has(socket.roomId))
                 {
+                    let room = rooms.get(socket.roomId);
+
                     // Checking to ensure the number of turns have not been exceeded meaning all players have not played yet
-                    if(rooms.get(socket.roomId).turn < rooms.get(socket.roomId).players.size)
+                    if(room.turn < room.players.size - 1)
                     {
+                    // Increase room.turn as a player has completed their task and we need to move to the next player 
+                    room.turn = room.turn + 1; 
+
                     // Data provided can either be data.prompt or data.drawing based on the emit from the clients visible screen
                     let userprompt = data; 
 
-                    // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
-                    if(data.prompt)
-                    {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + "Received prompt at: " + new Date().toISOString())}
-                    else if(data.drawing)
-                    {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + "Received drawing at: " + new Date().toISOString())}
-                    let room = rooms.get(socket.roomId);
                     let players = Array.from(room.players.keys()); // Getting the players socket.ids within a specific room in sequential order of who entererd the room first.
 
+                    // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
+                    if(data.prompt){
+                        console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
+                        //room.logs.push(new LogEntry(socket.id,"prompt",data.prompt));
+                    }
+                    else if(data.drawing){
+                        console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received drawing at: " + new Date().toISOString());
+                        //room.logs.push(new LogEntry(socket.id,"drawing",data.drawing));
+                    }
+                    
                     // Emit to the specific players turn that they need to go to the next screen and set rest of the players to waiting
                     io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:userprompt});
 
@@ -248,17 +260,18 @@ module.exports = (io, userNames, rooms) => {
                             io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING});
                         }
                     }
-
-                    // Increase room.turn as a player has completed their task.
-                    room.turn = room.turn + 1; 
                     }
                     else
                     {
                         // Logging final users data that was received when odd players will be a data.prompt but when even users will be data.drawing 
-                        if(data.prompt)
-                            {console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + "Received prompt at: " + new Date().toISOString())}
-                            else if(data.drawing)
-                            {console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + "Received prompt at: " + new Date().toISOString());}
+                        if(data.prompt){
+                            console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
+                            //room.logs.push(new LogEntry(socket.id,"prompt",data.prompt)); 
+                        }
+                        else if(data.drawing){
+                            console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received prompt at: " + new Date().toISOString());
+                            //room.logs.push(new LogEntry(socket.id,"drawing",data.drawing));
+                        }
                         console.log("Eng of the Game :" + socket.roomId);
 
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
