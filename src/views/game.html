@@ -87,7 +87,7 @@
                         <div class='row'>
                         <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
                         <p class = 'countdown-timer' id = "countdownTimer"></p>
-                    <button id='submitDrawing' class='button draw-button'>Submit Drawing</button>
+                        <button id='submitDrawing' class='button draw-button'>Submit Drawing</button>
                         </div>
                     </div>
 
@@ -101,22 +101,27 @@
         </div>
     </div>
 
-        <!-- Intial prompt screen -->
-        <div id = 'intialPromptScreen' class = 'flex-container' style="display: none;">
-            <div class = 'prompt-box'>
-                <h1 class = 'prompt-title'>Drawing Prompt you would like to Enter</h1>
-                <input type='text' id='prompt-input' class='prompt-input' placeholder='Enter the prompt you want players to draw'>
-                <!-- Add your button here -->
-                <button id='prompt-button' class='button prompt-button'>Submit</button>
-            </div>
-        </div>  
+    <!-- Intial prompt screen -->
+    <div id = 'intialPromptScreen' class = 'container' style="display: none;">
+            <p class = 'title-drawing'>Write a Prompt</p>
 
-        <!-- Waiting screen -->
-        <div id='waitingScreen' class='flex-container' style="display: none;">
-            <div class='waiting-box'>
-                <h1 class='waiting-title'>Waiting for players...</h1>
+            <!-- Prompt form -->
+        <form id="promptForm" class = "lobby-button-container">
+            <div class = "input-box">
+                <i class="uil uil-keyboard icon"></i>
+                <input type="text" id="prompt-input" placeholder="A big group of people draw together">
             </div>
+            <!-- Prompt submit button -->
+            <button id="prompt-button" class="button lobby-button">Submit</button>
+        </form>
+    </div>
+
+    <!-- Waiting screen -->
+    <div id='waitingScreen' class='flex-container' style="display: none;">
+        <div class='waiting-box'>
+            <h1 class='waiting-title'>Waiting for another players turn to finish...</h1>
         </div>
+    </div>
 
         <!-- Guessing screen -->
         <div id='guessingScreen' class='flex-container' style="display: none;">
