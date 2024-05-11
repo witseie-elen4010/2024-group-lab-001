@@ -206,7 +206,7 @@ function switchingGameScreen(data)
 // Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
 function switchToWaitingScreen(){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById('entireDrawingScreen').style.display = 'none';
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
@@ -215,7 +215,7 @@ function switchToWaitingScreen(){
 // Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
 function switchToGuessingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById('entireDrawingScreen').style.display = 'none';
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'flex'; //Show the prompt entering screen
@@ -250,7 +250,7 @@ function switchToGuessingScreen(data){
 function switchToPromptEntryScreen()
 {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById('entireDrawingScreen').style.display = 'none';
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none';
     document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
@@ -262,16 +262,18 @@ function switchToDrawingScreen(data) {
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'flex';
+    document.getElementById('entireDrawingScreen').style.display = 'flex';
 
     console.log("Prompt to be draw: " + data.prompt);
+
+    document.getElementById("header-drawing-prompt").innerHTML = "Your Drawing Prompt is: " + data.prompt;
 
     // Create script element
     var scriptElement = document.createElement('script');
     scriptElement.setAttribute('src', '/scripts/classes/draw.js');
     
     // Append script element to drawingScreen div
-    document.getElementById('drawingScreen').appendChild(scriptElement);
+    document.getElementById('entireDrawingScreen').appendChild(scriptElement);
 
     // Need to clear the canvas 
     // Assuming you have a reference to the canvas
@@ -290,7 +292,7 @@ function endGame() {
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
-    document.getElementById('drawingScreen').style.display = 'none';
+    document.getElementById('entireDrawingScreen').style.display = 'none';
 
     // Show the end game screen
     document.getElementById('endGameScreen').style.display = 'flex';

@@ -40,89 +40,97 @@
     </div>
 
     <!-- Drawing screen -->
-    <div id="drawingScreen" class="flex-container" style="display: none;">
-        <div class='tool-box' id='tool-box'>
-            <div class='row'>
-                <label class='title-drawing'>Tool Selection</label>
-                <ul class='options'>
-                    <!-- Tool option -->
-                    <li class='tool-option' id="tool-option-1" onClick = 'pen()'>
-                        <!-- Icon for pen -->
-                        <img class="svg" id = 'pen-option' src="/images/pen.svg" alt="">
-                        <!-- Label for pen -->
-                        <span>Pen</span>
-                    </li>
-
-                    <!-- Tool option -->
-                    <li class='tool-option' id="tool-option-2" onClick = 'eraser()'>
-                        <!-- Icon for eraser -->
-                        <img class="svg" id = 'eraser-option' src="/images/eraser.svg" alt="">
-                        <!-- Label for eraser -->
-                        <span>Eraser</span>
-                    </li>
-
-                    <!-- Button option -->
-                    <li class='tool-option'>
-                        <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
-                    </li>
-
-                    <!-- Button option -->
-                    <li class='tool-option'>
-                        <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
-                    </li>
-                </ul>
+    <div id = 'entireDrawingScreen' style="display: none;">
+        <div style = "display: flex; flex-direction: column;">
+            <div id = "drawing-prompt" class = "prompt-title">
+                <h1 id = "header-drawing-prompt" class = 'prompt-title'></h1>
             </div>
-        </div>
-        <div class='canvas-container'>
-            <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
-        </div>
+            <div id="drawingScreen" class="flex-container">
+                <div class='tool-box' id='tool-box'>
+                    <div class='row'>
+                        <label class='title-drawing'>Tool Selection</label>
+                        <ul class='options'>
+                            <!-- Tool option -->
+                            <li class='tool-option' id="tool-option-1" onClick = 'pen()'>
+                                <!-- Icon for pen -->
+                                <img class="svg" id = 'pen-option' src="/images/pen.svg" alt="">
+                                <!-- Label for pen -->
+                                <span>Pen</span>
+                            </li>
 
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <div class = 'tool-box timer-container'>
-                <div class='row'>
-                <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
-                <p class = 'countdown-timer' id = "countdownTimer"></p>
-            <button id='submitDrawing' class='button draw-button'>Submit Drawing</button>
+                            <!-- Tool option -->
+                            <li class='tool-option' id="tool-option-2" onClick = 'eraser()'>
+                                <!-- Icon for eraser -->
+                                <img class="svg" id = 'eraser-option' src="/images/eraser.svg" alt="">
+                                <!-- Label for eraser -->
+                                <span>Eraser</span>
+                            </li>
+
+                            <!-- Button option -->
+                            <li class='tool-option'>
+                                <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
+                            </li>
+
+                            <!-- Button option -->
+                            <li class='tool-option'>
+                                <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-
-            <div class = 'tool-box player-container'>
-                <div id="usernameDisplayOnDraw" class='row'>
+                <div class='canvas-container'>
+                    <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
                 </div>
+
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div class = 'tool-box timer-container'>
+                        <div class='row'>
+                        <p class = 'title-drawing' id = 'timer-label'> Time Remaining</p>
+                        <p class = 'countdown-timer' id = "countdownTimer"></p>
+                    <button id='submitDrawing' class='button draw-button'>Submit Drawing</button>
+                        </div>
+                    </div>
+
+                    <div class = 'tool-box player-container'>
+                        <div id="usernameDisplayOnDraw" class='row'>
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
-        
     </div>
 
-    <!-- Intial prompt screen -->
-    <div id = 'intialPromptScreen' class = 'flex-container' style="display: none;">
-        <div class = 'prompt-box'>
-            <h1 class = 'prompt-title'>Drawing Prompt you would like to Enter</h1>
-            <input type='text' id='prompt-input' class='prompt-input' placeholder='Enter the prompt you want players to draw'>
-            <!-- Add your button here -->
-            <button id='prompt-button' class='button prompt-button'>Submit</button>
+        <!-- Intial prompt screen -->
+        <div id = 'intialPromptScreen' class = 'flex-container' style="display: none;">
+            <div class = 'prompt-box'>
+                <h1 class = 'prompt-title'>Drawing Prompt you would like to Enter</h1>
+                <input type='text' id='prompt-input' class='prompt-input' placeholder='Enter the prompt you want players to draw'>
+                <!-- Add your button here -->
+                <button id='prompt-button' class='button prompt-button'>Submit</button>
+            </div>
+        </div>  
+
+        <!-- Waiting screen -->
+        <div id='waitingScreen' class='flex-container' style="display: none;">
+            <div class='waiting-box'>
+                <h1 class='waiting-title'>Waiting for players...</h1>
+            </div>
+        </div>
+
+        <!-- Guessing screen -->
+        <div id='guessingScreen' class='flex-container' style="display: none;">
+            <div class='guessing-box'>
+                <h1 class='guessing-title'>Guess the Drawing</h1>
+                <!-- Canvas data will be loaded into this div -->
+                <div id='canvas-data' class='canvas-data'></div>
+                <!-- Text input field for guessing -->
+                <input type='text' id='guess-input' class='guess-input' placeholder='Enter your guess here'>
+                <!-- Submit guess button -->
+                <button id='guess-button' class='button guess-button'>Submit Guess</button>
+            </div>
         </div>
     </div>  
-
-    <!-- Waiting screen -->
-    <div id='waitingScreen' class='flex-container' style="display: none;">
-        <div class='waiting-box'>
-            <h1 class='waiting-title'>Waiting for players...</h1>
-        </div>
-    </div>
-
-    <!-- Guessing screen -->
-    <div id='guessingScreen' class='flex-container' style="display: none;">
-        <div class='guessing-box'>
-            <h1 class='guessing-title'>Guess the Drawing</h1>
-            <!-- Canvas data will be loaded into this div -->
-            <div id='canvas-data' class='canvas-data'></div>
-            <!-- Text input field for guessing -->
-            <input type='text' id='guess-input' class='guess-input' placeholder='Enter your guess here'>
-            <!-- Submit guess button -->
-            <button id='guess-button' class='button guess-button'>Submit Guess</button>
-        </div>
-    </div>
 
    <!-- End game screen -->
     <div id='endGameScreen' class='flex-container' style="display: none;">
