@@ -106,7 +106,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    // if(playerCount<3){return};
+    if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
