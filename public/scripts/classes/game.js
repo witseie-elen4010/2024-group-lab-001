@@ -230,14 +230,14 @@ function switchToGuessingScreen(data){
     img.onload = function() {
         // Create a new canvas
         var newCanvas = document.createElement('canvas');
-        newCanvas.width = img.width;
-        newCanvas.height = img.height;
+        newCanvas.width = img.width * 0.65;
+        newCanvas.height = img.height * 0.65;
 
         // Get the context of the new canvas
         var ctx = newCanvas.getContext('2d');
 
         // Draw the image onto the new canvas
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, newCanvas.width, newCanvas.height);
 
         // Append the new canvas to the image container
         imageContainer.appendChild(newCanvas);

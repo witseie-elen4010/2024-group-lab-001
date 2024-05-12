@@ -130,18 +130,23 @@
         <p id = 'waiting-screen-title' class = 'room-code-container'>Waiting for another players turn to finish...</p>
     </div>
 
-        <!-- Guessing screen -->
-        <div id='guessingScreen' class='flex-container' style="display: none;">
-            <div class='guessing-box'>
-                <h1 class='guessing-title'>Guess the Drawing</h1>
-                <!-- Canvas data will be loaded into this div -->
-                <div id='canvas-data' class='canvas-data'></div>
-                <!-- Text input field for guessing -->
-                <input type='text' id='guess-input' class='guess-input' placeholder='Enter your guess here'>
-                <!-- Submit guess button -->
-                <button id='guess-button' class='button guess-button'>Submit Guess</button>
+    <!-- Guessing screen -->
+    <div id='guessingScreen' class='container' style="display: none;">
+        <p class = 'title-drawing'>Describe the Drawing</p>
+        <p class = 'room-code-container'>Now it's your turn to describe the drawing!</p>
+        
+        <!-- Canvas data will be loaded into this div -->
+        <div id='canvas-data' class='canvas-data'></div>
+
+        <!-- Prompt form -->
+        <form id="promptForm" class = "lobby-button-container">
+            <div class = "input-box">
+                <i class="uil uil-keyboard icon"></i>
+                <input type="text" id="guess-input" placeholder="What do you see?">
             </div>
-        </div>
+            <!-- Prompt submit button -->
+            <button id="guess-button" class="button lobby-button">Submit</button>
+        </form>
     </div>  
 
    <!-- End game screen -->
