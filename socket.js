@@ -4,6 +4,7 @@
 const { assert } = require('console');
 const { getUsername } = require('./public/scripts/classes/firebase');
 const { getUserEmail } = require('./public/scripts/classes/firebase');
+const { memoryEagerGarbageCollector } = require('firebase/firestore');
 
 // Define helper functions
 function createCode() {
@@ -91,7 +92,7 @@ module.exports = (io, userNames, rooms) => {
                 const sessionId = getSessionID(socket);
                 const username = await getUsername();
                 
-                rooms.set(roomId, { players: new Map(), turn: 0 , playerOrder: [] , roles: [], logs: []}); 
+                rooms.set(roomId, { players: new Map(), turn: 0 , playerOrder: [] , roles: [], drawingAndPrompts: [],logs: []}); 
                 userNames.set(roomId, new Map());
                 rooms.get(roomId).players.set(socket.id, username); 
                 socket.roomId = roomId; 
@@ -141,8 +142,13 @@ module.exports = (io, userNames, rooms) => {
             const roomId = socket.roomId;
             if (rooms.has(roomId)) {
                 const room = rooms.get(roomId);
+                // Get the index of the player that left the lobby 
+                const playerIndex = Array.from(room.players.keys()).indexOf(socket.id);
                 room.players.delete(socket.id); 
                 const playerCount = room.players.size;
+
+                // Require all the players socket id for when someone disconnects as the emitting for game loop requires it
+                const players = Array.from(room.players.keys());
 
                 const username = room.players.get(socket.id);
                 if (userNames.has(roomId)) {
@@ -156,9 +162,84 @@ module.exports = (io, userNames, rooms) => {
                 }
 
                 // There are three cases for when a player disconnects during the game play loop 
+                const playerPlayerOrderIndex = room.playerOrder.indexOf(playerIndex);
 
                 // The player has already played and they decide to leave 
+                if(playerPlayerOrderIndex < room.turn)
+                {
+                    console.log("Player: " + socket.id + " left after they played");
+                    // We need to simply delete the role they played and decrease all indexes above the received index to by one and room.turn by one
+                    room.roles.splice(playerPlayerOrderIndex,1); 
+                    room.playerOrder.splice(playerPlayerOrderIndex,1);
+                    room.turn = room.turn - 1;
+                    room.playerOrder = room.playerOrder.map((value) => {
+                        // If the index is above the certain value, subtract one from the value
+                        if (value > playerIndex) {
+                            return value - 1;
+                        }
+                        // Otherwise, return the original value
+                        return value;
+                    });
+                }
 
+                // The player has not played and they decide to leave
+                else if(playerPlayerOrderIndex > room.turn)
+                {
+                    console.log("Player: " + socket.id + " left before their turn");
+                    room.roles.pop();
+                    room.playerOrder.splice(playerPlayerOrderIndex,1);
+                    room.playerOrder = room.playerOrder.map((value) => {
+                        // If the index is above the certain value, subtract one from the value
+                        if (value > playerIndex) {
+                            return value - 1;
+                        }
+                        // Otherwise, return the original value
+                        return value;
+                    });
+                }
+
+                // Its the players turn and they decide to leave 
+                else if(playerPlayerOrderIndex == room.turn)
+                {
+                    if(room.turn < room.players.size)
+                    {
+                    console.log("Player: " + socket.id + " left during their turn");
+                    room.roles.pop();
+                    room.playerOrder.splice(playerPlayerOrderIndex,1);
+                    room.playerOrder = room.playerOrder.map((value) => {
+                        // If the index is above the certain value, subtract one from the value
+                        if (value > playerIndex) {
+                            return value - 1;
+                        }
+                        // Otherwise, return the original value
+                        return value;
+                    });
+                    // Emit to player who needs to fill the new role 
+                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.turn-1]});
+                    }
+                    else
+                    {
+                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
+                    }
+                }
+
+                console.log(room.players.size);
+                console.log(room.turn);
+                console.log(room.playerOrder);
+                console.log(room.roles)
+
+                    // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
+                if(room.turn < room.players.size){
+                    for(let i = 0; i < room.players.size; i++){
+                            if(i != room.turn){
+                            let message =  "Waiting for ";
+                            let numberOfTurns = 0; 
+                            if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
+                            else{numberOfTurns = room.players.size - room.turn; message = message + numberOfTurns + " players turns until End of Game"}
+                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message});
+                        }
+                    }
+                }
             }
         });    
 
@@ -194,8 +275,11 @@ module.exports = (io, userNames, rooms) => {
                 for(let i = 0; i < players.length; i++) {
                     if(i != room.turn)
                     {
-                    // Rest of the players are assinged the waiting screen as it is not their turn. 
-                    io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames});
+                        let message =  "Waiting for ";
+                        let numberOfTurns = 0; 
+                        if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
+                        // Rest of the players are assinged the waiting screen as it is not their turn. 
+                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message});
                     }
                 }
                 
@@ -241,13 +325,17 @@ module.exports = (io, userNames, rooms) => {
                     // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
                     if(data.prompt){
                         console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
+                        //room.drawingAndPrompts.push(data.prompt);
                         //room.logs.push(new LogEntry(socket.id,"prompt",data.prompt));
                     }
                     else if(data.drawing){
-                        console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received drawing at: " + new Date().toISOString());
+                        //console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received drawing at: " + new Date().toISOString());
+                        console.log("Player with Socket ID: " + socket.id + " Action: " + "drawing " + "Received drawing at: " + new Date().toISOString());
+                        //room.drawingAndPrompts.push(data.drawing);
                         //room.logs.push(new LogEntry(socket.id,"drawing",data.drawing));
                     }
                     
+                    room.drawingAndPrompts.push(userprompt);
                     // Emit to the specific players turn that they need to go to the next screen and set rest of the players to waiting
                     io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:userprompt});
 
@@ -257,7 +345,11 @@ module.exports = (io, userNames, rooms) => {
                         if(i != room.turn)
                         {
                             console.log(players[i] + " Going to waiting screen");
-                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING});
+                            let message =  "Waiting for ";
+                            let numberOfTurns = 0; 
+                            if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
+                            else{numberOfTurns = room.players.size - room.turn; message = message + numberOfTurns + " players turns until End of Game"}
+                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message});
                         }
                     }
                     }
@@ -265,15 +357,13 @@ module.exports = (io, userNames, rooms) => {
                     {
                         // Logging final users data that was received when odd players will be a data.prompt but when even users will be data.drawing 
                         if(data.prompt){
-                            console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
-                            //room.logs.push(new LogEntry(socket.id,"prompt",data.prompt)); 
+                            console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString()); 
                         }
                         else if(data.drawing){
                             console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received prompt at: " + new Date().toISOString());
-                            //room.logs.push(new LogEntry(socket.id,"drawing",data.drawing));
                         }
                         console.log("Eng of the Game :" + socket.roomId);
-
+                        rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
                         io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
                     }

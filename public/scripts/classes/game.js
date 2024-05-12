@@ -196,7 +196,7 @@ function switchingGameScreen(data)
     }
     else if(data.gameState == 'waiting')
     {
-        switchToWaitingScreen();
+        switchToWaitingScreen({numberOfTurns:data.numberOfTurns});
     }
     else{
         endGame();
@@ -204,12 +204,13 @@ function switchingGameScreen(data)
 }
 
 // Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
-function switchToWaitingScreen(){
+function switchToWaitingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById('entireDrawingScreen').style.display = 'none';
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
+    document.getElementById("waiting-screen-title").innerHTML = data.numberOfTurns;
 }
 
 // Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
