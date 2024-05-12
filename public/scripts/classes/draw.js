@@ -104,8 +104,8 @@ const countdownInterval = setInterval(() => {
     countdown--;
     
     if (countdown < 0) {
-        counter.innerText = "Drawing Time is Up"; // Update counter text when game starts
-        console.log("Drawing is finished");
+        counter.innerText = "Drawing Time is Up Please Submit the Drawing"; // Update counter text when game starts
+        console.log("Drawing is finished Please Submit the Drawing");
         clearInterval(countdownInterval);
         isDrawing = false; 
     }
