@@ -264,6 +264,8 @@ function switchToDrawingScreen(data) {
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById('entireDrawingScreen').style.display = 'flex';
+    document.getElementById('entireDrawingScreen').style.flexDirection = 'row';
+    document.getElementById('entireDrawingScreen').style.justifyContent = 'center';
 
     console.log("Prompt to be draw: " + data.prompt);
 

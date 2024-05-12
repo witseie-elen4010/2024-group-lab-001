@@ -59,6 +59,20 @@ body {
     text-align: center;
 }
 
+.prompt-container {
+    align-items: center; /* Center items horizontally */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: none;
+    display: flex; 
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    margin: 5px;
+    padding: 5px;
+    text-align: center;
+    width: 50%;
+}
+
 .home-container {
     width: 50%;
 }

@@ -41,9 +41,9 @@
 
     <!-- Drawing screen -->
     <div id = 'entireDrawingScreen' style="display: none;">
-        <div style = "display: flex; flex-direction: column;">
-            <div id = "drawing-prompt" class = "prompt-title">
-                <h1 id = "header-drawing-prompt" class = 'prompt-title'></h1>
+        <div style = "align-items: center; display: flex; flex-direction: column; justify-content: center; ">
+            <div id = "drawing-prompt" class = "container prompt-container">
+                <p id = "header-drawing-prompt" class = 'room-code-container'></p>
             </div>
             <div id="drawingScreen" class="flex-container">
                 <div class='tool-box' id='tool-box'>
@@ -78,6 +78,7 @@
                         </ul>
                     </div>
                 </div>
+                
                 <div class='canvas-container'>
                     <canvas class='drawing-canvas' id="drawing-canvas"></canvas>
                 </div>
