@@ -215,7 +215,7 @@ module.exports = (io, userNames, rooms) => {
                         return value;
                     });
                     // Emit to player who needs to fill the new role 
-                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[playerPlayerOrderIndex-1]});
+                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
                     }
                     else
                     {
@@ -227,7 +227,7 @@ module.exports = (io, userNames, rooms) => {
                 console.log(room.turn);
                 console.log(room.playerOrder);
                 console.log(room.roles)
-
+                console.log(room.drawingAndPrompts.length);
                     // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
                 if(room.turn < room.players.size){
                     for(let i = 0; i < room.players.size; i++){
