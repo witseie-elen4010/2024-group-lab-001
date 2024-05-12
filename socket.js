@@ -22,6 +22,10 @@ function getSessionID(socket) {
     return socket.request?.sessionID || null;
 }
 
+function getSessionUsername(socket) {
+    return socket.request.session.username || null;
+}
+
 // Assign the specific role each player during game loop
 function assigningRoles(numberPlayers)
 {
@@ -89,8 +93,7 @@ module.exports = (io, userNames, rooms) => {
         socket.on('create room', async () => {
             try {
                 const roomId = createCode();
-                const sessionId = getSessionID(socket);
-                const username = await getUsername();
+                const username = getSessionUsername(socket);
                 
                 rooms.set(roomId, { players: new Map(), turn: 0 , playerOrder: [] , roles: [], drawingAndPrompts: [],logs: []}); 
                 userNames.set(roomId, new Map());
@@ -116,7 +119,7 @@ module.exports = (io, userNames, rooms) => {
                 }
 
                 const room = rooms.get(roomId);
-                const username = await getUsername();
+                const username = getSessionUsername(socket);
                 room.players.set(socket.id, username); 
 
                 if (!userNames.has(roomId)) {
