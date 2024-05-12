@@ -222,13 +222,7 @@ module.exports = (io, userNames, rooms) => {
                         io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
                     }
                 }
-
-                console.log(room.players.size);
-                console.log(room.turn);
-                console.log(room.playerOrder);
-                console.log(room.roles)
-                console.log(room.drawingAndPrompts.length);
-                    // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
+                // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
                 if(room.turn < room.players.size){
                     for(let i = 0; i < room.players.size; i++){
                             if(i != room.turn){
@@ -259,14 +253,12 @@ module.exports = (io, userNames, rooms) => {
                 // Convert players to an array. Map stores sequential order of when added to the map so array would be in a sequential order of when user joined the room.
                 // Starting with user that created the room.
                 let players = Array.from(room.players.keys()) 
-                console.log(players)
 
                 // Randomize the order of the players and assign roles to each player
                 room.playerOrder = randomizePlayerOrder(playerCount); 
                 room.roles = assigningRoles(playerCount);
                 room.turn = 0; 
-                console.log(room.roles)
-                console.log(room.playerOrder)
+                room.drawingAndPrompts = [];
 
                 // Emit to the first player that their role 
                 io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames});
