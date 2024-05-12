@@ -5,6 +5,7 @@ import client from './client.js';
 
 // Variables
 let isHost = false; 
+let countdown = 5; // Countdown timer for game start
 let remainingUsernamesList = [];
 
 // Function to update the list of remaining usernames
@@ -119,30 +120,28 @@ function startGame(startgameButton,playerCount,roomId){
 };
 
 function createTimer (roomId) {
-  // Right div for displaying usernames
-  const timerDiv = document.createElement('div')
-  timerDiv.className = '.lobby-right'
-  const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
+    // Right div for displaying usernames
+    const timerDiv = document.createElement('div')
+    timerDiv.className = '.lobby-right'
+    const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
 
-  // Paragraph for "Starting Game In"
-  const startingText = document.createElement('p')
-  startingText.className = 'lobby-container-text start-time-container'
-  startingText.innerText = 'Game Starting In:'
-  timerDiv.appendChild(startingText) // Add startingText to rightDiv
+    // Paragraph for "Starting Game In"
+    const startingText = document.createElement('p')
+    startingText.className = 'lobby-container-text start-time-container'
+    startingText.innerText = 'Game Starting In:'
+    timerDiv.appendChild(startingText) // Add startingText to rightDiv
 
-  // Paragraph for countdown
-  const counter = document.createElement('p')
-  counter.className = 'room-code-container start-time-container'
-  timerDiv.appendChild(counter) // Add counter to rightDiv
+    // Paragraph for countdown
+    const counter = document.createElement('p')
+    counter.className = 'room-code-container start-time-container'
+    timerDiv.appendChild(counter) // Add counter to rightDiv
 
-  postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
-
-  updateTimer(counter, roomId)
+    postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
+    countdown = 5; // Reset the countdown timer
+    updateTimer(counter, roomId)
 }
 
 function updateTimer(counter,roomId){
-  // Start countdown
-    let countdown = 5; // Set countdown time in seconds
     const countdownInterval = setInterval(() => {
         counter.innerText = countdown + " seconds"; // Update counter text with countdown
         countdown--;

@@ -1,4 +1,3 @@
-import { reset } from 'nodemon';
 import screenManager from './game.js';
 
 const socket = io();    
@@ -124,6 +123,7 @@ socket.on('switch-screen-waiting', data =>{
 
 socket.on('return-lobby', data =>{
     gameStarted = false;
+    console.log("Returning to lobby screen");
     screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
