@@ -168,7 +168,7 @@ module.exports = (io, userNames, rooms) => {
                 if(playerPlayerOrderIndex < room.turn)
                 {
                     console.log("Player: " + socket.id + " left after they played");
-                    // We need to simply delete the role they played and decrease all indexes above the received index to by one and room.turn by one
+                    // We need to simply delete the role they played and decrease all indexes above the received index by one and room.turn by one
                     room.roles.splice(playerPlayerOrderIndex,1); 
                     room.playerOrder.splice(playerPlayerOrderIndex,1);
                     room.turn = room.turn - 1;
@@ -215,7 +215,7 @@ module.exports = (io, userNames, rooms) => {
                         return value;
                     });
                     // Emit to player who needs to fill the new role 
-                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.turn-1]});
+                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[playerPlayerOrderIndex-1]});
                     }
                     else
                     {
