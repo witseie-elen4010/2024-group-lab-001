@@ -104,9 +104,12 @@
 
     <!-- Intial prompt screen -->
     <div id = 'intialPromptScreen' class = 'container' style="display: none;">
-            <p class = 'title-drawing'>Write a Prompt</p>
+        <!-- Lottie Animation -->
+        <dotlottie-player src="https://lottie.host/584898dc-fa02-42d5-9736-4985b1aaea84/VkCFqepdh4.json" 
+        background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></dotlottie-player>
+        <p class = 'title-drawing'>Write a Prompt</p>
 
-            <!-- Prompt form -->
+        <!-- Prompt form -->
         <form id="promptForm" class = "lobby-button-container">
             <div class = "input-box">
                 <i class="uil uil-keyboard icon"></i>
@@ -118,10 +121,13 @@
     </div>
 
     <!-- Waiting screen -->
-    <div id='waitingScreen' class='flex-container' style="display: none;">
-        <div class='waiting-box'>
-            <h1 id = 'waiting-screen-title' class='waiting-title'>Waiting for another players turn to finish...</h1>
-        </div>
+    <div id = 'waitingScreen' class = 'container' style="display: none;">
+        <!-- Lottie Animation -->
+        <dotlottie-player src="https://lottie.host/6ee573f4-c43f-4939-b753-8850ca1904e0/8i15FEz9Cv.json" 
+        background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></dotlottie-player>
+        <p class = 'title-drawing'>On Hold</p>
+
+        <p id = 'waiting-screen-title' class = 'room-code-container'>Waiting for another players turn to finish...</p>
     </div>
 
         <!-- Guessing screen -->
@@ -146,8 +152,9 @@
         </div>
     </div>
 
-    <!-- Load Socket.IO library -->
+    <!-- Load scripts -->
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="/scripts/classes/client.js"></script>
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
 </body>
 </html>
