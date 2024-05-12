@@ -140,6 +140,21 @@ module.exports = (io, userNames, rooms) => {
             }
         });
 
+        socket.on('return', async (roomId) =>{
+            try {
+                const username = getSessionUsername(socket);
+                const roomId = socket.roomId;
+                const room = rooms.get(roomId);
+                const playerCount = room.players.size;
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                io.to(socket.roomId).emit('return-lobby', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
+            } catch (error) {
+                console.error('Error Joining Room:', error);
+                socket.emit('Joining Room has Failed', { error: error.message });
+            }
+        });
+
         // Handle 'disconnect' event
         socket.on('disconnect', () => {
             const roomId = socket.roomId;

@@ -32,6 +32,9 @@ function updateRemainingUsernames(usernames) {
 }
 
 function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
+    // Hide the End Game Screen if it is displayed
+    document.getElementById('endGameScreen').style.display = 'none';
+
     // Hide the lobby container and display the post lobby creation screen
     const lobbyContainer = document.getElementById('lobbyContainer');
     const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen');
@@ -106,7 +109,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
+    // if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -139,19 +142,19 @@ function createTimer (roomId) {
 
 function updateTimer(counter,roomId){
   // Start countdown
-let countdown = 5; // Set countdown time in seconds
-const countdownInterval = setInterval(() => {
-    counter.innerText = countdown + " seconds"; // Update counter text with countdown
-    countdown--;
+    let countdown = 5; // Set countdown time in seconds
+    const countdownInterval = setInterval(() => {
+        counter.innerText = countdown + " seconds"; // Update counter text with countdown
+        countdown--;
 
-    if (countdown < 0 && isHost) {
-        counter.innerText = "Game started"; // Update counter text when game starts
-        console.log("Emitting start game");
-        client.socket.emit('start-game', roomId);
-        clearInterval(countdownInterval);
-        console.log("Game: A Game session has started.");
-    }
-  }, 1000);
+        if (countdown < 0 && isHost) {
+            counter.innerText = "Game started"; // Update counter text when game starts
+            console.log("Emitting start game");
+            client.socket.emit('start-game', roomId);
+            clearInterval(countdownInterval);
+            console.log("Game: A Game session has started.");
+        }
+    }, 1000);
 }
 
 function copyToClipboard(copyButton, roomId) {

@@ -1,3 +1,4 @@
+import { reset } from 'nodemon';
 import screenManager from './game.js';
 
 const socket = io();    
@@ -9,6 +10,7 @@ let gameStarted = false; // Flag to track game state
 const promptEntry = document.getElementById("prompt-button"); // Button for player who is entering the intial prompt
 const drawingEntry = document.getElementById("submit-drawing-button"); // Button to submit the players drawing of a giving prompt 
 const guessingDrawingEntry = document.getElementById("guess-button"); // Button to submit the prompt obtained from a giving drawing.
+const returnLobbySession = document.getElementById("backToLobbySessionButton"); // Button to return to Lobby Screen
 
 createRoomForm.addEventListener("submit", event => {
     event.preventDefault(); // Prevent form submission
@@ -42,6 +44,12 @@ drawingEntry.addEventListener("click", event =>{
 guessingDrawingEntry.addEventListener("click", event =>{
     event.preventDefault();
     socket.emit('gameplay-loop',{prompt:document.getElementById('guess-input').value})
+});
+
+// Button listener to emit corresponding information back to the server when user wants to return to the lobby screen
+returnLobbySession.addEventListener("click", event =>{
+    event.preventDefault();
+    socket.emit('return');
 });
 
 // Handle events or further logic here
@@ -112,6 +120,11 @@ socket.on('gameplay-loop', data => {
 // For now players will get a waiting screen
 socket.on('switch-screen-waiting', data =>{
     screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns});
+});
+
+socket.on('return-lobby', data =>{
+    gameStarted = false;
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
 
