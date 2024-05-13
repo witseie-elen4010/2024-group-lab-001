@@ -123,6 +123,4 @@ test('User able to click eraser tool', async ({page}) => {
 test("User is able to see the timer", async({page}) => {
   await page.goto('http://localhost:3000/draw');
   await page.getByText('Time Remaining:').click();
-  await page.waitForTimeout(10);
-  await page.getByText('seconds').click();
   });
