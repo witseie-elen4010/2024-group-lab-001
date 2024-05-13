@@ -4,8 +4,10 @@
 import client from './client.js';
 
 // Variables
-let isHost = false; 
+let isHost = false;
+let drawingSubmitted = false; 
 let countdown = 5; // Countdown timer for game start
+let drawingCountdown = 10; // Set countdown time in seconds
 let remainingUsernamesList = [];
 
 // Function to update the list of remaining usernames
@@ -261,6 +263,12 @@ function switchToPromptEntryScreen()
     document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
 }
 
+function resetDrawingTimer(){
+    drawingCountdown = 10;
+    console.log("Guess Timer has been reset");
+    drawingSubmitted = false;
+}
+
 // Function to switch to the drawing screen and a prompt is provided to the player to ensure that they have a prompt to draw. 
 function switchToDrawingScreen(data) {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -271,7 +279,7 @@ function switchToDrawingScreen(data) {
     document.getElementById('entireDrawingScreen').style.flexDirection = 'row';
     document.getElementById('entireDrawingScreen').style.justifyContent = 'center';
 
-    console.log("Prompt to be draw: " + data.prompt);
+    console.log("Prompt To Be Drawn: " + data.prompt);
 
     document.getElementById("header-drawing-prompt").innerHTML = "Your Drawing Prompt is: " + data.prompt;
 
@@ -281,6 +289,33 @@ function switchToDrawingScreen(data) {
     
     // Append script element to drawingScreen div
     document.getElementById('entireDrawingScreen').appendChild(scriptElement);
+
+    // Timer to start drawing session
+    let drawingCounter = document.getElementById("countdownTimer");
+    let promptSubmitButton = document.getElementById("submitDrawingButton");
+
+    resetDrawingTimer();
+    const drawingCountdownInterval = setInterval(() => {
+        drawingCounter.innerText = drawingCountdown + " seconds";
+        drawingCountdown--;
+
+        promptSubmitButton.addEventListener('click', function() {
+            drawingSubmitted = true;
+            clearInterval(drawingCountdownInterval);
+        });
+
+        if (drawingCountdown == 5) {
+            console.log("5 seconds left to submit drawing");
+        }
+
+        if (drawingCountdown < 0) {
+            drawingCounter.innerText = "Time is Up!"; 
+            setTimeout(function() {
+                promptSubmitButton.click();
+            }, 2000); // Delay of 2 seconds
+            clearInterval(drawingCountdownInterval);
+        }
+    }, 1000);
 
     // Need to clear the canvas 
     // Assuming you have a reference to the canvas
