@@ -183,10 +183,24 @@ const loginGuest = async(myUsername, req, res) => {
     }
 }
 
+// Function to get the prompt from the database
+const generateRandomPrompts = async function(promptIndex) {
+    const promptInformation = doc(firestore, `prompts/prompt_${promptIndex}`);
+    const mySnapshot = await getDoc(promptInformation);
+    if(mySnapshot.exists()){
+        const docData = mySnapshot.data();
+        const prompt = docData.text;
+        
+        return prompt;
+    }
+    return "";
+};
+
 module.exports = {
     createNewAccount,
     loginEmailPassword,
     getUsername,
     getUserEmail,
     loginGuest,
+    generateRandomPrompts
 };
