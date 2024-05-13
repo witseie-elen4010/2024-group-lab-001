@@ -13,6 +13,7 @@ const returnLobbySession = document.getElementById("backToLobbySessionButton"); 
 
 createRoomForm.addEventListener("submit", event => {
     event.preventDefault(); // Prevent form submission
+    screenManager.setHost();
     socket.emit("create room");
 });
 

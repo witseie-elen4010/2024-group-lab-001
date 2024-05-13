@@ -23,7 +23,12 @@ function getSessionID(socket) {
 }
 
 function getSessionUsername(socket) {
-    return socket.request.session.username || null;
+    // Check if socket.request and socket.request.session exist to avoid TypeError
+    const sessionUsername = socket.request && socket.request.session ? socket.request.session.username : null;
+    const handshakeUsername = socket.handshake.query.username || null;
+
+    // Return the first one that is not null, or null if both are null
+    return sessionUsername || handshakeUsername || null;
 }
 
 // Assign the specific role each player during game loop
