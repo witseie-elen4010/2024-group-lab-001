@@ -7,7 +7,7 @@ import client from './client.js';
 let isHost = false;
 let drawingSubmitted = false; 
 let countdown = 5; // Countdown timer for game start
-let drawingCountdown = 10; // Set countdown time in seconds
+let drawingCountdown = 60; // Set countdown time in seconds
 let remainingUsernamesList = [];
 
 // Function to update the list of remaining usernames
@@ -264,7 +264,7 @@ function switchToPromptEntryScreen()
 }
 
 function resetDrawingTimer(){
-    drawingCountdown = 10;
+    drawingCountdown = 60;
     console.log("Guess Timer has been reset");
     drawingSubmitted = false;
 }
