@@ -416,3 +416,7 @@ module.exports = (io, userNames, rooms) => {
 
     });
 };
+
+module.exports = {
+    generatePromptIndex
+};
