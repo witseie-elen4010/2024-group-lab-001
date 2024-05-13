@@ -10,6 +10,11 @@ let countdown = 5; // Countdown timer for game start
 let drawingCountdown = 60; // Set countdown time in seconds
 let remainingUsernamesList = [];
 
+function setHost()
+{
+    isHost = true; 
+}
+
 // Function to update the list of remaining usernames
 function updateRemainingUsernames(usernames) {
     remainingUsernamesList = usernames;
@@ -116,8 +121,9 @@ function startGame(startgameButton,playerCount,roomId){
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
-      isHost = true; 
-      client.socket.emit("create-timer");
+      if(isHost){
+        client.socket.emit("create-timer")
+      };
     });
 };
 
@@ -136,6 +142,7 @@ function createTimer (roomId) {
     // Paragraph for countdown
     const counter = document.createElement('p')
     counter.className = 'room-code-container start-time-container'
+    counter.id = 'countdownForStarting';
     timerDiv.appendChild(counter) // Add counter to rightDiv
 
     postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
@@ -209,6 +216,22 @@ function switchingGameScreen(data)
     }
 }
 
+function blockAutoButtonPresses(){
+    promptSubmitted = true;
+    drawingSubmitted = true;
+}
+function resetTimers(){
+    resetGuessTimer();
+    resetPromptTimer();
+    resetDrawingTimer
+    console.log("Timers have been reset");
+}
+
+function resetPromptTimer(){
+    promptCountdown = 10;
+    console.log("Prompt Timer has been reset");
+    promptSubmitted = false;
+}
 // Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
 function switchToWaitingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -217,6 +240,8 @@ function switchToWaitingScreen(data){
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
     document.getElementById("waiting-screen-title").innerHTML = data.numberOfTurns;
+
+    blockAutoButtonPresses();
 }
 
 // Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
@@ -226,6 +251,8 @@ function switchToGuessingScreen(data){
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'flex'; //Show the prompt entering screen
+
+    blockAutoButtonPresses();
 
     const imageContainer = document.getElementById('canvas-data');
     imageContainer.innerHTML = ""; // Clear the contents of the html 
@@ -254,6 +281,12 @@ function switchToGuessingScreen(data){
 }
 
 // Function to switch to the intial prompt entry of the first player in the game loop
+
+
+let promptCountdown = 10;
+let promptSubmitted = false;
+
+
 function switchToPromptEntryScreen()
 {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -261,6 +294,29 @@ function switchToPromptEntryScreen()
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none';
     document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
+
+    blockAutoButtonPresses();
+    resetPromptTimer();
+    let promptCounter = document.getElementById("promptCountdownTimer");
+    let promptSubmitButton = document.getElementById("prompt-button");
+    // Timer to end the session of prompting
+    const promptCountdownInterval = setInterval(() => {
+        promptCounter.innerText = promptCountdown + " seconds"; // Update counter text with countdown
+        promptCountdown--;
+
+        promptSubmitButton.addEventListener('click', function() {
+            promptSubmitted = true;
+            clearInterval(promptCountdownInterval);
+
+        });
+
+        if (promptCountdown < 0 && promptSubmitted == false) {
+            promptCounter.innerText = "Prompting Time is Up"; // Update counter text when game starts
+            console.log("Prompting is finished");
+            clearInterval(promptCountdownInterval);
+            promptSubmitButton.click();
+        }
+    }, 1000);
 }
 
 function resetDrawingTimer(){
@@ -292,14 +348,15 @@ function switchToDrawingScreen(data) {
 
     // Timer to start drawing session
     let drawingCounter = document.getElementById("countdownTimer");
-    let promptSubmitButton = document.getElementById("submitDrawingButton");
+    let drawingSubmitButton = document.getElementById("submitDrawingButton");
 
+    blockAutoButtonPresses();
     resetDrawingTimer();
     const drawingCountdownInterval = setInterval(() => {
         drawingCounter.innerText = drawingCountdown + " seconds";
         drawingCountdown--;
 
-        promptSubmitButton.addEventListener('click', function() {
+        drawingSubmitButton.addEventListener('click', function() {
             drawingSubmitted = true;
             clearInterval(drawingCountdownInterval);
         });
@@ -308,10 +365,10 @@ function switchToDrawingScreen(data) {
             console.log("5 seconds left to submit drawing");
         }
 
-        if (drawingCountdown < 0) {
+        if (drawingCountdown < 0 && drawingSubmitted == false) {
             drawingCounter.innerText = "Time is Up!"; 
             setTimeout(function() {
-                promptSubmitButton.click();
+                drawingSubmitButton.click();
             }, 2000); // Delay of 2 seconds
             clearInterval(drawingCountdownInterval);
         }
@@ -338,6 +395,8 @@ function endGame() {
 
     // Show the end game screen
     document.getElementById('endGameScreen').style.display = 'flex';
+
+    blockAutoButtonPresses();
 }
 
 export default {
@@ -345,6 +404,7 @@ export default {
     switchingGameScreen,
     createTimer,
     updateTimer,
-    updateRemainingUsernames
+    updateRemainingUsernames,
+    setHost,
 };
 
