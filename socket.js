@@ -5,6 +5,7 @@ const { assert } = require('console');
 const { getUsername } = require('./public/scripts/classes/firebase');
 const { getUserEmail } = require('./public/scripts/classes/firebase');
 const { memoryEagerGarbageCollector } = require('firebase/firestore');
+const { generateRandomPrompts } = require('./public/scripts/classes/firebase');
 
 // Define helper functions
 function createCode() {
@@ -78,6 +79,13 @@ function shuffle(array) {
     }
     return array;
 }
+
+const generatePromptIndex = function (){
+    const min = 1;
+    const max = 30;
+    let promptIndex = Math.floor(Math.random() * (max - min + 1)) + min;
+    return promptIndex;
+};
 
 // Socket.IO logic
 module.exports = (io, userNames, rooms) => {
@@ -392,5 +400,19 @@ module.exports = (io, userNames, rooms) => {
                 socket.emit('prompt entry failed', { error: error.message });
             }
         });
+        
+        socket.on("random-prompt", async () => {
+            console.log('Random prompt request received');
+            try {
+                let promptIndex = generatePromptIndex();
+                const prompt = await generateRandomPrompts(promptIndex);
+                socket.emit("random-prompt-generated", {prompt});
+                console.log('Random prompt generated:'+ prompt);
+            } catch (error) {
+                console.error('Error getting random prompt:', error);
+                socket.emit('random-prompt failed', { error: error.message });
+            }
+        });
+
     });
 };

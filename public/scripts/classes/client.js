@@ -3,6 +3,7 @@ import screenManager from './game.js';
 const socket = io();    
 const createRoomForm = document.getElementById("createRoomForm");
 const joinRoomForm = document.getElementById("joinRoomForm");
+const randomPromptButton = document.getElementById("randomPromptButton"); // Button to generate a random prompt for the player
 let gameStarted = false; // Flag to track game state
 
 // Buttons for game loop 
@@ -29,7 +30,8 @@ joinRoomForm.addEventListener("submit", event => {
 // Button listeners to emit corresponding information back to the server when user has completed their prompt 
 promptEntry.addEventListener("click", event =>{
     event.preventDefault();
-    socket.emit('gameplay-loop',{prompt:document.getElementById("prompt-input").value});
+    socket.emit('gameplay-loop',{prompt:document.getElementById("promptInput").value});
+    document.getElementById("promptInput").value = "";
 });
 
 // Button listener to emit corresponding information back to the server when user has compelted their drawing from a giving prompt 
@@ -43,13 +45,20 @@ drawingEntry.addEventListener("click", event =>{
 // Button listener to emit corresponding information back to the server when user has compeleted their prompt from a giving drawing 
 guessingDrawingEntry.addEventListener("click", event =>{
     event.preventDefault();
-    socket.emit('gameplay-loop',{prompt:document.getElementById('guess-input').value})
+    socket.emit('gameplay-loop',{prompt:document.getElementById('guessInput').value})
+    document.getElementById("guessInput").value = "";
 });
 
 // Button listener to emit corresponding information back to the server when user wants to return to the lobby screen
 returnLobbySession.addEventListener("click", event =>{
     event.preventDefault();
     socket.emit('return');
+});
+
+randomPromptButton.addEventListener("click", event => {
+    event.preventDefault();
+    socket.emit("random-prompt");
+    console.log("Random prompt requested");
 });
 
 // Handle events or further logic here
@@ -128,6 +137,14 @@ socket.on('return-lobby', data =>{
     screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
 });
 
+socket.on("random-prompt-generated", data => {
+    console.log("Random prompt received: " + data.prompt);
+
+    const promptBox = document.getElementById('promptInput'); 
+    // Set the value of the promptBox to the prompt
+    promptBox.value = "";
+    promptBox.value = data.prompt;
+});
 
 export default {
     socket
