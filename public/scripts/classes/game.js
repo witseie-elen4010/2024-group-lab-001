@@ -146,10 +146,12 @@ function updateTimer(counter,roomId){
         counter.innerText = countdown + " seconds"; // Update counter text with countdown
         countdown--;
 
-        if (countdown < 0 && isHost) {
+        if (countdown < 0) {
             counter.innerText = "Game started"; // Update counter text when game starts
             console.log("Emitting start game");
-            client.socket.emit('start-game', roomId);
+            if(isHost){
+                client.socket.emit('start-game', roomId);
+            }
             clearInterval(countdownInterval);
             console.log("Game: A Game session has started.");
         }
