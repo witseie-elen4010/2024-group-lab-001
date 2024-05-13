@@ -88,7 +88,7 @@ const generatePromptIndex = function (){
 };
 
 // Socket.IO logic
-module.exports = (io, userNames, rooms) => {
+const serverLogic = (io, userNames, rooms) => {
 
     const GameState = {
         promptEntry: "promptEntry", 
@@ -418,5 +418,6 @@ module.exports = (io, userNames, rooms) => {
 };
 
 module.exports = {
-    generatePromptIndex
+    generatePromptIndex,
+    serverLogic
 };
