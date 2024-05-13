@@ -87,4 +87,8 @@
     justify-content: center; /* Center items vertically */
     width: 100%;
 }
-
+.prompt-time-container {
+    justify-content: center; /* Center items vertically */
+    margin-top: 15px;
+    text-align: center; /* Align text to the center */
+}
