@@ -22,6 +22,10 @@ function getSessionID(socket) {
     return socket.request?.sessionID || null;
 }
 
+function getSessionUsername(socket) {
+    return socket.request.session.username || null;
+}
+
 // Assign the specific role each player during game loop
 function assigningRoles(numberPlayers)
 {
@@ -89,8 +93,7 @@ module.exports = (io, userNames, rooms) => {
         socket.on('create room', async () => {
             try {
                 const roomId = createCode();
-                const sessionId = getSessionID(socket);
-                const username = await getUsername();
+                const username = getSessionUsername(socket);
                 
                 rooms.set(roomId, { players: new Map(), turn: 0 , playerOrder: [] , roles: [], drawingAndPrompts: [],logs: []}); 
                 userNames.set(roomId, new Map());
@@ -116,7 +119,7 @@ module.exports = (io, userNames, rooms) => {
                 }
 
                 const room = rooms.get(roomId);
-                const username = await getUsername();
+                const username = getSessionUsername(socket);
                 room.players.set(socket.id, username); 
 
                 if (!userNames.has(roomId)) {
@@ -130,6 +133,21 @@ module.exports = (io, userNames, rooms) => {
                 const playerCount = room.players.size;
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values());
                 io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
+            } catch (error) {
+                console.error('Error Joining Room:', error);
+                socket.emit('Joining Room has Failed', { error: error.message });
+            }
+        });
+
+        socket.on('return', async (roomId) =>{
+            try {
+                const username = getSessionUsername(socket);
+                const roomId = socket.roomId;
+                const room = rooms.get(roomId);
+                const playerCount = room.players.size;
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                io.to(socket.roomId).emit('return-lobby', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
             } catch (error) {
                 console.error('Error Joining Room:', error);

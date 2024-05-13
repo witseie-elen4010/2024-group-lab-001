@@ -4,7 +4,10 @@
 import client from './client.js';
 
 // Variables
-let isHost = false; 
+let isHost = false;
+let drawingSubmitted = false; 
+let countdown = 5; // Countdown timer for game start
+let drawingCountdown = 60; // Set countdown time in seconds
 let remainingUsernamesList = [];
 
 // Function to update the list of remaining usernames
@@ -32,6 +35,9 @@ function updateRemainingUsernames(usernames) {
 }
 
 function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
+    // Hide the End Game Screen if it is displayed
+    document.getElementById('endGameScreen').style.display = 'none';
+
     // Hide the lobby container and display the post lobby creation screen
     const lobbyContainer = document.getElementById('lobbyContainer');
     const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen');
@@ -106,7 +112,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
+    // if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -116,42 +122,42 @@ function startGame(startgameButton,playerCount,roomId){
 };
 
 function createTimer (roomId) {
-  // Right div for displaying usernames
-  const timerDiv = document.createElement('div')
-  timerDiv.className = '.lobby-right'
-  const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
+    // Right div for displaying usernames
+    const timerDiv = document.createElement('div')
+    timerDiv.className = '.lobby-right'
+    const postLobbyCreationScreen = document.getElementById('postLobbyCreationScreen')
 
-  // Paragraph for "Starting Game In"
-  const startingText = document.createElement('p')
-  startingText.className = 'lobby-container-text start-time-container'
-  startingText.innerText = 'Game Starting In:'
-  timerDiv.appendChild(startingText) // Add startingText to rightDiv
+    // Paragraph for "Starting Game In"
+    const startingText = document.createElement('p')
+    startingText.className = 'lobby-container-text start-time-container'
+    startingText.innerText = 'Game Starting In:'
+    timerDiv.appendChild(startingText) // Add startingText to rightDiv
 
-  // Paragraph for countdown
-  const counter = document.createElement('p')
-  counter.className = 'room-code-container start-time-container'
-  timerDiv.appendChild(counter) // Add counter to rightDiv
+    // Paragraph for countdown
+    const counter = document.createElement('p')
+    counter.className = 'room-code-container start-time-container'
+    timerDiv.appendChild(counter) // Add counter to rightDiv
 
-  postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
-
-  updateTimer(counter, roomId)
+    postLobbyCreationScreen.appendChild(timerDiv) // Add rightDiv to postLobbyCreationScreen
+    countdown = 5; // Reset the countdown timer
+    updateTimer(counter, roomId)
 }
 
 function updateTimer(counter,roomId){
-  // Start countdown
-let countdown = 5; // Set countdown time in seconds
-const countdownInterval = setInterval(() => {
-    counter.innerText = countdown + " seconds"; // Update counter text with countdown
-    countdown--;
+    const countdownInterval = setInterval(() => {
+        counter.innerText = countdown + " seconds"; // Update counter text with countdown
+        countdown--;
 
-    if (countdown < 0 && isHost) {
-        counter.innerText = "Game started"; // Update counter text when game starts
-        console.log("Emitting start game");
-        client.socket.emit('start-game', roomId);
-        clearInterval(countdownInterval);
-        console.log("Game: A Game session has started.");
-    }
-  }, 1000);
+        if (countdown < 0) {
+            counter.innerText = "Game started"; // Update counter text when game starts
+            console.log("Emitting start game");
+            if(isHost){
+                client.socket.emit('start-game', roomId);
+            }
+            clearInterval(countdownInterval);
+            console.log("Game: A Game session has started.");
+        }
+    }, 1000);
 }
 
 function copyToClipboard(copyButton, roomId) {
@@ -230,14 +236,14 @@ function switchToGuessingScreen(data){
     img.onload = function() {
         // Create a new canvas
         var newCanvas = document.createElement('canvas');
-        newCanvas.width = img.width;
-        newCanvas.height = img.height;
+        newCanvas.width = img.width * 0.65;
+        newCanvas.height = img.height * 0.65;
 
         // Get the context of the new canvas
         var ctx = newCanvas.getContext('2d');
 
         // Draw the image onto the new canvas
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(img, 0, 0, newCanvas.width, newCanvas.height);
 
         // Append the new canvas to the image container
         imageContainer.appendChild(newCanvas);
@@ -257,6 +263,12 @@ function switchToPromptEntryScreen()
     document.getElementById("intialPromptScreen").style.display = 'flex'; //Show the prompt entering screen
 }
 
+function resetDrawingTimer(){
+    drawingCountdown = 60;
+    console.log("Guess Timer has been reset");
+    drawingSubmitted = false;
+}
+
 // Function to switch to the drawing screen and a prompt is provided to the player to ensure that they have a prompt to draw. 
 function switchToDrawingScreen(data) {
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -264,8 +276,10 @@ function switchToDrawingScreen(data) {
     document.getElementById("waitingScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById('entireDrawingScreen').style.display = 'flex';
+    document.getElementById('entireDrawingScreen').style.flexDirection = 'row';
+    document.getElementById('entireDrawingScreen').style.justifyContent = 'center';
 
-    console.log("Prompt to be draw: " + data.prompt);
+    console.log("Prompt To Be Drawn: " + data.prompt);
 
     document.getElementById("header-drawing-prompt").innerHTML = "Your Drawing Prompt is: " + data.prompt;
 
@@ -275,6 +289,33 @@ function switchToDrawingScreen(data) {
     
     // Append script element to drawingScreen div
     document.getElementById('entireDrawingScreen').appendChild(scriptElement);
+
+    // Timer to start drawing session
+    let drawingCounter = document.getElementById("countdownTimer");
+    let promptSubmitButton = document.getElementById("submitDrawingButton");
+
+    resetDrawingTimer();
+    const drawingCountdownInterval = setInterval(() => {
+        drawingCounter.innerText = drawingCountdown + " seconds";
+        drawingCountdown--;
+
+        promptSubmitButton.addEventListener('click', function() {
+            drawingSubmitted = true;
+            clearInterval(drawingCountdownInterval);
+        });
+
+        if (drawingCountdown == 5) {
+            console.log("5 seconds left to submit drawing");
+        }
+
+        if (drawingCountdown < 0) {
+            drawingCounter.innerText = "Time is Up!"; 
+            setTimeout(function() {
+                promptSubmitButton.click();
+            }, 2000); // Delay of 2 seconds
+            clearInterval(drawingCountdownInterval);
+        }
+    }, 1000);
 
     // Need to clear the canvas 
     // Assuming you have a reference to the canvas
