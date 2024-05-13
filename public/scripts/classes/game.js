@@ -228,7 +228,7 @@ function resetTimers(){
 }
 
 function resetPromptTimer(){
-    promptCountdown = 10;
+    promptCountdown = 30;
     console.log("Prompt Timer has been reset");
     promptSubmitted = false;
 }
@@ -283,7 +283,7 @@ function switchToGuessingScreen(data){
 // Function to switch to the intial prompt entry of the first player in the game loop
 
 
-let promptCountdown = 10;
+let promptCountdown = 30;
 let promptSubmitted = false;
 
 
