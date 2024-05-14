@@ -117,7 +117,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 }
 
 function startGame(startgameButton,playerCount,roomId){
-    // if(playerCount<3){return};
+    if(playerCount<3){return};
     startgameButton.className = 'button lobby-button';
     startgameButton.disabled = false;
     startgameButton.addEventListener('click', () => {
@@ -416,6 +416,12 @@ function endGame() {
     document.getElementById('endGameScreen').style.display = 'flex';
 
     blockAutoButtonPresses();
+
+    const returnToLobbyButton = document.getElementById("backToLobbyScreenButton");
+
+    returnToLobbyButton.addEventListener('click', function() {
+        window.location.reload();
+    });
 }
 
 export default {
