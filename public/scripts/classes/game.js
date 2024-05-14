@@ -209,7 +209,8 @@ function switchingGameScreen(data)
     }
     else if(data.gameState == 'waiting')
     {
-        switchToWaitingScreen({numberOfTurns:data.numberOfTurns});
+        switchToWaitingScreen({numberOfTurns:data.numberOfTurns, currentRoundPlayer:data.currentRoundPlayer, 
+            currentRoundRole:data.currentRoundRole});
     }
     else{
         endGame();
@@ -239,9 +240,27 @@ function switchToWaitingScreen(data){
     document.getElementById("intialPromptScreen").style.display = 'none'; 
     document.getElementById("guessingScreen").style.display = 'none'; 
     document.getElementById("waitingScreen").style.display = 'flex'; //Show the waiting screen
-    document.getElementById("waiting-screen-title").innerHTML = data.numberOfTurns;
-
+    document.getElementById("turnIndicatorMessage").innerHTML = data.numberOfTurns;
+    displayCurrentRoundMessage(data);
     blockAutoButtonPresses();
+}
+
+function displayCurrentRoundMessage(data){
+    document.getElementById("currentRoundMessage").innerHTML = "";
+
+    switch(data.currentRoundRole) {
+        case 'promptEntry':
+            document.getElementById("currentRoundMessage").innerHTML =  `${data.currentRoundPlayer} is prompting.` ;
+            break;
+        case 'promptEntryToDrawing':
+            document.getElementById("currentRoundMessage").innerHTML = `${data.currentRoundPlayer} is describing a drawing.` ;
+            break;
+        case 'drawing':
+            document.getElementById("currentRoundMessage").innerHTML = `${data.currentRoundPlayer} is drawing.` ;
+            break;
+        default:
+            break;
+    }
 }
 
 // Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data

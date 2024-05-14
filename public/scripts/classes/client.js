@@ -106,7 +106,8 @@ socket.on('game-started', (data) => {
     gameStarted = true;
     screenManager.updateRemainingUsernames(data.remainingUsernames);
     console.log(data)
-    screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns});
+    screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns,
+        currentRoundPlayer: data.currentRoundPlayer, currentRoundRole: data.currentRoundRole});
 });
 
 socket.on('cannot-start-game', () => {
@@ -128,7 +129,8 @@ socket.on('gameplay-loop', data => {
 
 // For now players will get a waiting screen
 socket.on('switch-screen-waiting', data =>{
-    screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns});
+    screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns,
+        currentRoundPlayer: data.currentRoundPlayer, currentRoundRole: data.currentRoundRole});
 });
 
 socket.on('return-lobby', data =>{
