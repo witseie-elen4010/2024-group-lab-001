@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const ioClient = require("socket.io-client");
+const { generatePromptIndex } = require("../socket");
 
 describe("Socket.IO Server Tests", () => {
   let ioServer, serverSocket, clientSocket;
@@ -38,5 +39,20 @@ describe("Socket.IO Server Tests", () => {
       expect(serverSocket.roomId).toBeUndefined(); // Player should not be in any room
       done();
     });
+  });
+});
+
+
+// Test the generatePromptIndex function
+describe('generatePromptIndex function tests', () => {
+  it('should return a number between 1 and 30', () => {
+    const index = generatePromptIndex();
+    expect(index).toBeGreaterThanOrEqual(1);
+    expect(index).toBeLessThanOrEqual(30);
+  });
+
+  it('should return an integer', () => {
+    const index = generatePromptIndex();
+    expect(Number.isInteger(index)).toBe(true);
   });
 });
