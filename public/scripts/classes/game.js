@@ -416,6 +416,12 @@ function endGame() {
     document.getElementById('endGameScreen').style.display = 'flex';
 
     blockAutoButtonPresses();
+
+    const returnToLobbyButton = document.getElementById("backToLobbyScreenButton");
+
+    returnToLobbyButton.addEventListener('click', function() {
+        window.location.reload();
+    });
 }
 
 export default {
