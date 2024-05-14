@@ -256,12 +256,15 @@ const serverLogic = (io, userNames, rooms) => {
                 // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
                 if(room.turn < room.players.size){
                     for(let i = 0; i < room.players.size; i++){
-                            if(i != room.turn){
-                            let message =  "Waiting for ";
+                        if(i != room.turn){
+                            let message =  "";
                             let numberOfTurns = 0; 
-                            if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
-                            else{numberOfTurns = room.players.size - room.turn; message = message + numberOfTurns + " players turns until End of Game"}
-                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message});
+                            let currentRoundRole = room.roles[room.turn]; 
+                            let currentRoundPlayer = room.players.get(players[room.playerOrder[room.turn]]);
+
+                            if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
+                            else{numberOfTurns = room.players.size - room.turn; message = `${numberOfTurns}  round(s) until the end of the game.`}
+                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message, currentRoundRole:currentRoundRole, currentRoundPlayer:currentRoundPlayer});
                         }
                     }
                 }
@@ -296,13 +299,15 @@ const serverLogic = (io, userNames, rooms) => {
 
                 // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
-                    if(i != room.turn)
-                    {
-                        let message =  "Waiting for ";
-                        let numberOfTurns = 0; 
-                        if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
+                    if(i != room.turn){
+                        let message =  "";
+                        let numberOfTurns = 0;
+                        let currentRoundRole = room.roles[room.turn]; 
+                        let currentRoundPlayer = room.players.get(players[room.playerOrder[room.turn]]);
+
+                        if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
                         // Rest of the players are assinged the waiting screen as it is not their turn. 
-                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message});
+                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole});
                     }
                 }
                 
@@ -368,11 +373,14 @@ const serverLogic = (io, userNames, rooms) => {
                         if(i != room.turn)
                         {
                             console.log(players[i] + " Going to waiting screen");
-                            let message =  "Waiting for ";
+                            let message = "";
                             let numberOfTurns = 0; 
-                            if(i > room.turn){numberOfTurns = i - room.turn; message = message + numberOfTurns + " players turn until your turn"}
-                            else{numberOfTurns = room.players.size - room.turn; message = message + numberOfTurns + " players turns until End of Game"}
-                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message});
+                            let currentRoundRole = room.roles[room.turn]; 
+                            let currentRoundPlayer = room.players.get(players[room.playerOrder[room.turn]]);
+
+                            if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
+                            else{numberOfTurns = room.players.size - room.turn; message = `${numberOfTurns} round(s) until the end of the game.`}
+                            io.to(players[room.playerOrder[i]]).emit("switch-screen-waiting",{gameState:GameState.WAITING,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole});
                         }
                     }
                     }
