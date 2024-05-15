@@ -23,7 +23,7 @@
                         <!-- Tool option: pen -->
                         <li class='tool-option' id="tool-option-1" onClick = 'pen()'>
                             <!-- Icon for pen -->
-                            <img class="svg" id = 'pen-option' src="/images/pen.svg" alt="">
+                            <img class="svg" id = 'penOption' src="/images/pen.svg" alt="">
                             <!-- Label for pen -->
                             <span>Pen</span>
                         </li>
@@ -31,7 +31,7 @@
                         <!-- Tool option: eraser -->
                         <li class='tool-option' id="tool-option-2" onClick = 'eraser()'>
                             <!-- Icon for eraser -->
-                            <img class="svg" id = 'eraser-option' src="/images/eraser.svg" alt="">
+                            <img class="svg" id = 'eraserOption' src="/images/eraser.svg" alt="">
                             <!-- Label for eraser -->
                             <span>Eraser</span>
                         </li>
@@ -39,7 +39,7 @@
                         <!-- Tool option: Highlighter -->
                         <li class='tool-option' id = 'tool-option-3' onClick = 'highlighter()'>
                             <!-- Icon for highlighter -->
-                            <img class="svg" id = 'highlighter-option' src="/images/paint-format.svg" alt="">
+                            <img class="svg" id = 'highlighterOption' src="/images/paint-format.svg" alt="">
                             <!-- Label for highlighter -->
                             <span>Highlighter</span>
                         </li>
@@ -47,7 +47,7 @@
                         <!-- Tool option: SprayCan -->
                         <li class='tool-option' id = 'tool-option-4' onClick = 'spraycan()'>
                             <!-- Icon for spray can -->
-                                <img class="svg" id = 'spraycan-option' src="/images/magic-wand.svg" alt="">
+                                <img class="svg" id = 'sprayCanOption' src="/images/magic-wand.svg" alt="">
                                 <!-- Label for spray can -->
                                 <span>SprayCan</span>
                         </li>
@@ -60,27 +60,27 @@
                     <!-- List of color options -->
                     <ul class='options color-options'>
                         <!-- Color option: Red -->
-                        <li><div onClick="changeColor(this)" id = 'red-color-option' class='btn-color-field' style='background: red;'></div></li>
+                        <li><div onClick="changeColor(this)" id = 'redColorOption' class='btn-color-field' style='background: red;'></div></li>
                         <!-- Color option: Green -->
-                        <li><div onClick="changeColor(this)" id = 'green-color-option' class='btn-color-field' style='background: green;'></div></li>
+                        <li><div onClick="changeColor(this)" id = 'greenColorOption' class='btn-color-field' style='background: green;'></div></li>
                         <!-- Color option: Blue -->
-                        <li><div onClick="changeColor(this)" id = 'blue-color-option' class='btn-color-field' style='background: blue;'></div></li>
+                        <li><div onClick="changeColor(this)" id = 'blueColorOption' class='btn-color-field' style='background: blue;'></div></li>
                         <!-- Color option: Purple -->
-                        <li><div onClick="changeColor(this)" id = 'purple-color-option' class='btn-color-field' style='background: purple;'></div></li>
+                        <li><div onClick="changeColor(this)" id = 'purpleColorOption' class='btn-color-field' style='background: purple;'></div></li>
                     </ul>
                     <!-- Input for color selection -->
-                    <input onInput = 'changeColorPicker(this.value)' type='color' class="color-option">
+                    <input onInput = 'changeColorPicker(this.value)' id = 'colorPicker' type='color' class="color-option">
                 </div>
                 <div class='row'>
                     <ul class='options'>
                         <!-- Button option -->
                         <li class='tool-option'>
-                            <button class='button draw-button' id='undo-canvas-button'>Undo</button>
+                            <button class='button draw-button' id='undoCanvasButton'>Undo</button>
                         </li>
     
                         <!-- Button option -->
                         <li class='tool-option'>
-                            <button class='button draw-button' id='clear-canvas-button'>Clear</button>
+                            <button class='button draw-button' id='clearCanvasButton'>Clear</button>
                         </li>
                     </ul>
                 </div>
