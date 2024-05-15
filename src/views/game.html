@@ -65,15 +65,36 @@
                                 <!-- Label for eraser -->
                                 <span>Eraser</span>
                             </li>
-
+                        </ul>
+                    </div>
+                    <!-- Row for color selection -->
+                    <div class='row'>
+                        <!-- Label for color selection -->
+                        <label class='title-drawing'>Color Selection:</label>
+                        <!-- List of color options -->
+                        <ul class='options color-options'>
+                            <!-- Color option: Red -->
+                            <li><div onClick="changeColor(this)" id = 'red-color-option' class='btn-color-field' style='background: red;'></div></li>
+                            <!-- Color option: Green -->
+                            <li><div onClick="changeColor(this)" id = 'green-color-option' class='btn-color-field' style='background: green;'></div></li>
+                            <!-- Color option: Blue -->
+                            <li><div onClick="changeColor(this)" id = 'blue-color-option' class='btn-color-field' style='background: blue;'></div></li>
+                            <!-- Color option: Purple -->
+                            <li><div onClick="changeColor(this)" id = 'purple-color-option' class='btn-color-field' style='background: purple;'></div></li>
+                        </ul>
+                        <!-- Input for color selection -->
+                        <input onInput = 'changeColorPicker(this.value)' type='color' class="color-option">
+                    </div>
+                    <div class='row'>
+                        <ul class='options'>
                             <!-- Button option -->
                             <li class='tool-option'>
-                                <button class='button draw-button' id='clear-canvas-button'>Button 1</button>
+                                <button class='button draw-button' id='undo-canvas-button'>Undo</button>
                             </li>
-
+        
                             <!-- Button option -->
                             <li class='tool-option'>
-                                <button class='button draw-button' id='clear-canvas-button'>Button 2</button>
+                                <button class='button draw-button' id='clear-canvas-button'>Clear</button>
                             </li>
                         </ul>
                     </div>

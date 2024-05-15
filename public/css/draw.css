@@ -96,3 +96,21 @@
     font-family: 'Roboto';
     font-size: 18px; 
 }
+
+/* Styling for color input */
+input[type='color'] {
+    width: 85%; /* This will put the input element on a new line */
+}
+
+/* Flex display for color options */
+.options.color-options {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Styling for color field button */
+.btn-color-field {
+    border-radius: 10px;
+    height: 2vh;
+    width: 1.5vw;
+}
