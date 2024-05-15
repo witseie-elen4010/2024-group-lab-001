@@ -32,6 +32,48 @@ test("Ensure toolbox tool eraser is visible", async ({ page }) => {
   await expect(page.getByText('Eraser')).toBeVisible();
 });
 
+// Test to ensure a toolbox option is visible 
+test('Ensure toolbox tool highlighter is visible', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.getByText('Highlighter')).toBeVisible();
+});
+
+// Test to ensure a toolbox option is visible 
+test('Ensure toolbox tool SprayCan is visible', async ({page}) =>{
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.getByText('SprayCan')).toBeVisible();
+});
+
+// Test to ensure colour selection option red is visible 
+test('Ensure colour selection option red is visible', async ({page}) => {
+await page.goto('http://localhost:3000/draw');
+await expect(page.locator('#redColorOption')).toBeVisible();
+});
+
+// Test to ensure color selection option green is visible 
+test('Ensure colour selection option green is visible', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#greenColorOption')).toBeVisible();
+});
+
+// Test to ensure color seleciton option blue is visible 
+test('Ensure colour selection option blue is visible', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#blueColorOption')).toBeVisible();
+});
+
+// Test to ensure color selection option purple is visible
+test('Ensure colour selection option purple is visible', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#purpleColorOption')).toBeVisible();
+});
+
+// Test to ensure color picker selection option is visible 
+test('Ensure color picker selection option is visible', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#colorPicker')).toBeVisible();
+});
+
 test('Ensure canvas has correct dimensions', async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
 
@@ -119,8 +161,110 @@ test('User able to click eraser tool', async ({page}) => {
   expect(strokeStyleColour).toBe('#ffffff');
 });
 
+// Test to check if the user can click the highlighter tool
+test('User able to click Highlighter tool', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('li').filter({ hasText: 'Highlighter' }).click();
+
+  let drawingShape = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.lineCap;
+  }); 
+
+  expect(drawingShape).toBe('square');
+});
+
+// Test to check if the user can click the spraycan tool
+test('User able to click SprayCan tool', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('li').filter({ hasText: 'SprayCan' }).click();
+
+  let drawingShape = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.lineCap;
+  }); 
+
+  expect(drawingShape).toBe('round');
+});
+
+
 // Test to check if the user can see the timer
 test("User is able to see the timer", async({page}) => {
   await page.goto('http://localhost:3000/draw');
-  await page.getByText('Time Remaining:').click();
+  await expect(page.getByText('Time Remaining')).toBeVisible();
   });
+
+  // Test to check if the user can change the color to red
+test('User is able to change the color to red', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#redColorOption').click();
+
+  let drawingColor = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(drawingColor).toBe('#ff0000');
+});
+
+// Test to check if the user can change the color to green
+test('User is able to change the color to green', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#greenColorOption').click();
+
+  let drawingColor = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(drawingColor).toBe('#008000');
+});
+
+// Test to check if the user can change the color to blue 
+test('User is able to change the color to blue', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#blueColorOption').click();
+
+  let drawingColor = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(drawingColor).toBe('#0000ff');
+});
+
+// Test to check if the user can change the color to purple
+test('User is able to change the color to purple', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#purpleColorOption').click();
+
+  let drawingColor = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(drawingColor).toBe('#800080');
+});
+
+// Test to check if the user can change the color in the color picker 
+test('User is able to change the color in the color picker', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.getByRole('textbox').click();
+  await page.getByRole('textbox').fill('#b71a1a');
+
+  let drawingColor = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.strokeStyle;
+  }); 
+
+  expect(drawingColor).toBe('#b71a1a');
+});
+
+
