@@ -30,7 +30,7 @@
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
     flex: none;
-    height: 75vh;
+    height: 80vh;
     margin-right: 1%;
     margin-top: 0%;
     width: 65vw;
@@ -59,31 +59,31 @@
 .canvas-container .drawing-canvas {
     border-radius: 10px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    height: 75vh;
+    height: 80vh;
     width: 65vw;
 }
 
 /* CSS for the rows inside the tool box */
 .tool-box .row {
+    align-items: center;
     cursor: pointer;
-    margin-left: 10%; /* Adjust as needed */
-    margin-top: 10%;
+    margin: 7.5%;
 }
 
 /* CSS for the options list */
 .row .options {
+    align-items: center;
     flex-direction: column;
+    font-size: 18px;
     list-style: none;
     padding: 1%; /* Use em for padding */
-    font-size: 18px;
 }
 
 /* CSS for options list and color options */
 .color-options li,
 .options li {
-    margin-bottom: 5%;
-    margin-right: 5%;
-    padding-bottom: 15px;
+    margin: 2.5%;
+    padding-bottom: 7.5px;
 }
 
 /* SVG styling */
@@ -95,4 +95,22 @@
 .countdown-timer{
     font-family: 'Roboto';
     font-size: 18px; 
+}
+
+/* Styling for color input */
+input[type='color'] {
+    width: 85%; /* This will put the input element on a new line */
+}
+
+/* Flex display for color options */
+.options.color-options {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Styling for color field button */
+.btn-color-field {
+    border-radius: 10px;
+    height: 2vh;
+    width: 1.5vw;
 }
