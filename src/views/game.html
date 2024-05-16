@@ -84,6 +84,19 @@
                             </li>
                         </ul>
                     </div>
+
+                    <!-- Row for size selection tool -->
+                    <div class = 'row'>
+                        <!-- Label for size selection -->
+                        <label class='title-drawing'>Size Selection: </label>
+                        <ul class='options color-options'>
+                            <!-- Input for size selection -->
+                            <li class='tool-option'>
+                                <input onInput = 'changeLineWidth(this.value)' type='range' id='drawingSizeInput' min='1' max='100' value='5'>
+                            </li>
+                        </ul>
+                    </div>
+
                     <!-- Row for color selection -->
                     <div class='row'>
                         <!-- Label for color selection -->
