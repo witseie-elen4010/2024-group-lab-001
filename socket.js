@@ -254,7 +254,7 @@ const serverLogic = (io, userNames, rooms) => {
                     }
                 }
                 // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
-                if(room.turn < room.players.size){
+                if(room.turn < room.players.size - 1){
                     for(let i = 0; i < room.players.size; i++){
                         if(i != room.turn){
                             let message =  "";
