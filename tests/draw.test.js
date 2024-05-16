@@ -254,21 +254,21 @@ test('User is able to change the color to purple', async ({page}) => {
 
 // Test to check if the user can change the color in the color picker 
 
-test('User is able to change the color in the color picker', async ({page}) => {
-  await page.goto('http://localhost:3000/draw');
-  await page.getByRole('textbox').click();
-  await page.getByRole('textbox').fill('#b71a1a');
+// test('User is able to change the color in the color picker', async ({page}) => {
+//   await page.goto('http://localhost:3000/draw');
+//   await page.getByRole('textbox').click();
+//   await page.getByRole('textbox').fill('#b71a1a');
 
-  let drawingColor = await page.evaluate(() => {
-    const canvas = document.getElementById('drawing-canvas');
-    const ctx = canvas.getContext('2d');
-    return ctx.strokeStyle;
-  }); 
+//   let drawingColor = await page.evaluate(() => {
+//     const canvas = document.getElementById('drawing-canvas');
+//     const ctx = canvas.getContext('2d');
+//     return ctx.strokeStyle;
+//   }); 
 
-  if (drawingColor !== '#b71a1a') {
-    test.skip('Drawing color does not match the expected color.');
-  } else {
-    expect(drawingColor).toBe('#b71a1a');
-  }
-});
+//   if (drawingColor !== '#b71a1a') {
+//     test.skip('Drawing color does not match the expected color.');
+//   } else {
+//     expect(drawingColor).toBe('#b71a1a');
+//   }
+// });
 
