@@ -13,7 +13,7 @@ let ctx = canvas.getContext('2d', { willReadFrequently: true });
 ctx.fillStyle = 'white';
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
-//Intialization of drawing style and drawing size and methods 
+// Intialization of drawing style and drawing size and methods 
 let drawingColor = "black"; 
 let lineWidth = 5;      
 let drawingShape = 'round';
@@ -150,4 +150,11 @@ function changeColorPicker(value)
 {
     drawingColor = value;
     updateDrawingParameters();
+}
+
+// Allow changes of line size
+function changeLineWidth(value)
+{
+   lineWidth = value; 
+   updateDrawingParameters();
 }
