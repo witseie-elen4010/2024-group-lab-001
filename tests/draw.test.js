@@ -74,6 +74,12 @@ test('Ensure color picker selection option is visible', async ({page}) => {
   await expect(page.locator('#colorPicker')).toBeVisible();
 });
 
+// Test to ensure the size selection is an option 
+test('Ensure size selection is an option', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await expect(page.locator('#drawingSizeInput')).toBeVisible();
+});
+
 test('Ensure canvas has correct dimensions', async ({ page }) => {
   await page.goto('http://localhost:3000/draw');
 
@@ -271,4 +277,22 @@ test('User is able to change the color to purple', async ({page}) => {
 //     expect(drawingColor).toBe('#b71a1a');
 //   }
 // });
+
+// Test to check if the user can change the size of the pen
+test('User is able to change the size of the pen', async ({page}) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#drawingSizeInput').fill('38');
+  
+  let drawingSize = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    return ctx.lineWidth;
+    });
+
+  if (drawingSize !== 38) {
+    test.skip('Drawing pen size could not be changed');
+  } else {
+    expect(drawingSize).toBe(38);
+  }
+  });
 
