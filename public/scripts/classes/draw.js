@@ -126,6 +126,8 @@ function highlighter()
     drawingColor = 'yellow';
     drawingShape = 'square';
     isSprayCan = false; 
+    lineWidth = 25; 
+    document.getElementById('drawingSizeInput').value = 25; 
     updateDrawingParameters();
 }
 
