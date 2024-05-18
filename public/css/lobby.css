@@ -151,20 +151,22 @@
     width: 100%;
 }
 
-.left-column {
+.right-column {
     display: flex;
     height: 100%;
     width: 60%; /* Set width of left column */
+    padding: 15px;
 }
 
-.right-column {
+.left-column {
     display: flex;
     text-align: left;
     align-items: flex-start;
     width: 40%; /* Set width of right column */
     height: 100%;
     flex-direction: column;
-    padding-left: 15px;
-    border-left: 2px solid #003167;
+    padding: 15px;
+    padding-right: 30px;
+    border-right: 2px solid #003167;
 }
 

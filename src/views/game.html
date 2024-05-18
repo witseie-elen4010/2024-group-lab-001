@@ -200,6 +200,12 @@
    <!-- End game screen -->
    <div id='endGameScreen' class='container end-container' style="display: none;">
         <div class="left-column">
+            <p class='title-drawing end-title'>Game Over!</p>
+                <button id="backToLobbySessionButton" class="button lobby-button end-button">Return to Lobby</button>
+                <button id="backToLobbyScreenButton" class="button lobby-button end-button">End Game Session</button>
+        </div>
+
+        <div class="right-column">
             <div id="endGameResults" class="results-container">
                 <div class="prompt-container-end" id="initialPrompt">
                     <p class="player-prompt-heading">Initial Prompt</p>
@@ -211,12 +217,6 @@
                     <!-- <p id="initialPromptText" class="player-prompt">initialPromptText</p> -->
                 </div>
             </div>
-        </div>
-
-        <div class="right-column">
-            <p class='title-drawing end-title'>Game Over!</p>
-                <button id="backToLobbySessionButton" class="button lobby-button end-button">Return to Lobby</button>
-                <button id="backToLobbyScreenButton" class="button lobby-button end-button">End Game Session</button>
         </div>
     </div>
 

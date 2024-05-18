@@ -85,7 +85,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     const startgameButton = document.createElement('button');
     startgameButton.className = 'button start-button';
     startgameButton.id = 'startgame-button';
-    startgameButton.disabled = true;
+    startgameButton.disabled = false;
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
     leftDiv.appendChild(startgameButton);
@@ -116,16 +116,23 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     horizontalDiv.appendChild(centerDiv);
 }
 
-function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
-    startgameButton.className = 'button lobby-button';
-    startgameButton.disabled = false;
+function startGame(startgameButton, playerCount, roomId) {
+    if (playerCount == 3 || playerCount == 4) {
+        // startgameButton.disabled = false;
+        startgameButton.className = 'button lobby-button';
+    }
+
     startgameButton.addEventListener('click', () => {
-      if(isHost){
-        client.socket.emit("create-timer")
-      };
+        if (playerCount < 3 || playerCount > 4) {
+            alert('Player count must be between 3 and 4.');
+            return;
+        } else if (isHost) {
+            client.socket.emit("create-timer");
+        } else if (!isHost) {
+            alert('Only the host can start the game.');
+        }
     });
-};
+}
 
 function createTimer (roomId) {
     // Right div for displaying usernames
@@ -438,14 +445,6 @@ function endGame(data) {
                 promptParagraph.textContent = data.drawingPrompts[i].prompt;
                 promptContainer.appendChild(promptParagraph);
             }
-        } else if (data.drawingPrompts[i].drawing) {
-            // If it's a drawing, add it to the drawing-container
-            const drawingContainer = document.querySelector('.drawing-container-end');
-            const img = document.createElement('img');
-            img.className = 'player-drawings';
-            img.src = data.drawingPrompts[i].drawing;
-            img.alt = 'Drawing';
-            drawingContainer.appendChild(img);
         }
     }
 
