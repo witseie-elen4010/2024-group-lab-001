@@ -213,7 +213,7 @@ function switchingGameScreen(data)
             currentRoundRole:data.currentRoundRole});
     }
     else{
-        endGame();
+        endGame({drawingPrompts:data.info, playerUsername:data.passedUsername});
     }
 }
 
@@ -404,7 +404,7 @@ function switchToDrawingScreen(data) {
 }
 
 // Function to make the div containing the endgame screen allowing for additional functionality such as displaying all drawings and prompts 
-function endGame() {
+function endGame(data) {
     // Hide other screens
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById("intialPromptScreen").style.display = 'none'; 
@@ -416,6 +416,38 @@ function endGame() {
     document.getElementById('endGameScreen').style.display = 'flex';
 
     blockAutoButtonPresses();
+    
+    const displayDiv = document.getElementById('endGameResults');
+
+    // Iterate over the data
+    for (let i = 0; i < data.drawingPrompts.length; i++) {
+        if (data.drawingPrompts[i].prompt) {
+            // If it's a prompt, add it to the prompt-container
+            const initialPromptContainer = document.getElementById('initialPrompt');
+            const promptContainer = document.getElementById('finalPrompt');
+            if (i === 0) {
+                // const promptText = 'Initial Prompt: ';
+                const initialPromptParagraph = document.createElement('p');
+                initialPromptParagraph.className = 'player-prompt';
+                initialPromptParagraph.textContent = data.drawingPrompts[i].prompt;
+                initialPromptContainer.appendChild(initialPromptParagraph);
+            } else if (i === 2){
+                const promptText = 'Guess Prompt: ';
+                const promptParagraph = document.createElement('p');
+                promptParagraph.className = 'player-prompt';
+                promptParagraph.textContent = data.drawingPrompts[i].prompt;
+                promptContainer.appendChild(promptParagraph);
+            }
+        } else if (data.drawingPrompts[i].drawing) {
+            // If it's a drawing, add it to the drawing-container
+            const drawingContainer = document.querySelector('.drawing-container-end');
+            const img = document.createElement('img');
+            img.className = 'player-drawings';
+            img.src = data.drawingPrompts[i].drawing;
+            img.alt = 'Drawing';
+            drawingContainer.appendChild(img);
+        }
+    }
 
     const returnToLobbyButton = document.getElementById("backToLobbyScreenButton");
 

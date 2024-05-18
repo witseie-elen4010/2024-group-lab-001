@@ -92,3 +92,79 @@
     margin-top: 15px;
     text-align: center; /* Align text to the center */
 }
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.prompt-container-end {
+    align-items: flex-end; /* Align items vertically */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.drawing-container-end {
+    align-items: center;
+}
+
+
+/* Styles for the prompt */
+.player-prompt-heading {
+    align-items: flex-end;
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: #003167; /* Dark text color */
+}
+
+.end-title {
+    color: #003167; /* Dark text color */
+}
+
+.player-prompt {
+    text-align: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Dark text color */
+    background-color: #ffc107; /* Yellow background color */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 3px 3px 0px #003167;
+    width: 50%;
+}
+
+/* Styles for the drawings */
+.player-drawings {
+    width: 80%; /* Ensure images don't exceed container width */
+    height: auto;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.end-button {
+    width: 100%;
+}
+
+.left-column {
+    display: flex;
+    height: 100%;
+    width: 60%; /* Set width of left column */
+}
+
+.right-column {
+    display: flex;
+    text-align: left;
+    align-items: flex-start;
+    width: 40%; /* Set width of right column */
+    height: 100%;
+    flex-direction: column;
+    padding-left: 15px;
+    border-left: 2px solid #003167;
+}
+

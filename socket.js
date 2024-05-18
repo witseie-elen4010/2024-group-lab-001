@@ -337,6 +337,7 @@ const serverLogic = (io, userNames, rooms) => {
                 // Ensure the room exists 
                 if(rooms.has(socket.roomId))
                 {
+                    const username = getSessionUsername(socket);
                     let room = rooms.get(socket.roomId);
 
                     // Checking to ensure the number of turns have not been exceeded meaning all players have not played yet
@@ -349,7 +350,7 @@ const serverLogic = (io, userNames, rooms) => {
                     let userprompt = data; 
 
                     let players = Array.from(room.players.keys()); // Getting the players socket.ids within a specific room in sequential order of who entererd the room first.
-
+                    
                     // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
                     if(data.prompt){
                         console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
@@ -396,7 +397,7 @@ const serverLogic = (io, userNames, rooms) => {
                         console.log("Eng of the Game :" + socket.roomId);
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
-                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
+                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame",info: rooms.get(socket.roomId).drawingAndPrompts, passedUsername: room.players.get(socket.id)});
                     }
                 }
                 else

@@ -198,11 +198,29 @@
     </div>  
 
    <!-- End game screen -->
-    <div id='endGameScreen' class='container' style="display: none;">
-        <p class = 'title-drawing'>Game Over</p>
-        <button id="backToLobbySessionButton" class="button lobby-button">Return to Lobby</button>
-        <button id="backToLobbyScreenButton" class="button lobby-button">End Game Session</button>
+   <div id='endGameScreen' class='container end-container' style="display: none;">
+        <div class="left-column">
+            <div id="endGameResults" class="results-container">
+                <div class="prompt-container-end" id="initialPrompt">
+                    <p class="player-prompt-heading">Initial Prompt</p>
+                    <!-- <p id="initialPromptText" class="player-prompt">Test</p> -->
+                </div>
+                <div class="drawing-container-end"></div>
+                <div class="prompt-container-end" id="finalPrompt">
+                    <p class="player-prompt-heading">Guess Prompt</p>
+                    <!-- <p id="initialPromptText" class="player-prompt">initialPromptText</p> -->
+                </div>
+            </div>
+        </div>
+
+        <div class="right-column">
+            <p class='title-drawing end-title'>Game Over!</p>
+                <button id="backToLobbySessionButton" class="button lobby-button end-button">Return to Lobby</button>
+                <button id="backToLobbyScreenButton" class="button lobby-button end-button">End Game Session</button>
+        </div>
     </div>
+
+
 
     <!-- Load scripts -->
     <script src="/socket.io/socket.io.js"></script>
