@@ -294,5 +294,61 @@ test('User is able to change the size of the pen', async ({page}) => {
   } else {
     expect(drawingSize).toBe(38);
   }
+});
+
+  // Check if the undo button is visible 
+test('Undo button is visible', async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.waitForSelector('#drawing-canvas');
+  await expect(page.locator('#undoCanvasButton')).toBeVisible();
+});
+
+
+// Check that the undo button works 
+test('Undo button will return screen back with no drawings', async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.locator('#drawing-canvas').click({
+    position: {
+      x: 367,
+      y: 261
+    }
   });
+  await page.locator('#undoCanvasButton').click();
+  let isCanvasClear = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    return Array.from(imageData).every((value, index) => index % 4 === 3 ? value === 255 : value === 255);
+  });
+
+  expect(isCanvasClear).toBe(true);
+});
+
+// Check if the clear button is visible 
+test('Clear button is visible', async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');
+  await page.waitForSelector('#drawing-canvas');
+  await expect(page.locator('#clearCanvasButton')).toBeVisible();
+});
+
+// Check if the clear button clears the canvas 
+test('Clear button will return screen back with no drawings', async ({ page }) => {
+  await page.goto('http://localhost:3000/draw');await page.goto('http://localhost:3000/draw');
+  await page.locator('#drawing-canvas').click({
+    position: {
+      x: 367,
+      y: 261
+    }
+  });
+  await page.locator('#clearCanvasButton').click();
+  let isCanvasClear = await page.evaluate(() => {
+    const canvas = document.getElementById('drawing-canvas');
+    const ctx = canvas.getContext('2d');
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    return Array.from(imageData).every((value, index) => index % 4 === 3 ? value === 255 : value === 255);
+  });
+
+  expect(isCanvasClear).toBe(true);
+});
+
 
