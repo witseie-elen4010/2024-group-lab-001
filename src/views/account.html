@@ -71,6 +71,36 @@
         <div class="login-signup">
             <span class="text">Not registered? <a href="#" class="text signup-link">Signup Now</a></span>
         </div>
+        <!-- Link to admin form -->
+        <div class="login-signup">
+            <span class="text">Are you an administrator? <a href="#" class="text admin-link">Login as an Administator</a></span>
+        </div>
+    </div>
+
+    <!-- Admin Login Container -->
+    <div class="login-container admin-container" style="display: none;">
+        <span class="title">Administator Login</span> 
+        <!-- Login form fields -->
+        <form>
+            <!-- Username input field -->
+            <div class="input-field">
+                <input type="text" id="adminLoginEmail" name="loginEmail" placeholder="Enter your administator email" required>
+                <i class="uil uil-user icon"></i>
+            </div>
+            <!-- Password input field -->
+            <div class="input-field">
+                <input type="password" id="adminLoginPassword" name="loginPassword" class="password" placeholder="Enter your password" required>
+                <i class="uil uil-lock icon"></i>
+                <!-- Icon to show/hide password -->
+                <i class="uil uil-eye-slash showHidePassword"></i>
+            </div>
+            <!-- Button -->
+            <button id="adminLoginButton" class="button account-button">Login</button>
+        </form>
+        <!-- Link to login form -->
+        <div class="login-signup">
+            <span class="text">Regular User Login? <a href="#" class="text admin-to-login">Login Now</a></span>
+        </div>
     </div>
 
     <!-- Signup Container -->
