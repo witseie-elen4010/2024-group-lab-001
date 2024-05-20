@@ -81,6 +81,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     copyToClipboard(copyButton,roomId);
     leftDiv.appendChild(copyButton);
 
+    if(isHost){
     // Create a button element to start the game
     const startgameButton = document.createElement('button');
     startgameButton.className = 'button start-button';
@@ -89,6 +90,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
     leftDiv.appendChild(startgameButton);
+    }
 
     // Right div for displaying usernames
     const centerDiv = document.createElement('div');

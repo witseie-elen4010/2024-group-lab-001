@@ -82,8 +82,14 @@
                                     <!-- Label for spray can -->
                                     <span>SprayCan</span>
                             </li>
+
+                            <!-- Input for size selection -->
+                            <li class='tool-option'>
+                                <input onInput = 'changeLineWidth(this.value)' type='range' id='drawingSizeInput' min='1' max='100' value='5'>
+                            </li>
                         </ul>
                     </div>
+                    
                     <!-- Row for color selection -->
                     <div class='row'>
                         <!-- Label for color selection -->

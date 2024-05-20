@@ -114,3 +114,20 @@ input[type='color'] {
     height: 2vh;
     width: 1.5vw;
 }
+
+/* Styling for tool options and shapes when hovered or active */
+.tool-option:is(:hover, .active) img {
+    filter: brightness(100%) hue-rotate(900deg) invert(17%) saturate(3000%) sepia(90%);
+}
+
+/* Add hover effect for list items */
+.tool-option:hover {
+    background-color: #f5f5f5; /* Change this to your preferred color */
+    cursor: pointer;
+}
+
+/* Add active effect for list items */
+.tool-option.active {
+    background-color: #e0e0e0; /* Change this to your preferred color */
+    border: 2px solid #000; /* Add a border to the active item */
+}
