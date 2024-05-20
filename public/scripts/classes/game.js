@@ -39,7 +39,7 @@ function updateRemainingUsernames(usernames) {
     });
 }
 
-function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
+function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUsernames) {
     // Hide the End Game Screen if it is displayed
     document.getElementById('endGameScreen').style.display = 'none';
 
@@ -92,6 +92,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 
     // Right div for displaying usernames
     const centerDiv = document.createElement('div');
+    centerDiv.id = 'centerDiv';
     centerDiv.className = 'lobby-right';
 
     // Create a paragraph element to display the remaining usernames
@@ -99,6 +100,18 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     usernameHeading.className = "title room-code-heading";
     usernameHeading.textContent = `Players`;
     centerDiv.appendChild(usernameHeading);
+    
+    // Display the current user's username separately
+    // const currentUserParagraph = document.createElement('p');
+    // currentUserParagraph.className = 'current-user';
+    // currentUserParagraph.textContent = `You: ${currentUsername}`;
+    // centerDiv.appendChild(currentUserParagraph);
+
+    // Display the current user's username separately
+    const currentUsernameButton = document.createElement('button');
+    currentUsernameButton.textContent = currentUsername;
+    currentUsernameButton.className = "room-code-button username-button";
+    centerDiv.appendChild(currentUsernameButton);
 
     // Loop through each username in remainingUsernames array
     remainingUsernames.forEach(username => {

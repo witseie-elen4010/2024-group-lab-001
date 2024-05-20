@@ -182,6 +182,11 @@ body {
     width: 100%;
 }
 
+.username-button {
+    background-color: #eab676;
+    border: 2px solid #e28743;
+}
+
 .button:hover {
     background-color:  #003167; /* Darken the button on hover */
 }
