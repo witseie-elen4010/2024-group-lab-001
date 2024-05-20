@@ -456,26 +456,40 @@ function endGame(data) {
     const displayDiv = document.getElementById('endGameResults');
     createPromptElement('Initial Prompt', 'initialPrompt');
     createPromptElement('Guess Prompt', 'finalPrompt');
+    const initialDrawing = document.getElementById('initialDrawing');
+    const finalDrawing = document.getElementById('finalDrawing');
+
+    // Clear the contents of the drawing divs
+    initialDrawing.innerHTML = '';
+    finalDrawing.innerHTML = '';
+
+    // Clear the contents of the display div
+    displayDiv.innerHTML = '';
 
     // Iterate over the data
     for (let i = 0; i < data.drawingPrompts.length; i++) {
-        if (data.drawingPrompts[i].prompt) {
-            // If it's a prompt, add it to the prompt-container
-            const initialPromptContainer = document.getElementById('initialPrompt');
-            const promptContainer = document.getElementById('finalPrompt');
-            if (i === 0) {
-                // const promptText = 'Initial Prompt: ';
-                const initialPromptParagraph = document.createElement('p');
-                initialPromptParagraph.className = 'player-prompt';
-                initialPromptParagraph.textContent = data.drawingPrompts[i].prompt;
-                initialPromptContainer.appendChild(initialPromptParagraph);
-            } else if (i === 2){
-                const promptText = 'Guess Prompt: ';
-                const promptParagraph = document.createElement('p');
-                promptParagraph.className = 'player-prompt';
-                promptParagraph.textContent = data.drawingPrompts[i].prompt;
-                promptContainer.appendChild(promptParagraph);
-            }
+        if (i % 2 === 0 && data.drawingPrompts[i].prompt) {
+            // If it's an even index and a prompt, create a new prompt container
+            const promptContainer = document.createElement('p');
+            promptContainer.className = 'player-prompt-heading';
+            promptContainer.id = i === 0 ? 'initialPrompt' : 'finalPrompt';
+            const promptText = i === 0 ? 'Initial Prompt: ' : 'Guess Prompt: ';
+            promptContainer.textContent = promptText;
+            const promptParagraph = document.createElement('p');
+            promptParagraph.className = 'player-prompt';
+            promptParagraph.textContent = data.drawingPrompts[i].prompt;
+            displayDiv.appendChild(promptContainer);
+            displayDiv.appendChild(promptParagraph);
+        } else if (i % 2 === 1 && data.drawingPrompts[i].drawing) {
+            // If it's an odd index and a drawing, create a new drawing container
+            const drawingContainer = document.createElement('div');
+            drawingContainer.id = i === 1 ? 'initialDrawing' : 'finalDrawing';
+            const img = document.createElement('img');
+            img.className = 'player-drawings';
+            img.src = data.drawingPrompts[i].drawing;
+            img.alt = 'Drawing';
+            drawingContainer.appendChild(img);
+            displayDiv.appendChild(drawingContainer);
         }
     }
 
