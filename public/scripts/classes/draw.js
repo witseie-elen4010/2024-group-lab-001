@@ -2,7 +2,7 @@
 
 const canvas = document.getElementById('drawing-canvas');
 const undoButton = document.getElementById('undoCanvasButton');
-
+const clearButton = document.getElementById('clearCanvasButton');
 // Allow for different screen size scaling
 canvas.width = canvas.offsetWidth;  
 canvas.height = canvas.offsetHeight; 
@@ -64,6 +64,7 @@ canvas.addEventListener('mouseleave', ()=>{
 
 
 undoButton.addEventListener('click', undoDrawing);
+clearButton.addEventListener('click', clearCanvas);
 
 // Draw stroke lines when user has M1 key pressed 
 function draw(event)
@@ -184,4 +185,13 @@ function undoDrawing()
         restoreStrokes.pop();
         ctx.putImageData(restoreStrokes[index],0,0);
     }
+}
+
+//Clear the canvas 
+function clearCanvas()
+{
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    restoreStrokes = [];
+    index = -1; 
 }
