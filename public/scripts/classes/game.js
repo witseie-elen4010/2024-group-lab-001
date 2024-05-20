@@ -269,6 +269,12 @@ function resetPromptTimer(){
     console.log("Prompt Timer has been reset");
     promptSubmitted = false;
 }
+
+function resetGuessTimer(){
+    guessCountdown = 30;
+    console.log("Guess Timer has been reset");
+    guessSubmitted = false;
+}
 // Switch to the waiting screen by setting the divs for other screens to none except for waiting screen
 function switchToWaitingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
@@ -300,6 +306,10 @@ function displayCurrentRoundMessage(data){
 }
 
 // Switch to the screen that the player will enter a prompt based on a provided drawing from data.drawing drawn in an image from canvas data
+
+let guessCountdown = 30;
+let guessSubmitted = false;
+
 function switchToGuessingScreen(data){
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById('entireDrawingScreen').style.display = 'none';
@@ -308,6 +318,26 @@ function switchToGuessingScreen(data){
     document.getElementById("guessingScreen").style.display = 'flex'; //Show the prompt entering screen
 
     blockAutoButtonPresses();
+    resetGuessTimer();
+    let guessCounter = document.getElementById("guessCountdownTimer");
+    let guessSubmitButton = document.getElementById("guess-button");
+    // Timer to end the session of prompting
+    const guessCountdownInterval = setInterval(() => {
+        guessCounter.innerText = guessCountdown + " seconds"; // Update counter text with countdown
+        guessCountdown--;
+
+        guessSubmitButton.addEventListener('click', function() {
+            guessSubmitted = true;
+            clearInterval(guessCountdownInterval);
+        });
+
+        if (guessCountdown < 0 && guessSubmitted == false) {
+            guessCounter.innerText = "Guessing Time is Up"; // Update counter text when time is up
+            console.log("Guessing is finished");
+            clearInterval(guessCountdownInterval);
+            guessSubmitButton.click();
+        }
+    }, 1000);
 
     const imageContainer = document.getElementById('canvas-data');
     imageContainer.innerHTML = ""; // Clear the contents of the html 
@@ -337,10 +367,8 @@ function switchToGuessingScreen(data){
 
 // Function to switch to the intial prompt entry of the first player in the game loop
 
-
 let promptCountdown = 30;
 let promptSubmitted = false;
-
 
 function switchToPromptEntryScreen()
 {
