@@ -51,3 +51,11 @@ document.addEventListener("DOMContentLoaded", function() {
         loginContainer.style.display = "block";
     });
 });
+
+window.onload = function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const alertMessage = urlParams.get('alert');
+    if (alertMessage) {
+        alert(alertMessage);
+    }
+};
