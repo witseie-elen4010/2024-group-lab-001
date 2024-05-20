@@ -87,6 +87,14 @@ const generatePromptIndex = function (){
     return promptIndex;
 };
 
+function resetGameState(room) {
+    room.playerOrder = [];
+    room.roles = [];
+    room.turn = 0;
+    room.drawingAndPrompts = [];
+    stateOfGame = 'lobby';
+}
+
 // Socket.IO logic
 const serverLogic = (io, userNames, rooms) => {
 
@@ -195,7 +203,7 @@ const serverLogic = (io, userNames, rooms) => {
                     const remainingUsernames = Array.from(room.players.values()).filter(username => username !== currentPlayerUsername);
 
                     // Emit 'player joined' event to the current player
-                    io.to(currentPlayerSocket).emit('player joined', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
+                    io.to(currentPlayerSocket).emit('return-lobby', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
                     console.log(`Player ${currentPlayerUsername} has returned to the lobby`);
                 }
 
@@ -255,7 +263,7 @@ const serverLogic = (io, userNames, rooms) => {
                 // The player has already played and they decide to leave 
                 if(playerPlayerOrderIndex < room.turn)
                 {
-                    console.log("Player: " + socket.id + " left after they played");
+                    console.log("Player: " + username + " left after they played");
                     // We need to simply delete the role they played and decrease all indexes above the received index by one and room.turn by one
                     room.roles.splice(playerPlayerOrderIndex,1); 
                     room.playerOrder.splice(playerPlayerOrderIndex,1);
@@ -303,7 +311,9 @@ const serverLogic = (io, userNames, rooms) => {
                             return value;
                         });
                         // Emit to player who needs to fill the new role 
+                        console.log(room.roles[room.turn]);
                         io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
+                        
                     }
                 }
                 // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
@@ -453,6 +463,7 @@ const serverLogic = (io, userNames, rooms) => {
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
                         io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame",info: rooms.get(socket.roomId).drawingAndPrompts, passedUsername: room.players.get(socket.id)});
+                        resetGameState(room);
                     }
                 }
                 else

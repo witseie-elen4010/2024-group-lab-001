@@ -468,6 +468,21 @@ function endGame(data) {
     });
 }
 
+function clearPrompts() {
+    const initialPromptContainer = document.getElementById('initialPrompt');
+    const promptContainer = document.getElementById('finalPrompt');
+
+    // Remove all child elements from the initialPromptContainer
+    while (initialPromptContainer.firstChild) {
+        initialPromptContainer.removeChild(initialPromptContainer.firstChild);
+    }
+
+    // Remove all child elements from the promptContainer
+    while (promptContainer.firstChild) {
+        promptContainer.removeChild(promptContainer.firstChild);
+    }
+}
+
 export default {
     switchLobbyScreen,
     switchingGameScreen,
@@ -475,5 +490,6 @@ export default {
     updateTimer,
     updateRemainingUsernames,
     setHost,
+    clearPrompts
 };
 
