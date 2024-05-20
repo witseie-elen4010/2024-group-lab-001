@@ -97,7 +97,7 @@ socket.on("player left", data => {
     if (gameStarted) {
         // Handle disconnection during game
         // For example, display a message to the user indicating the disconnection
-        screenManager.updateRemainingUsernames(data.remainingUsernames);
+        screenManager.updateRemainingUsernames(data.username, data.remainingUsernames);
     } else {
         // Switch back to lobby screen if the game hasn't started
         screenManager.switchLobbyScreen(data.roomId,data.playerCount, data.username, data.remainingUsernames);
@@ -107,7 +107,7 @@ socket.on("player left", data => {
 socket.on('game-started', (data) => {
     console.log("Game started");
     gameStarted = true;
-    screenManager.updateRemainingUsernames(data.remainingUsernames);
+    screenManager.updateRemainingUsernames(data.username, data.remainingUsernames);
     console.log(data)
     screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns,
         currentRoundPlayer: data.currentRoundPlayer, currentRoundRole: data.currentRoundRole});

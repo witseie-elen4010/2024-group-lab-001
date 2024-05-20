@@ -87,14 +87,6 @@ const generatePromptIndex = function (){
     return promptIndex;
 };
 
-function resetGameState(room) {
-    room.playerOrder = [];
-    room.roles = [];
-    room.turn = 0;
-    room.drawingAndPrompts = [];
-    stateOfGame = 'lobby';
-}
-
 // Socket.IO logic
 const serverLogic = (io, userNames, rooms) => {
 
@@ -221,12 +213,13 @@ const serverLogic = (io, userNames, rooms) => {
                 const room = rooms.get(roomId);
                 // Get the index of the player that left the lobby 
                 const playerIndex = Array.from(room.players.keys()).indexOf(socket.id);
-                // Require all the players socket id for when someone disconnects as the emitting for game loop requires it
-                const players = Array.from(room.players.keys());
 
                 const username = getSessionUsername(socket);
                 room.players.delete(socket.id); 
 
+                // Require all the players socket id for when someone disconnects as the emitting for game loop requires it
+                const players = Array.from(room.players.keys());
+                
                 if (userNames.has(roomId)) {
                     userNames.get(roomId).delete(socket.id);
                 }
@@ -462,7 +455,7 @@ const serverLogic = (io, userNames, rooms) => {
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
                         io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame",info: rooms.get(socket.roomId).drawingAndPrompts, passedUsername: room.players.get(socket.id)});
-                        resetGameState(room);
+                        stateOfGame = 'lobby';
                     }
                 }
                 else

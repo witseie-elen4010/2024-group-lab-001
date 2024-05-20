@@ -8,35 +8,10 @@ let isHost = false;
 let drawingSubmitted = false; 
 let countdown = 5; // Countdown timer for game start
 let drawingCountdown = 60; // Set countdown time in seconds
-let remainingUsernamesList = [];
 
 function setHost()
 {
     isHost = true; 
-}
-
-// Function to update the list of remaining usernames
-function updateRemainingUsernames(usernames) {
-    remainingUsernamesList = usernames;
-    const drawPlayerContainer = document.getElementById('usernameDisplayOnDraw');
-    drawPlayerContainer.innerHTML = '';
-    
-    // Create a paragraph element to display the remaining usernames
-    const usernameHeading = document.createElement('p');
-    usernameHeading.className = "title room-code-heading";
-    usernameHeading.textContent = `Players`;
-    drawPlayerContainer.appendChild(usernameHeading);
-
-    // Loop through each username in remainingUsernames array
-    remainingUsernamesList.forEach(username => {
-        // Create a button element for each username
-        const usernameButton = document.createElement('button');
-        usernameButton.textContent = username;
-        usernameButton.className = "room-code-button";
-        console.log(username);
-        // Append the username button to the centerDiv
-        drawPlayerContainer.appendChild(usernameButton);
-    });
 }
 
 function createPromptElement(promptText, containerId) {
@@ -54,6 +29,34 @@ function createPromptElement(promptText, containerId) {
 
     // Append the <p> element to the container
     container.appendChild(promptElement);
+}
+
+function updateRemainingUsernames(currentUsername, remainingUsernames) {
+    const drawPlayerContainer = document.getElementById('usernameDisplayOnDraw');
+    drawPlayerContainer.innerHTML = '';
+    
+    // Create a paragraph element to display the remaining usernames
+    const usernameHeading = document.createElement('p');
+    usernameHeading.className = "title room-code-heading";
+    usernameHeading.textContent = `Players`;
+    drawPlayerContainer.appendChild(usernameHeading);
+    
+    // Display the current user's username separately
+    const currentUsernameButton = document.createElement('button');
+    currentUsernameButton.textContent = currentUsername;
+    currentUsernameButton.className = "room-code-button username-button";
+    drawPlayerContainer.appendChild(currentUsernameButton);
+
+    // Loop through each username in remainingUsernames array
+    remainingUsernames.forEach(username => {
+        // Create a button element for each username
+        const usernameButton = document.createElement('button');
+        usernameButton.textContent = username;
+        usernameButton.className = "room-code-button";
+        
+        // Append the username button to the centerDiv
+        drawPlayerContainer.appendChild(usernameButton);
+    });
 }
 
 function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUsernames) {
@@ -118,12 +121,6 @@ function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUserna
     usernameHeading.textContent = `Players`;
     centerDiv.appendChild(usernameHeading);
     
-    // Display the current user's username separately
-    // const currentUserParagraph = document.createElement('p');
-    // currentUserParagraph.className = 'current-user';
-    // currentUserParagraph.textContent = `You: ${currentUsername}`;
-    // centerDiv.appendChild(currentUserParagraph);
-
     // Display the current user's username separately
     const currentUsernameButton = document.createElement('button');
     currentUsernameButton.textContent = currentUsername;
