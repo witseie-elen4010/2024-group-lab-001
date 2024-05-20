@@ -59,6 +59,17 @@ body {
     text-align: center;
 }
 
+.end-container {
+    background-color: #fff;; /* Set background color to transparent */
+    display: flex;
+    flex-direction: row; /* Stack items vertically */
+    justify-content: center; /* Ensure space between the columns */
+    padding: 20px;
+    text-align: center;
+    width: 40%;
+}
+
+
 .prompt-container {
     align-items: center; /* Center items horizontally */
     background-color: #fff;
@@ -169,6 +180,11 @@ body {
     text-align: left;
     transition: background-color 0.3s ease-in-out; /* Transition for button background-color */
     width: 100%;
+}
+
+.username-button {
+    background-color: #eab676;
+    border: 2px solid #e28743;
 }
 
 .button:hover {

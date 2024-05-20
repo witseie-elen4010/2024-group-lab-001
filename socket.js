@@ -94,14 +94,20 @@ const serverLogic = (io, userNames, rooms) => {
         promptEntry: "promptEntry", 
         drawing: "drawing",
         promptGuessing: "promptEntryToDrawing",
-        WAITING: "waiting"
+        WAITING: "waiting",
+        lobby: "lobby",
     }
 
     io.on('connection', (socket) => {
         console.log(`User: ${socket.id} has now connected to the server.`);
         let sessionID = getSessionID(socket);
         console.log(`Route Session ID: ${sessionID}`);
-        
+        const username = getSessionUsername(socket);
+        let stateOfGame = 'lobby';
+
+        // Emit the username to the client
+        socket.emit('user connected', { username });
+
         // Handle 'create room' event
         socket.on('create room', async () => {
             try {
@@ -114,8 +120,8 @@ const serverLogic = (io, userNames, rooms) => {
                 socket.roomId = roomId; 
                 socket.join(roomId); 
 
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
-                // const remainingUsernames = Array.from(rooms.get(roomId).players.values()).filter(name => name !== username);
+                // const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                const remainingUsernames = Array.from(rooms.get(roomId).players.values()).filter(name => name !== username);
                 socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames });
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username}, has created and joined a room.${roomId}`);
             } catch (error) {
@@ -130,22 +136,39 @@ const serverLogic = (io, userNames, rooms) => {
                 if (!rooms.has(roomId)) {
                     throw new Error('Room not Found!');
                 }
-
+        
                 const room = rooms.get(roomId);
                 const username = getSessionUsername(socket);
                 room.players.set(socket.id, username); 
-
+        
                 if (!userNames.has(roomId)) {
                     userNames.set(roomId, new Map());
                 }
                 userNames.get(roomId).set(socket.id, username);
-        
+            
                 socket.roomId = roomId; 
                 socket.join(roomId); 
-                // username (role)
                 const playerCount = room.players.size;
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
-                io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                // const remainingUsernames = Array.from(rooms.get(roomId).players.values())
+                
+                // Emit 'player joined' event only to the player who just joined
+                // io.to(roomId).emit('player joined', { playerId: socket.id, roomId, playerCount, username, remainingUsernames });
+
+                // Get the array of player socket IDs
+                const playerSockets = Array.from(room.players.keys());
+
+                for (let i = 0; i < playerSockets.length; i++) {
+                    // Get the current player's socket ID and username
+                    const currentPlayerSocket = playerSockets[i];
+                    const currentPlayerUsername = room.players.get(currentPlayerSocket);
+
+                    // Get the remaining usernames excluding the current player
+                    const remainingUsernames = Array.from(room.players.values()).filter(username => username !== currentPlayerUsername);
+
+                    // Emit 'player joined' event to the current player
+                    io.to(currentPlayerSocket).emit('player joined', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
+                }
+
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
             } catch (error) {
                 console.error('Error Joining Room:', error);
@@ -159,12 +182,27 @@ const serverLogic = (io, userNames, rooms) => {
                 const roomId = socket.roomId;
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
-                io.to(socket.roomId).emit('return-lobby', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
-                console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
+                
+                // Get the array of player socket IDs
+                const playerSockets = Array.from(room.players.keys());
+
+                for (let i = 0; i < playerSockets.length; i++) {
+                    // Get the current player's socket ID and username
+                    const currentPlayerSocket = playerSockets[i];
+                    const currentPlayerUsername = room.players.get(currentPlayerSocket);
+
+                    // Get the remaining usernames excluding the current player
+                    const remainingUsernames = Array.from(room.players.values()).filter(username => username !== currentPlayerUsername);
+
+                    // Emit 'player joined' event to the current player
+                    io.to(currentPlayerSocket).emit('return-lobby', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
+                    console.log(`Player ${currentPlayerUsername} has returned to the lobby`);
+                }
+
+                stateOfGame = 'lobby';
+
             } catch (error) {
-                console.error('Error Joining Room:', error);
-                socket.emit('Joining Room has Failed', { error: error.message });
+                console.error('Error Returning to Lobby:', error);
             }
         });
 
@@ -175,21 +213,41 @@ const serverLogic = (io, userNames, rooms) => {
                 const room = rooms.get(roomId);
                 // Get the index of the player that left the lobby 
                 const playerIndex = Array.from(room.players.keys()).indexOf(socket.id);
+
+                const username = getSessionUsername(socket);
                 room.players.delete(socket.id); 
-                const playerCount = room.players.size;
 
                 // Require all the players socket id for when someone disconnects as the emitting for game loop requires it
                 const players = Array.from(room.players.keys());
-
-                const username = room.players.get(socket.id);
+                
                 if (userNames.has(roomId)) {
-                    const usernamesMap = userNames.get(roomId);
-                    usernamesMap.delete(socket.id);
-        
-                    const remainingUsernames = Array.from(rooms.get(roomId).players.values())
-                    io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
-                    console.log(`Player ${socket.id} left room ${roomId}`);
-                    console.log(`Remaining users: ${remainingUsernames}`);
+                    userNames.get(roomId).delete(socket.id);
+                }
+                
+                // socket.leave(roomId); 
+                const playerCount = room.players.size;
+
+                // Get the array of player socket IDs
+                const playerSockets = Array.from(room.players.keys());
+                
+                //     const remainingUsernames = Array.from(rooms.get(roomId).players.values())
+                //     io.to(roomId).emit('player left', { playerId: socket.id, roomId, playerCount, remainingUsernames }); 
+                //     console.log(`Player ${socket.id} left room ${roomId}`);
+                //     console.log(`Remaining users: ${remainingUsernames}`);
+                // }
+                
+                if (stateOfGame === 'lobby' || stateOfGame === 'endgame') {
+                    for (let i = 0; i < playerSockets.length; i++) {
+                        // Get the current player's socket ID and username
+                        const currentPlayerSocket = playerSockets[i];
+                        const currentPlayerUsername = room.players.get(currentPlayerSocket);
+    
+                        // Get the remaining usernames excluding the current player
+                        const remainingUsernames = Array.from(room.players.values()).filter(username => username !== currentPlayerUsername);
+    
+                        // Emit 'player left' event to the current player
+                        io.to(currentPlayerSocket).emit('player left', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
+                    }
                 }
 
                 // There are three cases for when a player disconnects during the game play loop 
@@ -198,7 +256,7 @@ const serverLogic = (io, userNames, rooms) => {
                 // The player has already played and they decide to leave 
                 if(playerPlayerOrderIndex < room.turn)
                 {
-                    console.log("Player: " + socket.id + " left after they played");
+                    console.log("Player: " + username + " left after they played");
                     // We need to simply delete the role they played and decrease all indexes above the received index by one and room.turn by one
                     room.roles.splice(playerPlayerOrderIndex,1); 
                     room.playerOrder.splice(playerPlayerOrderIndex,1);
@@ -234,23 +292,20 @@ const serverLogic = (io, userNames, rooms) => {
                 {
                     if(room.turn < room.players.size)
                     {
-                    console.log("Player: " + socket.id + " left during their turn");
-                    room.roles.pop();
-                    room.playerOrder.splice(playerPlayerOrderIndex,1);
-                    room.playerOrder = room.playerOrder.map((value) => {
-                        // If the index is above the certain value, subtract one from the value
-                        if (value > playerIndex) {
-                            return value - 1;
-                        }
-                        // Otherwise, return the original value
-                        return value;
-                    });
-                    // Emit to player who needs to fill the new role 
-                    io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
-                    }
-                    else
-                    {
-                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
+                        console.log("Player: " + socket.id + " left during their turn");
+                        room.roles.pop();
+                        room.playerOrder.splice(playerPlayerOrderIndex,1);
+                        room.playerOrder = room.playerOrder.map((value) => {
+                            // If the index is above the certain value, subtract one from the value
+                            if (value > playerIndex) {
+                                return value - 1;
+                            }
+                            // Otherwise, return the original value
+                            return value;
+                        });
+                        // Emit to player who needs to fill the new role 
+                        io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
+                        
                     }
                 }
                 // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
@@ -278,6 +333,7 @@ const serverLogic = (io, userNames, rooms) => {
                     throw new Error('Room not found');
                 }
 
+                stateOfGame = 'started';
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values());
@@ -337,6 +393,7 @@ const serverLogic = (io, userNames, rooms) => {
                 // Ensure the room exists 
                 if(rooms.has(socket.roomId))
                 {
+                    const username = getSessionUsername(socket);
                     let room = rooms.get(socket.roomId);
 
                     // Checking to ensure the number of turns have not been exceeded meaning all players have not played yet
@@ -349,7 +406,7 @@ const serverLogic = (io, userNames, rooms) => {
                     let userprompt = data; 
 
                     let players = Array.from(room.players.keys()); // Getting the players socket.ids within a specific room in sequential order of who entererd the room first.
-
+                    
                     // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
                     if(data.prompt){
                         console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
@@ -393,10 +450,12 @@ const serverLogic = (io, userNames, rooms) => {
                         else if(data.drawing){
                             console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received prompt at: " + new Date().toISOString());
                         }
-                        console.log("Eng of the Game :" + socket.roomId);
+                        console.log("End of the Game :" + socket.roomId);
+                        stateOfGame = 'endgame';
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
-                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame"});
+                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame",info: rooms.get(socket.roomId).drawingAndPrompts, passedUsername: room.players.get(socket.id)});
+                        stateOfGame = 'lobby';
                     }
                 }
                 else

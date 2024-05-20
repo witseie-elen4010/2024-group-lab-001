@@ -74,13 +74,15 @@ socket.on("room created", data => {
     console.log(`Room created with ID: ${data.roomId}`);
     console.log(`Player count: ${data.playerCount}`);
     console.log(`User Logged in: ${data.username}`);
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount, data.username, data.remainingUsernames);
 });
 
 socket.on("player joined", data => {
     console.log(`Player ${data.playerId} joined the room`);
     console.log(`Player count: ${data.playerCount}`);  
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+    console.log(`User Logged in: ${data.username}`);  // Check if data.username is received correctly
+    // screenManager.switchToLobby(data);
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount, data.username, data.remainingUsernames);
 });
 
 socket.on("room not found", () => {
@@ -90,21 +92,22 @@ socket.on("room not found", () => {
 socket.on("player left", data => {
     console.log(`Player ${data.playerId} left the room`);
     console.log(`Player count: ${data.playerCount}`);
+    console.log(gameStarted)
     // Updates Screen when a user disconnects by removing their username.
     if (gameStarted) {
         // Handle disconnection during game
         // For example, display a message to the user indicating the disconnection
-        screenManager.updateRemainingUsernames(data.remainingUsernames);
+        screenManager.updateRemainingUsernames(data.username, data.remainingUsernames);
     } else {
         // Switch back to lobby screen if the game hasn't started
-        screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+        screenManager.switchLobbyScreen(data.roomId,data.playerCount, data.username, data.remainingUsernames);
     }
 });
 
 socket.on('game-started', (data) => {
     console.log("Game started");
     gameStarted = true;
-    screenManager.updateRemainingUsernames(data.remainingUsernames);
+    screenManager.updateRemainingUsernames(data.username, data.remainingUsernames);
     console.log(data)
     screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns,
         currentRoundPlayer: data.currentRoundPlayer, currentRoundRole: data.currentRoundRole});
@@ -136,7 +139,8 @@ socket.on('switch-screen-waiting', data =>{
 socket.on('return-lobby', data =>{
     gameStarted = false;
     console.log("Returning to lobby screen");
-    screenManager.switchLobbyScreen(data.roomId,data.playerCount,data.remainingUsernames);
+    screenManager.clearPrompts();
+    screenManager.switchLobbyScreen(data.roomId,data.playerCount, data.username, data.remainingUsernames);
 });
 
 socket.on("random-prompt-generated", data => {

@@ -8,16 +8,30 @@ let isHost = false;
 let drawingSubmitted = false; 
 let countdown = 5; // Countdown timer for game start
 let drawingCountdown = 60; // Set countdown time in seconds
-let remainingUsernamesList = [];
 
 function setHost()
 {
     isHost = true; 
 }
 
-// Function to update the list of remaining usernames
-function updateRemainingUsernames(usernames) {
-    remainingUsernamesList = usernames;
+function createPromptElement(promptText, containerId) {
+    // Get the container
+    const container = document.getElementById(containerId);
+
+    // Create a new <p> element
+    const promptElement = document.createElement('p');
+
+    // Set the class of the <p> element
+    promptElement.className = 'player-prompt-heading';
+
+    // Set the text of the <p> element
+    promptElement.textContent = promptText;
+
+    // Append the <p> element to the container
+    container.appendChild(promptElement);
+}
+
+function updateRemainingUsernames(currentUsername, remainingUsernames) {
     const drawPlayerContainer = document.getElementById('usernameDisplayOnDraw');
     drawPlayerContainer.innerHTML = '';
     
@@ -26,20 +40,26 @@ function updateRemainingUsernames(usernames) {
     usernameHeading.className = "title room-code-heading";
     usernameHeading.textContent = `Players`;
     drawPlayerContainer.appendChild(usernameHeading);
+    
+    // Display the current user's username separately
+    const currentUsernameButton = document.createElement('button');
+    currentUsernameButton.textContent = currentUsername;
+    currentUsernameButton.className = "room-code-button username-button";
+    drawPlayerContainer.appendChild(currentUsernameButton);
 
     // Loop through each username in remainingUsernames array
-    remainingUsernamesList.forEach(username => {
+    remainingUsernames.forEach(username => {
         // Create a button element for each username
         const usernameButton = document.createElement('button');
         usernameButton.textContent = username;
         usernameButton.className = "room-code-button";
-        console.log(username);
+        
         // Append the username button to the centerDiv
         drawPlayerContainer.appendChild(usernameButton);
     });
 }
 
-function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
+function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUsernames) {
     // Hide the End Game Screen if it is displayed
     document.getElementById('endGameScreen').style.display = 'none';
 
@@ -86,7 +106,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     const startgameButton = document.createElement('button');
     startgameButton.className = 'button start-button';
     startgameButton.id = 'startgame-button';
-    startgameButton.disabled = true;
+    startgameButton.disabled = false;
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
     leftDiv.appendChild(startgameButton);
@@ -94,6 +114,7 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
 
     // Right div for displaying usernames
     const centerDiv = document.createElement('div');
+    centerDiv.id = 'centerDiv';
     centerDiv.className = 'lobby-right';
 
     // Create a paragraph element to display the remaining usernames
@@ -101,6 +122,12 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     usernameHeading.className = "title room-code-heading";
     usernameHeading.textContent = `Players`;
     centerDiv.appendChild(usernameHeading);
+    
+    // Display the current user's username separately
+    const currentUsernameButton = document.createElement('button');
+    currentUsernameButton.textContent = currentUsername;
+    currentUsernameButton.className = "room-code-button username-button";
+    centerDiv.appendChild(currentUsernameButton);
 
     // Loop through each username in remainingUsernames array
     remainingUsernames.forEach(username => {
@@ -118,16 +145,23 @@ function switchLobbyScreen(roomId, playerCount, remainingUsernames) {
     horizontalDiv.appendChild(centerDiv);
 }
 
-function startGame(startgameButton,playerCount,roomId){
-    if(playerCount<3){return};
-    startgameButton.className = 'button lobby-button';
-    startgameButton.disabled = false;
+function startGame(startgameButton, playerCount, roomId) {
+    if (playerCount == 3 || playerCount == 4) {
+        // startgameButton.disabled = false;
+        startgameButton.className = 'button lobby-button';
+    }
+
     startgameButton.addEventListener('click', () => {
-      if(isHost){
-        client.socket.emit("create-timer")
-      };
+        if (playerCount < 3 || playerCount > 4) {
+            alert('Player count must be between 3 and 4.');
+            return;
+        } else if (isHost) {
+            client.socket.emit("create-timer");
+        } else if (!isHost) {
+            alert('Only the host can start the game.');
+        }
     });
-};
+}
 
 function createTimer (roomId) {
     // Right div for displaying usernames
@@ -215,7 +249,7 @@ function switchingGameScreen(data)
             currentRoundRole:data.currentRoundRole});
     }
     else{
-        endGame();
+        endGame({drawingPrompts:data.info, playerUsername:data.passedUsername});
     }
 }
 
@@ -406,7 +440,7 @@ function switchToDrawingScreen(data) {
 }
 
 // Function to make the div containing the endgame screen allowing for additional functionality such as displaying all drawings and prompts 
-function endGame() {
+function endGame(data) {
     // Hide other screens
     document.getElementById('postLobbyCreationScreen').style.display = 'none'; 
     document.getElementById("intialPromptScreen").style.display = 'none'; 
@@ -418,12 +452,53 @@ function endGame() {
     document.getElementById('endGameScreen').style.display = 'flex';
 
     blockAutoButtonPresses();
+    
+    const displayDiv = document.getElementById('endGameResults');
+    createPromptElement('Initial Prompt', 'initialPrompt');
+    createPromptElement('Guess Prompt', 'finalPrompt');
+
+    // Iterate over the data
+    for (let i = 0; i < data.drawingPrompts.length; i++) {
+        if (data.drawingPrompts[i].prompt) {
+            // If it's a prompt, add it to the prompt-container
+            const initialPromptContainer = document.getElementById('initialPrompt');
+            const promptContainer = document.getElementById('finalPrompt');
+            if (i === 0) {
+                // const promptText = 'Initial Prompt: ';
+                const initialPromptParagraph = document.createElement('p');
+                initialPromptParagraph.className = 'player-prompt';
+                initialPromptParagraph.textContent = data.drawingPrompts[i].prompt;
+                initialPromptContainer.appendChild(initialPromptParagraph);
+            } else if (i === 2){
+                const promptText = 'Guess Prompt: ';
+                const promptParagraph = document.createElement('p');
+                promptParagraph.className = 'player-prompt';
+                promptParagraph.textContent = data.drawingPrompts[i].prompt;
+                promptContainer.appendChild(promptParagraph);
+            }
+        }
+    }
 
     const returnToLobbyButton = document.getElementById("backToLobbyScreenButton");
 
     returnToLobbyButton.addEventListener('click', function() {
         window.location.reload();
     });
+}
+
+function clearPrompts() {
+    const initialPromptContainer = document.getElementById('initialPrompt');
+    const promptContainer = document.getElementById('finalPrompt');
+
+    // Remove all child elements from the initialPromptContainer
+    while (initialPromptContainer.firstChild) {
+        initialPromptContainer.removeChild(initialPromptContainer.firstChild);
+    }
+
+    // Remove all child elements from the promptContainer
+    while (promptContainer.firstChild) {
+        promptContainer.removeChild(promptContainer.firstChild);
+    }
 }
 
 export default {
@@ -433,5 +508,6 @@ export default {
     updateTimer,
     updateRemainingUsernames,
     setHost,
+    clearPrompts
 };
 
