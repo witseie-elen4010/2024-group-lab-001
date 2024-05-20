@@ -39,6 +39,23 @@ function updateRemainingUsernames(usernames) {
     });
 }
 
+function createPromptElement(promptText, containerId) {
+    // Get the container
+    const container = document.getElementById(containerId);
+
+    // Create a new <p> element
+    const promptElement = document.createElement('p');
+
+    // Set the class of the <p> element
+    promptElement.className = 'player-prompt-heading';
+
+    // Set the text of the <p> element
+    promptElement.textContent = promptText;
+
+    // Append the <p> element to the container
+    container.appendChild(promptElement);
+}
+
 function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUsernames) {
     // Hide the End Game Screen if it is displayed
     document.getElementById('endGameScreen').style.display = 'none';
@@ -438,6 +455,8 @@ function endGame(data) {
     blockAutoButtonPresses();
     
     const displayDiv = document.getElementById('endGameResults');
+    createPromptElement('Initial Prompt', 'initialPrompt');
+    createPromptElement('Guess Prompt', 'finalPrompt');
 
     // Iterate over the data
     for (let i = 0; i < data.drawingPrompts.length; i++) {

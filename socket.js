@@ -311,7 +311,6 @@ const serverLogic = (io, userNames, rooms) => {
                             return value;
                         });
                         // Emit to player who needs to fill the new role 
-                        console.log(room.roles[room.turn]);
                         io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
                         
                     }
@@ -458,7 +457,7 @@ const serverLogic = (io, userNames, rooms) => {
                         else if(data.drawing){
                             console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received prompt at: " + new Date().toISOString());
                         }
-                        console.log("Eng of the Game :" + socket.roomId);
+                        console.log("End of the Game :" + socket.roomId);
                         stateOfGame = 'endgame';
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
