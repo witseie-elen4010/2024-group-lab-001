@@ -1,6 +1,7 @@
 // draw.js
 
 const canvas = document.getElementById('drawing-canvas');
+const undoButton = document.getElementById('undoCanvasButton');
 
 // Allow for different screen size scaling
 canvas.width = canvas.offsetWidth;  
@@ -19,6 +20,10 @@ let lineWidth = 5;
 let drawingShape = 'round';
 let isDrawing = false;   
 let isSprayCan = false; 
+
+// Array for strokes so undo function can be utilized
+let restoreStrokes = [];
+let index = -1; 
 
 // Initialize canvas with default parameters 
 ctx.strokeStyle = drawingColor; 
@@ -39,6 +44,8 @@ canvas.addEventListener('mousedown', (event)=>{
 // Stop drawing if user releases M1 key
 canvas.addEventListener('mouseup', ()=>{
     isDrawing = false; 
+    restoreStrokes.push(ctx.getImageData(0,0,canvas.width,canvas.height));
+    index += 1;
     ctx.closePath();
 });
 
@@ -54,6 +61,9 @@ canvas.addEventListener('mouseleave', ()=>{
     isDrawing = false;
     ctx.closePath();
 });
+
+
+undoButton.addEventListener('click', undoDrawing);
 
 // Draw stroke lines when user has M1 key pressed 
 function draw(event)
@@ -159,4 +169,19 @@ function changeLineWidth(value)
 {
    lineWidth = value; 
    updateDrawingParameters();
+}
+
+//Allow for undo function
+function undoDrawing()
+{
+    if(index <= 0)
+    {
+        clearCanvas();
+    }
+    else
+    {
+        index -= 1;
+        restoreStrokes.pop();
+        ctx.putImageData(restoreStrokes[index],0,0);
+    }
 }
