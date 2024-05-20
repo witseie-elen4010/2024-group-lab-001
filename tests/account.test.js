@@ -34,17 +34,17 @@ test('Test Admin Login Flows', async ({ page }) => {
   expect(page.url()).toBe('http://localhost:3000/');
 
   await page.getByRole('link', { name: 'ACCOUNT' }).click();
-  await page.getByText('Are you an administrator?').click();
-  await page.getByRole('link', { name: 'Login as an Administator' }).click();
+  await page.getByText('Are you an administrator? ').click();
+  await page.getByRole('link', { name: 'Login as an Administrator' }).click();
 
   expect(page.url()).toBe('http://localhost:3000/account#');
 
-  await page.getByPlaceholder('Enter your administator email').click();
-  await page.fill('input[placeholder="Enter your administator email"]', 'admin@example.com');
-  await page.getByRole('textbox', { name: 'Enter your password' }).click();
-  await page.locator('div').filter({ hasText: 'Administator Login' }).locator('i').nth(2).click();
+  await page.getByPlaceholder('Enter your administrator email').click();
+  await page.fill('input[placeholder="Enter your administrator email"]', 'admin@example.com');
+  await page.getByRole('textbox', { name: 'Enter your administrator password' }).click();
+  await page.locator('div').filter({ hasText: 'Administrator Login' }).locator('i').nth(2).click();
 
-  expect(await page.locator('input[placeholder="Enter your administator email"]').inputValue()).toBe('admin@example.com');
+  expect(await page.locator('input[placeholder="Enter your administrator email"]').inputValue()).toBe('admin@example.com');
 
   await page.getByRole('button', { name: 'Login' }).click();
 });
