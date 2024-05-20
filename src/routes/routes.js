@@ -28,6 +28,13 @@ app.get('/account', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'views', 'account.html'));
 });
 
+// Route for serving admin.html
+app.get('/admin', (req, res) => {
+    console.log('Route: Account')
+    console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/admin\'`);
+    res.sendFile(path.join(__dirname, '..', 'views', 'admin.html'));
+});
+
 // Route for serving lobby.html
 app.get('/game', requireLogin, (req, res) => {
     console.log('Route: game')

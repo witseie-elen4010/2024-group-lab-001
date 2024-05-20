@@ -2,12 +2,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginContainer = document.querySelector(".login-container");
     const signupContainer = document.querySelector(".signup-container");
     const guestContainer = document.querySelector(".guest-container");
+    const adminContainer = document.querySelector(".admin-container");
     const passwordShowHide = document.querySelectorAll(".showHidePassword");
     const passwordFields = document.querySelectorAll(".password");
     const signUp = document.querySelector(".signup-link");
     const login = document.querySelector(".login-link");
     const guestToLogin = document.querySelector(".guest-to-login");
     const guest = document.querySelector(".guest-link");
+    const adminToLogin = document.querySelector(".admin-to-login");
+    const admin = document.querySelector(".admin-link");
 
     // Show/hide Password and Change Icon
     passwordShowHide.forEach(eyeIcon => {
@@ -50,4 +53,16 @@ document.addEventListener("DOMContentLoaded", function() {
         signupContainer.style.display = "none";
         loginContainer.style.display = "block";
     });
+
+    admin.addEventListener("click", () => {
+        signupContainer.style.display = "none";
+        loginContainer.style.display = "none";
+        adminContainer.style.display = "block";
+    });
+
+    adminToLogin.addEventListener("click", () => {
+        adminContainer.style.display = "none";
+        loginContainer.style.display = "block";
+    });
+
 });
