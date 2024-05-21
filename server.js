@@ -3,10 +3,11 @@ const app = require('./app');
 const {serverLogic}  = require('./socket');
 const session = require('express-session'); // Require the session middleware
 const server = http.createServer(app);
+require('dotenv').config();
 
 // === Express session middleware ===
 const sessionMiddleware = session({
-    secret: "averylongsecretkeythatshouldnotbeexposedtoanyone",
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
     cookie: { secure: false },

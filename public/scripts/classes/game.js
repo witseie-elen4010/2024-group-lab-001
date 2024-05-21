@@ -472,7 +472,7 @@ function switchToDrawingScreen(data) {
             drawingCounter.innerText = "Time is Up!"; 
             setTimeout(function() {
                 drawingSubmitButton.click();
-            }, 2000); // Delay of 2 seconds
+            }, 500); // Delay of 2 seconds
             clearInterval(drawingCountdownInterval);
         }
     }, 1000);
