@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+// Test to ensure teh login and signup flows correctly
 test('Test Login and Signup flows', async ({ page }) => {
   await page.goto('http://localhost:3000/account');
   
@@ -63,6 +64,7 @@ test('User can create an account', async ({page})=>{
   await expect(page.getByText('Create Lobby Join Tool')).toBeVisible();
 });
 
+// Test to ensure the admin login path flows correctly
 test('Test Admin Login Flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   expect(page.url()).toBe('http://localhost:3000/');
