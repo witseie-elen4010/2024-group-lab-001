@@ -142,6 +142,19 @@ function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUserna
         centerDiv.appendChild(usernameButton);
     });
 
+    // Create a 'Leave Lobby' button
+    const leaveLobbyButton = document.createElement('button');
+    leaveLobbyButton.textContent = 'Leave Lobby';
+    leaveLobbyButton.className = "room-code-button red-button";
+
+    // Add an onclick event listener to refresh the page
+    leaveLobbyButton.onclick = function() {
+        window.location.reload();
+    };
+
+    // Append the 'Leave Lobby' button to the centerDiv
+    centerDiv.appendChild(leaveLobbyButton);
+
     // Append left and right divs to the lobby display element
     horizontalDiv.appendChild(leftDiv);
     horizontalDiv.appendChild(centerDiv);
