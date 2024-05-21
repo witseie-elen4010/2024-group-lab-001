@@ -26,6 +26,9 @@ const {
 
 const dotenv = require('dotenv');
 const { sign } = require('crypto');
+const { text } = require('body-parser');
+const { log } = require('console');
+const { get } = require('http');
 
 dotenv.config()
 /*const{
@@ -48,6 +51,7 @@ const firebaseApp = initializeApp({
     measurementId: MEASUREMENT_ID
 })*/
 
+/*
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyAyUL73lnqRDZ-1HP_F-3CWhgaXoCYlC_E",
     authDomain: "miscommunication-mayhem.firebaseapp.com",
@@ -56,7 +60,17 @@ const firebaseApp = initializeApp({
     messagingSenderId: "619420848727",
     appId: "1:619420848727:web:9205b82fbb712b71940912"
   });
-  
+*/
+
+const firebaseApp = initializeApp({
+    apiKey: "AIzaSyAM0d1FWsRSF_cN9qAGEikehCzyZvs1N1I",
+    authDomain: "miscommunication-mayhem-ddd0b.firebaseapp.com",
+    projectId: "miscommunication-mayhem-ddd0b",
+    storageBucket: "miscommunication-mayhem-ddd0b.appspot.com",
+    messagingSenderId: "691034734112",
+    appId: "1:691034734112:web:ab2a371ab4c4263cebc645"
+});
+
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
 
@@ -72,6 +86,8 @@ const createNewAccount = async (myEmail, myUsername, myPassword, req, res) => {
         const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, loginPassword);
         await addUserToDB(myEmail, myUsername); // Wait for addUserToDB to complete
         console.log('Firebase: A user has created an account.');
+        let logTime = new Date().toISOString();
+        logDB(loginEmail, "Signup", logTime, ` ${logTime}: User with email address ${loginEmail} has been created.`)
         monitorAuthState(req, res); // Now call monitorAuthState after addUserToDB completes
     } catch (error) {
         console.log('Firebase: There was an error creating account.');
@@ -104,7 +120,8 @@ async function addUserToDB(myEmail, myUsername) {
         const userData ={
             username: myUsername,
             email: myEmail,
-            uid: userUID
+            uid: userUID,
+            role: 'player'
         }
         setDoc(userInformation, userData);
 
@@ -122,13 +139,18 @@ const loginEmailPassword = async (myEmail, myPassword, req, res) => {
     const loginPassword = myPassword;
 
     try {
+        
         const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
         console.log('Firebase: A user has logged in.');
+        let logTime = new Date().toISOString();
+        logDB(loginEmail, "Login", logTime, `${logTime}: User with email address ${loginEmail} has logged in.`)
         monitorAuthState(req, res);
         return; // Return here to prevent further execution
-    } catch (error) {
+    } 
+    catch (error) {
         console.log('Firebase: There was an error logging in.');
-        console.log(error);
+        let logTime = new Date().toISOString();
+        logDB(loginEmail, "Login", logTime, `${logTime}: User with email address ${loginEmail} failed to log in.`)
         res.status(401).send('Login failed'); // Send response for login failure
     }
 }
@@ -147,6 +169,24 @@ const getUsername = async function() {
             // console.log(`Username is ${username}`);
 
             return username;
+        }
+    }
+    return "";
+}
+
+// Function to get the role of the current user
+const getRole = async function() {
+
+    const userUID = getUserUID();
+    if (userUID !== null) {
+        const userInformation = doc(firestore, `users/${userUID}`);
+        const mySnapshot = await getDoc(userInformation);
+        if(mySnapshot.exists()){
+            const docData = mySnapshot.data();
+
+            const role = docData.role;
+
+            return role;
         }
     }
     return "";
@@ -171,15 +211,20 @@ const getUserUID = function() {
     }
 }
 
+
 const loginGuest = async(myUsername, req, res) => {
     try {
         const userCredential = await signInAnonymously(auth);
         console.log("Firebase: Guest Login with Username: " + myUsername);
+        let logTime = new Date().toISOString();
+        logDB(myUsername, "Login", logTime, `${logTime}: Guest with username ${myUsername} has logged in.`)
         monitorAuthState(req, res);
         addUserToDB(null, myUsername);
     } catch (error) {
         console.log('There was an error for guest login.');
         console.log(error);
+        let logTime = new Date().toISOString();
+        logDB(myUsername, "Login", logTime, `${logTime}: Guest with username ${myUsername} failed to log in.`)
     }
 }
 
@@ -196,11 +241,49 @@ const generateRandomPrompts = async function(promptIndex) {
     return "";
 };
 
+const logDB = async function(logUsername, logAction, logTime, logText) {
+    try{
+        const logCollection = collection(firestore, `logs`);
+        const logData = {
+            username: logUsername,
+            action: logAction,
+            time: logTime,
+            text: logText
+        };
+        await setDoc(doc(logCollection, logTime), logData);
+    }
+
+    catch(error){
+        console.log('Firebase: There was an error logging to the database.');
+        console.log(error);
+    }
+
+}
+
+const getLogs = async function(numberOfLogs){
+    const logCollection = collection(firestore, `logs`);
+    const logQuery = query(logCollection, limit(numberOfLogs), orderBy('time', 'desc'));
+
+    const logArray = [];
+
+    const querySnapshot = await getDocs(logQuery);
+    querySnapshot.forEach((snap) => {
+        const logText = JSON.stringify(snap.data().text);
+        logArray.push(logText);
+    });
+    console.log("Log Array: ", logArray);
+    return logArray;
+    
+}
+
 module.exports = {
     createNewAccount,
     loginEmailPassword,
     getUsername,
     getUserEmail,
+    getRole,
     loginGuest,
-    generateRandomPrompts
+    generateRandomPrompts,
+    logDB,
+    getLogs,
 };

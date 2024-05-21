@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/lobby.css">
     <link rel="stylesheet" href="/css/draw.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/favicon.png">
 </head>
 <body id="body" >
     <!-- Lobby Container -->
@@ -212,17 +214,18 @@
    <!-- End game screen -->
    <div id='endGameScreen' class='container end-container' style="display: none;">
         <div class="left-column">
-            <p class='title-drawing end-title'>Game Over!</p>
-                <button id="backToLobbySessionButton" class="button lobby-button end-button">Return to Lobby</button>
-                <button id="backToLobbyScreenButton" class="button lobby-button end-button">End Game Session</button>
-        </div>
-
-        <div class="right-column">
             <div id="endGameResults" class="results-container">
                 <div class="prompt-container-end" id="initialPrompt"></div>
-                <div class="drawing-container-end"></div>
+                <div class="drawing-container-end" id="initialDrawing"></div>
                 <div class="prompt-container-end" id="finalPrompt"></div>
+                <div class="drawing-container-end" id="finalDrawing"></div>
             </div>
+        </div>
+        
+        <div class="right-column">
+            <p class='title-drawing end-title'>Game Over!</p>
+                <button id="backToLobbySessionButton" class="button lobby-button end-button">Return to Lobby</button>
+                <button id="backToLobbyScreenButton" class="button lobby-button end-button red-button">End Game Session</button>
         </div>
     </div>
 

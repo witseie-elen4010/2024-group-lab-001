@@ -9,8 +9,10 @@ const requireLogin = (req, res, next) => {
         // User is authenticated, proceed to the next middleware
         next();
     } else {
-        // User is not authenticated, redirect to login page or send an error response
-        res.status(401).send('Unauthorized. Please login first.');
+        // User is not authenticated, redirect to login page
+        // Server side
+        res.redirect('/account?alert=Unauthorized. Please login first.');
+        //res.status(401).send('Unauthorized. Please login first.');
     }
 };
 
@@ -29,7 +31,7 @@ app.get('/account', (req, res) => {
 });
 
 // Route for serving admin.html
-app.get('/admin', (req, res) => {
+app.get('/admin', requireLogin, (req, res) => {
     console.log('Route: Account')
     console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/admin\'`);
     res.sendFile(path.join(__dirname, '..', 'views', 'admin.html'));

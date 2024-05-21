@@ -69,6 +69,16 @@ body {
     width: 40%;
 }
 
+.admin-container-screen {
+    background-color: #fff;; /* Set background color to transparent */
+    display: flex;
+    flex-direction: row; /* Stack items vertically */
+    justify-content: center; /* Ensure space between the columns */
+    padding: 20px;
+    text-align: center;
+    width: 65%;
+}
+
 
 .prompt-container {
     align-items: center; /* Center items horizontally */
@@ -182,6 +192,18 @@ body {
     width: 100%;
 }
 
+.red-button {
+    background-color: #ff661a;
+    border: 2px solid #ff0000;
+    color: #fff;
+    text-align: center;
+}
+
+.red-button:hover {
+    background-color: #ff0000;
+    border: 2px solid #ff3333;
+}
+
 .username-button {
     background-color: #eab676;
     border: 2px solid #e28743;
@@ -244,6 +266,16 @@ body {
 
 .footer a {
     color: #dbdbdb;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 20px;
+    border-radius: 10px;
+    width: 100%;
 }
 
 /* Input Field */

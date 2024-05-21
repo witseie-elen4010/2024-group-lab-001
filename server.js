@@ -45,13 +45,13 @@ app.use((req, res, next) => {
 });
 
 // Route for adding a new user
-const { createNewAccount } = require('./public/scripts/classes/firebase');
+const { createNewAccount, getRole } = require('./public/scripts/classes/firebase');
 
 app.post('/api/signup', function (req, res) {
     createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res)
     .then(() => {
         // Save username in session
-        req.session.username = req.body.guestUsername;
+        req.session.username = req.body.signupUsername;
         log('Session Username Saved As:', req.session.username);
         // Set isLoggedIn to true in the session
         req.session.isLoggedIn = true;
@@ -83,11 +83,42 @@ app.post('/api/login', function (req, res) {
             } else {
                 // If username not found, handle appropriately
                 console.error('Username not found.');
-                res.status(401).send('Username not found');
+                //res.status(401).send('Username not found');
             }
         })
         .catch((error) => {
             // It's a good practice to handle errors and send an appropriate response
+            console.error('Login failed:', error);
+            res.status(401).send('Login failed');
+        });
+});
+
+app.post('/api/admin/login', function (req, res) {
+    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
+        .then(async () => {
+            // Retrieve username and role
+            const username = await getUsername();
+            const role = await getRole();
+            if (username) {
+                // Set username and isLoggedIn to true in the session
+                req.session.username = username;
+                log('Session Username Saved As:', req.session.username);
+                req.session.isLoggedIn = true;
+
+                // If the user is not an admin, send an error
+                if (role === 'player') {
+                    res.status(401).send('Access Denied: You are not an admin.');
+                    return;
+                } else {
+                    res.redirect('/admin');
+                }
+            } else {
+                // If username not found, handle appropriately
+                console.error('Username not found.');
+                //res.status(401).send('Username not found');
+            }
+        })
+        .catch((error) => {
             console.error('Login failed:', error);
             res.status(401).send('Login failed');
         });
@@ -111,6 +142,30 @@ app.post('/api/guestLogin', function (req, res) {
         res.status(401).send('Login failed');
     });
 })
+
+// Getting logs from database
+const { getLogs } = require('./public/scripts/classes/firebase');
+let logArray = [];
+//const { printLogs } = require('./public/scripts/classes/admin');
+app.post('/api/getLogs', async function (req, res) {
+    console.log('Logs button clicked');
+
+    let numberOfLogs = req.body.logCount;
+    if(numberOfLogs < 1) {
+        numberOfLogs = 1;
+    }
+    
+    logArray = await getLogs(numberOfLogs);
+    console.log('Log Array Received');
+    
+    logArray.forEach(element => {
+        console.log(element);
+    });
+})
+
+app.get('/api/list', function (req, res) {
+    res.json(logArray) // Respond with JSON
+  })
 
 // === Server Port ===
 const PORT = process.env.PORT || 3000;

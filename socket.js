@@ -6,6 +6,11 @@ const { getUsername } = require('./public/scripts/classes/firebase');
 const { getUserEmail } = require('./public/scripts/classes/firebase');
 const { memoryEagerGarbageCollector } = require('firebase/firestore');
 const { generateRandomPrompts } = require('./public/scripts/classes/firebase');
+const { logDB } = require('./public/scripts/classes/firebase');
+const { loadEnvFile } = require('process');
+
+// Variables
+let logTime = new Date().toISOString();
 
 // Define helper functions
 function createCode() {
@@ -81,8 +86,8 @@ function shuffle(array) {
 }
 
 const generatePromptIndex = function (){
-    const min = 1;
-    const max = 30;
+    const min = 2;
+    const max = 31;
     let promptIndex = Math.floor(Math.random() * (max - min + 1)) + min;
     return promptIndex;
 };
@@ -124,9 +129,13 @@ const serverLogic = (io, userNames, rooms) => {
                 const remainingUsernames = Array.from(rooms.get(roomId).players.values()).filter(name => name !== username);
                 socket.emit('room created', { roomId, playerCount: rooms.get(roomId).players.size, username, remainingUsernames });
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username}, has created and joined a room.${roomId}`);
+                logTime = new Date().toISOString();
+                logDB(username, "Room Creation", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, created and joined room ${roomId}.`);
             } catch (error) {
                 console.error('Error creating room:', error);
                 socket.emit('Room Creation Failed', { error: error.message });
+                logTime = new Date().toISOString();
+                logDB(username, "Room Creation", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, failed to create and join a room.`);
             }
         });
 
@@ -170,9 +179,14 @@ const serverLogic = (io, userNames, rooms) => {
                 }
 
                 console.log(`Player with Socket ID: ${socket.id} and Username: ${username} has joined Room: ${roomId}`);
+                logTime = new Date().toISOString();
+                logDB(username, "Join Room", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, joined room ${roomId}.`);
+
             } catch (error) {
                 console.error('Error Joining Room:', error);
                 socket.emit('Joining Room has Failed', { error: error.message });
+                logTime = new Date().toISOString();
+                logDB(username, "Join Room", logTime, `${logTime}: User with username, ${username}, failed to join room ${roomId}.`);
             }
         });
 
@@ -197,12 +211,16 @@ const serverLogic = (io, userNames, rooms) => {
                     // Emit 'player joined' event to the current player
                     io.to(currentPlayerSocket).emit('return-lobby', { playerId: currentPlayerSocket, roomId, playerCount, username: currentPlayerUsername, remainingUsernames });
                     console.log(`Player ${currentPlayerUsername} has returned to the lobby`);
+                    logTime = new Date().toISOString();
+                    logDB(username, "Return to Lobby", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, returned to the lobby in room ${roomId}.`);
                 }
 
                 stateOfGame = 'lobby';
 
             } catch (error) {
                 console.error('Error Returning to Lobby:', error);
+                logTime = new Date().toISOString();
+                logDB(username, "Return to Lobby", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, failed to return to the lobby in room ${roomId}.`);
             }
         });
 
@@ -257,6 +275,8 @@ const serverLogic = (io, userNames, rooms) => {
                 if(playerPlayerOrderIndex < room.turn)
                 {
                     console.log("Player: " + username + " left after they played");
+                    logTime = new Date().toISOString();
+                    logDB(username, "Disconnect", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, left the game after they played.`);
                     // We need to simply delete the role they played and decrease all indexes above the received index by one and room.turn by one
                     room.roles.splice(playerPlayerOrderIndex,1); 
                     room.playerOrder.splice(playerPlayerOrderIndex,1);
@@ -275,6 +295,8 @@ const serverLogic = (io, userNames, rooms) => {
                 else if(playerPlayerOrderIndex > room.turn)
                 {
                     console.log("Player: " + socket.id + " left before their turn");
+                    logTime = new Date().toISOString();
+                    logDB(username, "Disconnect", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, left the game before their turn.`);
                     room.roles.pop();
                     room.playerOrder.splice(playerPlayerOrderIndex,1);
                     room.playerOrder = room.playerOrder.map((value) => {
@@ -293,6 +315,8 @@ const serverLogic = (io, userNames, rooms) => {
                     if(room.turn < room.players.size)
                     {
                         console.log("Player: " + socket.id + " left during their turn");
+                        logTime = new Date().toISOString();
+                        logDB(username, "Disconnect", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, left the game during their turn.`);
                         room.roles.pop();
                         room.playerOrder.splice(playerPlayerOrderIndex,1);
                         room.playerOrder = room.playerOrder.map((value) => {
@@ -336,10 +360,8 @@ const serverLogic = (io, userNames, rooms) => {
                 stateOfGame = 'started';
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
-
+                
                 // Send events to each player to begin the game 
-
                 // Convert players to an array. Map stores sequential order of when added to the map so array would be in a sequential order of when user joined the room.
                 // Starting with user that created the room.
                 let players = Array.from(room.players.keys()) 
@@ -350,8 +372,12 @@ const serverLogic = (io, userNames, rooms) => {
                 room.turn = 0; 
                 room.drawingAndPrompts = [];
 
+                let currentPlayerUsername = '';
+                // Get the remaining usernames excluding the current player
+                let remainingUsernames = Array.from(room.players.values())
+
                 // Emit to the first player that their role 
-                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames});
+                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames, username: currentPlayerUsername});
 
                 // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
@@ -360,24 +386,30 @@ const serverLogic = (io, userNames, rooms) => {
                         let numberOfTurns = 0;
                         let currentRoundRole = room.roles[room.turn]; 
                         let currentRoundPlayer = room.players.get(players[room.playerOrder[room.turn]]);
-
+                        currentPlayerUsername = ''
+                        
                         if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
                         // Rest of the players are assinged the waiting screen as it is not their turn. 
-                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole});
+                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole, username: currentPlayerUsername});
                     }
                 }
                 
                 //io.to(socket.roomId).emit('game-started',{playerId:socket.id, roomId, playerCount, remainingUsernames});
                 console.log('Game has started in room: '+ roomId);
+                logTime = new Date().toISOString();
+                logDB(username, "Start Game", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, started the game in room ${roomId}.`);
             } catch (error) {
                 console.error('Error starting game:', error);
                 socket.emit('game start failed', { error: error.message });
+                logTime = new Date().toISOString();
+                logDB(username, "Start Game", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, failed to start the game in room ${roomId}.`);
             }
         });
 
         // Handle 'create-timer' event
         socket.on('create-timer', () => {
             try {
+                if(!rooms.has(socket.roomId)){throw new Error("Room not found")};
                 io.to(socket.roomId).emit('create-timer-user',{roomId:socket.roomId});
                 console.log("Timer creation started");
             } catch (error) {
@@ -410,12 +442,16 @@ const serverLogic = (io, userNames, rooms) => {
                     // Display the specific socket.id and data being returned by the user finally the time stamp of when data was received. 
                     if(data.prompt){
                         console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString());
+                        logTime = new Date().toISOString();
+                        logDB(username, "Prompt Entry", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, entered a prompt: ${data.prompt}.`);
                         //room.drawingAndPrompts.push(data.prompt);
                         //room.logs.push(new LogEntry(socket.id,"prompt",data.prompt));
                     }
                     else if(data.drawing){
                         //console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received drawing at: " + new Date().toISOString());
                         console.log("Player with Socket ID: " + socket.id + " Action: " + "drawing " + "Received drawing at: " + new Date().toISOString());
+                        logTime = new Date().toISOString();
+                        logDB(username, "Drawing", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, submitted a drawing.`);
                         //room.drawingAndPrompts.push(data.drawing);
                         //room.logs.push(new LogEntry(socket.id,"drawing",data.drawing));
                     }
@@ -446,11 +482,17 @@ const serverLogic = (io, userNames, rooms) => {
                         // Logging final users data that was received when odd players will be a data.prompt but when even users will be data.drawing 
                         if(data.prompt){
                             console.log("Player with Socket ID: "+ socket.id + " prompt: " + data.prompt + " Received prompt at: " + new Date().toISOString()); 
+                            logTime = new Date().toISOString();
+                            logDB(username, "Prompt Entry", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, entered a prompt: ${data.prompt}.`);
                         }
                         else if(data.drawing){
                             console.log("Player with Socket ID: "+ socket.id + " drawing: " + data.drawing + " Received prompt at: " + new Date().toISOString());
+                            logTime = new Date().toISOString();
+                            logDB(username, "Drawing", logTime, `${logTime}: User with username, ${username}, and Socket ID, ${socket.id}, submitted a drawing.`);
                         }
                         console.log("End of the Game :" + socket.roomId);
+                        logTime = new Date().toISOString();
+                        logDB(null, "End Game", logTime, `${logTime}: The game has ended in room ${socket.roomId}.`);
                         stateOfGame = 'endgame';
                         rooms.get(socket.roomId).drawingAndPrompts.push(data);
                         // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
