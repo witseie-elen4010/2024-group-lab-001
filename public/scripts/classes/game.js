@@ -42,11 +42,13 @@ function updateRemainingUsernames(currentUsername, remainingUsernames) {
     drawPlayerContainer.appendChild(usernameHeading);
     
     // Display the current user's username separately
-    const currentUsernameButton = document.createElement('button');
-    currentUsernameButton.textContent = currentUsername;
-    currentUsernameButton.className = "room-code-button username-button";
-    drawPlayerContainer.appendChild(currentUsernameButton);
-
+    if (currentUsername !== '') {
+        const currentUsernameButton = document.createElement('button');
+        currentUsernameButton.textContent = currentUsername;
+        currentUsernameButton.className = "room-code-button username-button";
+        drawPlayerContainer.appendChild(currentUsernameButton);
+    }
+    
     // Loop through each username in remainingUsernames array
     remainingUsernames.forEach(username => {
         // Create a button element for each username
@@ -454,14 +456,6 @@ function endGame(data) {
     blockAutoButtonPresses();
     
     const displayDiv = document.getElementById('endGameResults');
-    createPromptElement('Initial Prompt', 'initialPrompt');
-    createPromptElement('Guess Prompt', 'finalPrompt');
-    const initialDrawing = document.getElementById('initialDrawing');
-    const finalDrawing = document.getElementById('finalDrawing');
-
-    // Clear the contents of the drawing divs
-    initialDrawing.innerHTML = '';
-    finalDrawing.innerHTML = '';
 
     // Clear the contents of the display div
     displayDiv.innerHTML = '';

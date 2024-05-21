@@ -107,7 +107,7 @@ socket.on("player left", data => {
 socket.on('game-started', (data) => {
     console.log("Game started");
     gameStarted = true;
-    screenManager.updateRemainingUsernames(data.currentRoundPlayer, data.remainingUsernames);
+    screenManager.updateRemainingUsernames(data.username, data.remainingUsernames);
     console.log(data)
     screenManager.switchingGameScreen({gameState:data.gameState,numberOfTurns:data.numberOfTurns,
         currentRoundPlayer: data.currentRoundPlayer, currentRoundRole: data.currentRoundRole});
