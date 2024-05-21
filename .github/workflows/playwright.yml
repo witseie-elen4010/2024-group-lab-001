@@ -17,8 +17,12 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
+      env:
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
     - name: Run Playwright tests
       run: npx playwright test --workers=5
+      env:
+        SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
     - uses: actions/upload-artifact@v4
       if: always()
       with:

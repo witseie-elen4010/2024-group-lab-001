@@ -11,7 +11,8 @@ on:
 jobs:
   build:  
     runs-on: ubuntu-latest
-
+    env:
+      SESSION_SECRET: $(SESSION_SECRET)
     steps:
       - uses: actions/checkout@v4
 
