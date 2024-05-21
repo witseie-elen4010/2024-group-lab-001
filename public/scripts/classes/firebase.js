@@ -48,6 +48,7 @@ const firebaseApp = initializeApp({
     measurementId: MEASUREMENT_ID
 })*/
 
+/*
 const firebaseApp = initializeApp({
     apiKey: "AIzaSyAyUL73lnqRDZ-1HP_F-3CWhgaXoCYlC_E",
     authDomain: "miscommunication-mayhem.firebaseapp.com",
@@ -56,7 +57,17 @@ const firebaseApp = initializeApp({
     messagingSenderId: "619420848727",
     appId: "1:619420848727:web:9205b82fbb712b71940912"
   });
-  
+*/
+
+const firebaseApp = initializeApp({
+    apiKey: "AIzaSyAM0d1FWsRSF_cN9qAGEikehCzyZvs1N1I",
+    authDomain: "miscommunication-mayhem-ddd0b.firebaseapp.com",
+    projectId: "miscommunication-mayhem-ddd0b",
+    storageBucket: "miscommunication-mayhem-ddd0b.appspot.com",
+    messagingSenderId: "691034734112",
+    appId: "1:691034734112:web:ab2a371ab4c4263cebc645"
+});
+
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
 
@@ -104,7 +115,8 @@ async function addUserToDB(myEmail, myUsername) {
         const userData ={
             username: myUsername,
             email: myEmail,
-            uid: userUID
+            uid: userUID,
+            role: 'player'
         }
         setDoc(userInformation, userData);
 
@@ -122,8 +134,31 @@ const loginEmailPassword = async (myEmail, myPassword, req, res) => {
     const loginPassword = myPassword;
 
     try {
+        /*
         const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
         console.log('Firebase: A user has logged in.');
+        monitorAuthState(req, res);
+        */
+
+        const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
+        const userUID = userCredential.user.uid;
+        const userDoc = doc(firestore, `users/${userUID}`);
+        const userSnapshot = await getDoc(userDoc);
+
+        if (!userSnapshot.exists()) {
+            console.error('Firebase: User document does not exist.');
+            res.status(401).send('Login failed');
+            return;
+        }
+
+        const userData = userSnapshot.data();
+
+        if (userData.role === 'admin') {
+            console.log('Firebase: An admin user has logged in.');
+        } else {
+            console.log('Firebase: A general user has logged in.');
+        }
+
         monitorAuthState(req, res);
         return; // Return here to prevent further execution
     } catch (error) {
@@ -152,6 +187,24 @@ const getUsername = async function() {
     return "";
 }
 
+// Function to get the role of the current user
+const getRole = async function() {
+
+    const userUID = getUserUID();
+    if (userUID !== null) {
+        const userInformation = doc(firestore, `users/${userUID}`);
+        const mySnapshot = await getDoc(userInformation);
+        if(mySnapshot.exists()){
+            const docData = mySnapshot.data();
+
+            const role = docData.role;
+
+            return role;
+        }
+    }
+    return "";
+}
+
 // Function to get the email of the current user
 const getUserEmail = function() {
     const user = auth.currentUser;
@@ -170,6 +223,7 @@ const getUserUID = function() {
         return null;
     }
 }
+
 
 const loginGuest = async(myUsername, req, res) => {
     try {
@@ -201,6 +255,7 @@ module.exports = {
     loginEmailPassword,
     getUsername,
     getUserEmail,
+    getRole,
     loginGuest,
     generateRandomPrompts
 };
