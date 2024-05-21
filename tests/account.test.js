@@ -28,7 +28,6 @@ test('Test Login and Signup flows', async ({ page }) => {
   await page.locator('form').filter({ hasText: 'Signup' }).locator('i').nth(4).click();
 });
 
-
 test('Test Admin Login Flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   expect(page.url()).toBe('http://localhost:3000/');

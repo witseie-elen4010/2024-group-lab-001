@@ -84,7 +84,7 @@
     <div class="login-container admin-container" style="display: none;">
         <span class="title">Administrator Login</span> 
         <!-- Login form fields -->
-        <form>
+        <form action="api/admin/login" method="post">
             <!-- Username input field -->
             <div class="input-field">
                 <input type="text" id="adminLoginEmail" name="loginEmail" placeholder="Enter your administrator email" required>
@@ -125,6 +125,8 @@
             <div class="input-field">
                 <input type="password" id="signupPassword" name="signupPassword" class="password" placeholder="Create a password" required>
                 <i class="uil uil-lock icon"></i>
+                <!-- Icon to show/hide password -->
+                <i class="uil uil-eye-slash showHidePassword"></i>
             </div>
             <!-- Confirm password input field -->
             <div class="input-field">
