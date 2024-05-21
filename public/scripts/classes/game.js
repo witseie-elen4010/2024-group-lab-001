@@ -161,14 +161,14 @@ function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUserna
 }
 
 function startGame(startgameButton, playerCount, roomId) {
-    if (playerCount == 3 || playerCount == 4) {
+    if (playerCount == 3 || playerCount == 4 || playerCount == 5) {
         // startgameButton.disabled = false;
         startgameButton.className = 'button lobby-button';
     }
 
     startgameButton.addEventListener('click', () => {
-        if (playerCount < 3 || playerCount > 4) {
-            alert('Player count must be between 3 and 4.');
+        if (playerCount < 3 || playerCount > 5) {
+            alert('Player count must be between 3 and 5.');
             return;
         } else if (isHost) {
             client.socket.emit("create-timer");
@@ -186,7 +186,7 @@ function createTimer (roomId) {
 
     // Paragraph for "Starting Game In"
     const startingText = document.createElement('p')
-    startingText.className = 'lobby-container-text start-time-container'
+    startingText.className = 'lobby-container-text start-time-container start-time-text'
     startingText.innerText = 'Game Starting In:'
     timerDiv.appendChild(startingText) // Add startingText to rightDiv
 
