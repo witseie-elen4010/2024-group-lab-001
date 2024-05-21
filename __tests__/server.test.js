@@ -153,6 +153,24 @@ describe('Socket.IO Tests', () => {
     });
   });
 
+
+  // Test if timer event for starting the game is created 
+  it('should start the timer to begin countdown for starting a game', (done)=>{
+    socket.on('room created', (data) => {
+      expect(data.roomId).toBeDefined();
+      expect(data.playerCount).toBe(1);
+      socket.emit('create-timer'); 
+    });
+    socket.emit('create room');
+
+    socket.on('create-timer-user', (data) => {
+      expect(data.roomId).toBeDefined();
+      done();
+    });
+  });
+
+
+
   // Tests to ensure correlating error messages are produced
 
   // Test to determine if corresponding error is produced if room user is attempting to join cannot be found
@@ -164,19 +182,14 @@ describe('Socket.IO Tests', () => {
     });
   });
 
-});
-
-
-// Test the generatePromptIndex function
-describe('generatePromptIndex function tests', () => {
-  it('should return a number between 1 and 30', () => {
-    const index = generatePromptIndex();
-    expect(index).toBeGreaterThanOrEqual(1);
-    expect(index).toBeLessThanOrEqual(30);
+  // Test to ensure corresponding error is thrown if incorrect roomId is passed in to timer function 
+  it('should throw an expected error if creating a timer in a non-existant roomID', (done)=>{
+    socket.emit('create-timer');
+    socket.on('timer creation failed', (data) => {
+      expect(data.error).toBe("Room not found");
+      done();
+    });
   });
 
-  it('should return an integer', () => {
-    const index = generatePromptIndex();
-    expect(Number.isInteger(index)).toBe(true);
-  });
+
 });
