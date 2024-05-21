@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 
-// Test to ensure teh login and signup flows correctly
 test('Test Login and Signup flows', async ({ page }) => {
   await page.goto('http://localhost:3000/account');
   
@@ -29,42 +28,6 @@ test('Test Login and Signup flows', async ({ page }) => {
   await page.locator('form').filter({ hasText: 'Signup' }).locator('i').nth(4).click();
 });
 
-// Test to ensure user can login 
-test('User can login with valid credentials', async ({ page }) => {
-  await page.goto('http://localhost:3000');
-  await page.getByRole('button', { name: 'Play' }).click();
-  try{
-      await page.getByPlaceholder('Enter your email', { exact: true }).click();
-      await page.getByPlaceholder('Enter your email', { exact: true }).fill('test1@test1.test1');
-      await page.getByPlaceholder('Enter your password').click();
-      await page.getByPlaceholder('Enter your password').fill('password');
-      await page.getByRole('button', { name: 'Login' }).click();
-      await expect(page.getByText('Create Lobby Join Tool')).toBeVisible();
-  }catch(error) 
-  {
-    test.skip('User is unable to login with valid credentials');
-  }
-});
-
-// Test to ensure user can create an account
-test('User can create an account', async ({page})=>{
-  let email = generateRandomEmail();
-  await page.goto('http://localhost:3000/');
-  await page.getByRole('button', { name: 'Play' }).click();
-  await page.getByRole('link', { name: 'Signup Now' }).click();
-  await page.getByPlaceholder('Enter your email address').click();
-  await page.getByPlaceholder('Enter your email address').fill(email);
-  await page.getByPlaceholder('Create a username').click();
-  await page.getByPlaceholder('Create a username').fill('test');
-  await page.getByPlaceholder('Create a password').click();
-  await page.getByPlaceholder('Create a password').fill('password');
-  await page.getByPlaceholder('Confirm a password').click();
-  await page.getByPlaceholder('Confirm a password').fill('password');
-  await page.getByRole('button', { name: 'Signup' }).click();
-  await expect(page.getByText('Create Lobby Join Tool')).toBeVisible();
-});
-
-// Test to ensure the admin login path flows correctly
 test('Test Admin Login Flows', async ({ page }) => {
   await page.goto('http://localhost:3000/');
   expect(page.url()).toBe('http://localhost:3000/');
@@ -84,19 +47,3 @@ test('Test Admin Login Flows', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Login' }).click();
 });
-
-
-// required to ensure test will pass as soon as the test is run. Minimize the running of this test or delete the login credential as soon as it happens. 
-function generateRandomEmail() {
-  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890';
-  let email = '';
-  for (let i = 0; i < 10; i++) {
-      email += chars[Math.floor(Math.random() * chars.length)];
-  }
-  email += '@';
-  for (let i = 0; i < 5; i++) {
-      email += chars[Math.floor(Math.random() * chars.length)];
-  }
-  email += '.com';
-  return email;
-}

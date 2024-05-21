@@ -41,26 +41,6 @@ const firebaseApp = initializeApp({
     appId: process.env.FIREBASE_APP_ID
 });
 
-/*
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyAyUL73lnqRDZ-1HP_F-3CWhgaXoCYlC_E",
-    authDomain: "miscommunication-mayhem.firebaseapp.com",
-    projectId: "miscommunication-mayhem",
-    storageBucket: "miscommunication-mayhem.appspot.com",
-    messagingSenderId: "619420848727",
-    appId: "1:619420848727:web:9205b82fbb712b71940912"
-  });
-*/
-
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyAM0d1FWsRSF_cN9qAGEikehCzyZvs1N1I",
-    authDomain: "miscommunication-mayhem-ddd0b.firebaseapp.com",
-    projectId: "miscommunication-mayhem-ddd0b",
-    storageBucket: "miscommunication-mayhem-ddd0b.appspot.com",
-    messagingSenderId: "691034734112",
-    appId: "1:691034734112:web:ab2a371ab4c4263cebc645"
-});
-
 const firestore = getFirestore();
 const auth = getAuth(firebaseApp);
 
