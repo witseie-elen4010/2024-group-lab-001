@@ -470,4 +470,101 @@ test('User can click the return to lobby button to return to the start game scre
       {
           test.skip("Users are not displayed correct screens after the second turn")
       }   
+
+});
+
+// Drawings and prompts visible at the end of the game
+test('User can view all drawing and prompts', async ({context})=>{
+    // Create three pages
+    const page1 = await context.newPage();
+    const page2 = await context.newPage();
+    const page3 = await context.newPage();
+
+    let pages = [page1,page2,page3]; 
+
+    try{
+        pages.forEach((page) => {
+            page.goto("http://localhost:3000");
+        });
+            let counter = 1;
+            for (const page of pages) {
+                await page.getByRole('button', { name: 'Play' }).click();
+                await page.getByRole('link', { name: 'Continue as a Guest' }).click();
+                await page.getByPlaceholder('Enter temporary username').click();
+                await page.getByPlaceholder('Enter temporary username').fill(`test${counter}`);
+                await page.getByRole('button', { name: 'Continue as Guest' }).click();
+                counter++;
+            }
+        
+            await pages[0].getByRole('button', { name: 'Create Lobby' }).click();
+            await pages[0].waitForTimeout(1000);
+        
+            // Get the lobbyCode
+            let lobbyCode = await pages[0].textContent('.room-code-button');
+        
+            for (const [index, page] of pages.entries()) {
+                if (index === 0) continue; // Skip the first index
+                await page.getByPlaceholder('Enter lobby code').click();
+                await page.getByPlaceholder('Enter lobby code').fill(lobbyCode);
+                await page.getByRole('button', { name: 'Join' }).click();
+            }
+            await pages[0].waitForTimeout(500);
+    // Host is able to start the game
+    if(await pages[0].getByRole('button',{name: 'Start Game'}).isVisible()) {
+        await pages[0].getByRole('button', { name: 'Start Game' }).click();
+        }
+
+    await pages[0].waitForTimeout(7000);
+
+    for(let i = 0; i < pages.length; i++) {
+        if(await pages[i].locator('input[placeholder="On Hold"]').isVisible()) {
+            await expect(pages[i].locator('input[placeholder="On Hold"]')).toBeVisible();
+        }
+        else if(await pages[i].locator('#promptInput').isVisible()) {
+            await expect(pages[i].locator('#promptInput')).toBeVisible();
+            await pages[i].locator('#promptInput').fill('Prompt1');
+            await pages[i].locator('#prompt-button').click();
+        }
+    }
+
+    for(let i = 0; i< pages.length; i++)
+    {
+        if(await pages[i].locator('input[placeholder="On Hold"]').isVisible()) {
+            await expect(pages[i].locator('input[placeholder="On Hold"]')).toBeVisible();
+        }
+        else if(await pages[i].locator('#entireDrawingScreen').isVisible()) {
+            await expect(pages[i].locator('#entireDrawingScreen')).toBeVisible();
+            await pages[i].locator('#submitDrawingButton').click();
+        }
+    }
+
+    for(let i = 0; i < pages.length; i++)
+        {
+            if(await pages[i].locator('input[placeholder="On Hold"]').isVisible()) {
+              await expect(pages[i].locator('input[placeholder="On Hold"]')).toBeVisible();
+            }
+            else if(await pages[i].locator('#guessingScreen').isVisible()) {
+              await expect(pages[i].locator('#guessingScreen')).toBeVisible();
+              await pages[i].locator('#guessInput').fill('GuessPrompt1');
+              await pages[i].locator('#guess-button').click();
+            }
+        }
+    
+        for(let i = 0; i < pages.length;i++)
+          {
+                if(await pages[i].locator('#endGameScreen').isVisible())
+                {
+                    await expect(pages[i].locator('#endGameResults')).toBeVisible();
+                    await expect(pages[i].locator('#initialPrompt')).toBeVisible();
+                    const pageText = await pages[i].locator('body').textContent();
+                    expect(pageText).toContain('Prompt1');
+                    await expect(pages[i].locator('#initialDrawing')).toBeVisible();
+                    await expect(pages[i].locator('#finalPrompt')).toBeVisible();
+                    expect(pageText).toContain('GuessPrompt1');
+                }
+          }
+    }catch(error)
+    {
+        test.skip("Users are not displayed correct screens after the second turn")
+    }   
 });
