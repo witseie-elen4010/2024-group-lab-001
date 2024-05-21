@@ -169,6 +169,275 @@ describe('Socket.IO Tests', () => {
     });
   });
 
+    // Test to determine if the user can start the game after players have joined the room 
+    it('should notify the other players that the game has started', (done)=>{
+      let roomId; 
+      socket.emit('create room');
+      socket.on('room created', (data) => {
+        expect(data.roomId).toBeDefined();
+        expect(data.playerCount).toBe(1);
+        roomId = data.roomId;
+        clientSockets.forEach((clientSocket) => {
+          clientSocket.emit('join room',data.roomId);
+        }); 
+      });
+  
+      // Wait for all clients to join the room
+      let joinedCount = 0;
+      clientSockets.forEach((clientsocket) => {
+      clientsocket.on('player joined', (data) => {
+      expect(data.roomId).toBe(roomId);
+      joinedCount++;
+      if (joinedCount === clientSockets.length) {
+        socket.emit('start-game', roomId);
+        }
+      });
+      });
+  
+      socket.on('game-started', (data) => {
+        expect(data.remainingUsernames).toBeDefined();
+        expect(data.gameState).toBeDefined();
+        clientSockets.forEach((clientSocket) => {
+          clientSocket.on('game-started', (data) => {
+            expect(data.gameState).toBeDefined();
+            expect(data.remainingUsernames).toBeDefined();
+          })
+        });
+        done();
+      });
+    });
+
+  // Test to ensure users are passed the correct roles on the start of the game 
+  it("should send users their corresponding roles at the starting of the game", (done)=>{
+    let roomId; 
+    socket.emit('create room');
+    socket.on('room created', (data) => {
+      expect(data.roomId).toBeDefined();
+      expect(data.playerCount).toBe(1);
+      roomId = data.roomId;
+      clientSockets.forEach((clientSocket) => {
+        clientSocket.emit('join room',data.roomId);
+      }); 
+    });
+
+    // Wait for all clients to join the room
+    let joinedCount = 0;
+    clientSockets.forEach((clientsocket) => {
+    clientsocket.on('player joined', (data) => {
+    expect(data.roomId).toBe(roomId);
+    joinedCount++;
+    if (joinedCount === clientSockets.length) {
+      socket.emit('start-game', roomId);
+      }
+    });
+    });
+
+    players = [socket, clientSockets[0], clientSockets[1], clientSockets[2]];
+
+    players[0].on('game-started', (data)=>{
+      expect(data.remainingUsernames).toBeDefined();
+      expect(data.gameState).toBeDefined();
+      players.forEach((player) => {
+        player.on('game-started', (data) => {
+          expect(data.gameState).toBeDefined();
+          expect(data.remainingUsernames).toBeDefined();
+        })
+      });
+      expect(rooms.get(roomId).turn).toBe(0); 
+      expect(rooms.get(roomId).playerOrder).toBeDefined();
+      expect(rooms.get(roomId).playerOrder.length).toBe(rooms.get(roomId).roles.length);
+      for(let i = 0; i < rooms.get(roomId).roles.length; i++)
+      {
+        if(i == 0){expect(rooms.get(roomId).roles[i]).toBe("promptEntry");}
+        else if(i%2 != 0){expect(rooms.get(roomId).roles[i]).toBe("drawing");}
+        else{expect(rooms.get(roomId).roles[i]).toBe("promptEntryToDrawing");}
+      }
+      done();
+    });
+  });
+
+  // Test to ensure once player has completed a turn players are redirected
+  it('should send the users to the corresponding waiting and playing screens after a players turn', (done)=>{
+      let roomId; 
+      socket.emit('create room');
+      socket.on('room created', (data) => {
+        expect(data.roomId).toBeDefined();
+        expect(data.playerCount).toBe(1);
+        roomId = data.roomId;
+        clientSockets.forEach((clientSocket) => {
+          clientSocket.emit('join room',data.roomId);
+        }); 
+      });
+  
+      // Wait for all clients to join the room
+      let joinedCount = 0;
+      clientSockets.forEach((clientsocket) => {
+      clientsocket.on('player joined', (data) => {
+      expect(data.roomId).toBe(roomId);
+      joinedCount++;
+      if (joinedCount === clientSockets.length) {
+        socket.emit('start-game', roomId);
+        }
+      });
+      });
+  
+      players = [socket, clientSockets[0], clientSockets[1], clientSockets[2]];
+  
+      players[0].on('game-started', (data)=>{
+        expect(data.remainingUsernames).toBeDefined();
+        expect(data.gameState).toBeDefined();
+        players.forEach((player) => {
+          player.on('game-started', (data) => {
+            expect(data.gameState).toBeDefined();
+            expect(data.remainingUsernames).toBeDefined();
+          })
+        });
+        expect(rooms.get(roomId).turn).toBe(0); 
+        expect(rooms.get(roomId).playerOrder).toBeDefined();
+        expect(rooms.get(roomId).playerOrder.length).toBe(rooms.get(roomId).roles.length);
+        for(let i = 0; i < rooms.get(roomId).roles.length; i++)
+        {
+          if(i == 0){expect(rooms.get(roomId).roles[i]).toBe("promptEntry");}
+          else if(i%2 != 0){expect(rooms.get(roomId).roles[i]).toBe("drawing");}
+          else{expect(rooms.get(roomId).roles[i]).toBe("promptEntryToDrawing");}
+        }
+        players[rooms.get(roomId).playerOrder[0]].emit('gameplay-loop',{prompt:"TestPrompt"}); 
+  
+        // Loop and check that each player would have received the correct emit and role 
+        let countPlayers = 0; 
+        for(let i = 0 ; i < players.length; i++)
+        {
+          // Expect the rest of the players to be sent to the waiting screen
+          if(i!=rooms.get(roomId).turn){  
+            players[rooms.get(roomId).playerOrder[i]].on('switch-screen-waiting', (data) => {
+            expect(data.gameState).toBe("waiting");
+            countPlayers++; 
+            if(countPlayers == 3){done()};
+          });
+          }
+          else
+          {
+            // Expect the next players turn to be drawing after the first round 
+            players[rooms.get(roomId).playerOrder[i]].on('gameplay-loop', (data)=>{
+              expect(data.gameState).toBe("drawing");
+            })
+            countPlayers++; 
+            if(countPlayers == 3){done()};
+          }
+        }
+   
+      });
+  });
+
+  // Test lobby size of three players ends after the third players turn 
+  it('should end the game if a lobby size of three players have all played', (done) => {
+    let roomId; 
+    clientSockets[0].on('room created', (data) => {
+          expect(data.roomId).toBeDefined();
+          expect(data.playerCount).toBe(1);
+          roomId = data.roomId;
+          for(let i = 1; i < clientSockets.length; i++) 
+          {
+            clientSockets[i].emit('join room', roomId);
+          }
+        });
+    
+    clientSockets[0].emit('create room');
+
+    let joinedCount = 0;
+    for(let i =  1; i < clientSockets.length; i++)
+    {
+      clientSockets[i].on('player joined', (data) =>{
+        expect(data.roomId).toBe(roomId);
+        joinedCount++;
+        if (joinedCount === clientSockets.length - 1) 
+        {
+          clientSockets[0].emit('start-game', roomId);
+        }
+      });
+    }
+
+    clientSockets[0].on('game-started', (data) =>{
+      expect(data.gameState).toBeDefined();
+      clientSockets[rooms.get(roomId).playerOrder[0]].emit('gameplay-loop', {prompt:"TestPrompt"});
+      clientSockets[rooms.get(roomId).playerOrder[1]].on('gameplay-loop', (data) => {
+        clientSockets[rooms.get(roomId).playerOrder[1]].emit('gameplay-loop', {drawing:"TestDrawing"});
+        clientSockets[rooms.get(roomId).playerOrder[2]].on('gameplay-loop', (data) => {
+          clientSockets[rooms.get(roomId).playerOrder[2]].emit('gameplay-loop', {prompt:"TestPrompt"});
+          let playercount = 0; 
+          clientSockets.forEach( (clientSocket) => {
+            clientSocket.on('gameplay-loop', (data) => {
+              expect(data.gameState).toBe("endgame");
+              playercount++;
+              if(playercount == 3){done()};
+            });
+          });
+        });
+      });
+    });
+  });
+
+  // Test lobby size of four players ends after the fourth players turn 
+  it('should end the game if a lobby size of four players have all played', (done) => {
+    let roomId; 
+    socket.emit('create room');
+    socket.on('room created', (data) => {
+      expect(data.roomId).toBeDefined();
+      expect(data.playerCount).toBe(1);
+      roomId = data.roomId;
+      clientSockets.forEach((clientSocket) => {
+        clientSocket.emit('join room',data.roomId);
+      }); 
+    });
+
+    // Wait for all clients to join the room
+    let joinedCount = 0;
+    clientSockets.forEach((clientsocket) => {
+    clientsocket.on('player joined', (data) => {
+    expect(data.roomId).toBe(roomId);
+    joinedCount++;
+    if (joinedCount === clientSockets.length) {
+      socket.emit('start-game', roomId);
+      }
+    });
+    });
+
+    players = [socket, clientSockets[0], clientSockets[1], clientSockets[2]];
+
+    players[0].on('game-started', (data)=>{
+      expect(data.remainingUsernames).toBeDefined();
+      expect(data.gameState).toBeDefined();
+      players.forEach((player) => {
+        player.on('game-started', (data) => {
+          expect(data.gameState).toBeDefined();
+          expect(data.remainingUsernames).toBeDefined();
+        })
+      });
+      console.log(rooms.get(roomId));
+      players[rooms.get(roomId).playerOrder[0]].emit('gameplay-loop',{prompt:"TestPrompt"}); 
+
+      players[rooms.get(roomId).playerOrder[1]].on('gameplay-loop', (data)=>{
+        players[rooms.get(roomId).playerOrder[1]].emit('gameplay-loop',{drawing:"TestDrawing"});
+
+        players[rooms.get(roomId).playerOrder[2]].on('gameplay-loop', (data)=>{
+          players[rooms.get(roomId).playerOrder[2]].emit('gameplay-loop',{prompt:"TestPrompt"});
+
+          players[rooms.get(roomId).playerOrder[3]].on('gameplay-loop', (data)=>{
+            players[rooms.get(roomId).playerOrder[3]].emit('gameplay-loop',{drawing:"TestDrawing"});
+
+            let playercount = 0; 
+            players.forEach( (player) => {
+              player.on('gameplay-loop', (data) => {
+                expect(data.gameState).toBe("endgame");
+                playercount++;
+                if(playercount == 4){done()};
+              });
+            })
+          });
+        });
+      })
+    });
+  });
 
 
   // Tests to ensure correlating error messages are produced
@@ -191,5 +460,13 @@ describe('Socket.IO Tests', () => {
     });
   });
 
+  // Test to determine if incorrect roomId is giving when trying to start a game corresponding error is thrown 
+  it('should throw an expected error if attempting to start a game to a non-existant room', (done)=>{
+      socket.emit('start-game', "InCorrectRoomId");
+      socket.on("game start failed", (data) => {
+        expect(data.error).toBe("Room not found")
+        done();
+      });
+  })
 
 });
