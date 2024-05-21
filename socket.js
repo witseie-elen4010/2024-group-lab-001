@@ -378,6 +378,7 @@ const serverLogic = (io, userNames, rooms) => {
         // Handle 'create-timer' event
         socket.on('create-timer', () => {
             try {
+                if(!rooms.has(socket.roomId)){throw new Error("Room not found")};
                 io.to(socket.roomId).emit('create-timer-user',{roomId:socket.roomId});
                 console.log("Timer creation started");
             } catch (error) {
