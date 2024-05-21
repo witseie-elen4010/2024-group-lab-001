@@ -322,6 +322,32 @@ body {
     box-shadow: 3px 3px 0px #003167; 
 }
 
+.input-box-admin {
+    position: relative; /* Make the input box a positioning context for the icon */
+    width: 100%;
+}
+
+.input-box-admin i {
+    position: absolute; /* Position the icon absolutely inside the input box */
+    color: #003167;
+    font-size: 20px;
+    top: 50%;
+    left:20px; /* Adjust the left position of the icon as needed */
+    transform: translateY(-50%) translateX(-25%);
+    transition: all 0.2s ease;
+}
+
+.input-box-admin input {
+    margin: 5px;
+    border: 2px solid #003167;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 35px; /* Adjust padding to accommodate the icon */
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px #003167; 
+    width: 100%;
+}
+
 .input-field input {
     border: none;
     border-bottom: 2px solid #003167;
