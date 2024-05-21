@@ -12,24 +12,24 @@ document.addEventListener("DOMContentLoaded", function() {
     const adminToLogin = document.querySelector(".admin-to-login");
     const admin = document.querySelector(".admin-link");
 
-    // Show/hide Password and Change Icon
-    passwordShowHide.forEach(eyeIcon => {
-        eyeIcon.addEventListener("click", () => {
-            passwordFields.forEach(pwField => {
-                if (pwField.type === "password") {
-                    pwField.type = "text";
-                    passwordShowHide.forEach(icon => {
-                        icon.classList.replace("uil-eye-slash", "uil-eye");
-                    });
-                } else {
-                    pwField.type = "password";
-                    passwordShowHide.forEach(icon => {
-                        icon.classList.replace("uil-eye", "uil-eye-slash");
-                    });
-                }
-            });
+    // Show/hide Password and Change Icon        
+    passwordShowHide.forEach((eyeIcon, index) => {
+        eyeIcon.addEventListener('click', () => {
+            // Get the associated password field
+            const pwField = passwordFields[index];
+
+            // Toggle the password field and eye icon
+            if (pwField.type === 'password') {
+                pwField.type = 'text';
+                eyeIcon.classList.replace('uil-eye-slash', 'uil-eye');
+            } else {
+                pwField.type = 'password';
+                eyeIcon.classList.replace('uil-eye', 'uil-eye-slash');
+            }
         });
-    });
+    }); 
+
+    
 
     // Switch to and from Guest Container
     guest.addEventListener("click", () => {
