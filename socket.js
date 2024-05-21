@@ -81,8 +81,8 @@ function shuffle(array) {
 }
 
 const generatePromptIndex = function (){
-    const min = 1;
-    const max = 30;
+    const min = 2;
+    const max = 31;
     let promptIndex = Math.floor(Math.random() * (max - min + 1)) + min;
     return promptIndex;
 };

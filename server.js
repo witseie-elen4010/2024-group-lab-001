@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 });
 
 // Route for adding a new user
-const { createNewAccount } = require('./public/scripts/classes/firebase');
+const { createNewAccount, getRole } = require('./public/scripts/classes/firebase');
 
 app.post('/api/signup', function (req, res) {
     createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res)
@@ -89,6 +89,39 @@ app.post('/api/login', function (req, res) {
         .catch((error) => {
             // It's a good practice to handle errors and send an appropriate response
             console.error('Login failed:', error);
+            res.status(401).send('Login failed');
+        });
+});
+
+app.post('/api/admin/login', function (req, res) {
+    loginEmailPassword(req.body.loginEmail, req.body.loginPassword, req, res)
+        .then(async () => {
+            // Retrieve username and role
+            const username = await getUsername();
+            const role = await getRole();
+            if (username) {
+                // Set username and isLoggedIn to true in the session
+                req.session.username = username;
+                req.session.role = role;
+                log('Session Username Saved As:', req.session.username);
+                req.session.isLoggedIn = true;
+
+                // If the user is not an admin, send an error
+                if (req.session.role === 'player') {
+                    res.status(403).send('Access Denied: You are not an admin.');
+                    return;
+                } else {
+                    res.redirect('/admin');
+                }
+            } else {
+                // If username not found, handle appropriately
+                console.error('Username not found.');
+                res.status(401).send('Username not found');
+            }
+        })
+        .catch((error) => {
+            console.error('Login failed:', error);
+            console.log(error);
             res.status(401).send('Login failed');
         });
 });
