@@ -29,8 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }); 
 
-    
-
     // Switch to and from Guest Container
     guest.addEventListener("click", () => {
         guestContainer.style.display = "block";
