@@ -178,6 +178,7 @@ const serverLogic = (io, userNames, rooms) => {
 
         socket.on('return', async (roomId) =>{
             try {
+                if(!rooms.has(socket.roomId)){throw new Error("Room not found")};
                 const username = getSessionUsername(socket);
                 const roomId = socket.roomId;
                 const room = rooms.get(roomId);
@@ -203,6 +204,7 @@ const serverLogic = (io, userNames, rooms) => {
 
             } catch (error) {
                 console.error('Error Returning to Lobby:', error);
+                socket.emit('return-lobby failed', { error: error.message });
             }
         });
 
@@ -475,6 +477,7 @@ const serverLogic = (io, userNames, rooms) => {
         socket.on("random-prompt", async () => {
             console.log('Random prompt request received');
             try {
+                if(!rooms.has(socket.roomId)){throw new Error("Room not found")};
                 let promptIndex = generatePromptIndex();
                 const prompt = await generateRandomPrompts(promptIndex);
                 socket.emit("random-prompt-generated", {prompt});
