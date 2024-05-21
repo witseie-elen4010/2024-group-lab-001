@@ -330,8 +330,13 @@ const serverLogic = (io, userNames, rooms) => {
                             return value;
                         });
                         // Emit to player who needs to fill the new role 
-                        io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});
-                        
+                        io.to(players[room.playerOrder[room.turn]]).emit("gameplay-loop",{gameState:room.roles[room.turn],info:room.drawingAndPrompts[room.drawingAndPrompts.length-1]});      
+                    }
+                    else
+                    {
+                        // Emit to the entire room that the game has ended can add functionality to this by passing in all the data for the prompts and drawing to display
+                        io.to(socket.roomId).emit("gameplay-loop",{gameState:"endgame",info: rooms.get(socket.roomId).drawingAndPrompts, passedUsername: room.players.get(socket.id)});
+                        stateOfGame = 'lobby';
                     }
                 }
                 // Emit to the rest of the players that they need to go to the waiting screen and information about how many turns till end of game and their turn
