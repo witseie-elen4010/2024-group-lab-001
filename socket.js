@@ -336,7 +336,9 @@ const serverLogic = (io, userNames, rooms) => {
                 stateOfGame = 'started';
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
+                const currentPlayerUsername = room.players.get(socket.id);
+                 // Get the remaining usernames excluding the current player
+                const remainingUsernames = Array.from(room.players.values()).filter(username => username !== currentPlayerUsername);
 
                 // Send events to each player to begin the game 
 
@@ -351,7 +353,7 @@ const serverLogic = (io, userNames, rooms) => {
                 room.drawingAndPrompts = [];
 
                 // Emit to the first player that their role 
-                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames});
+                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames, username: currentPlayerUsername});
 
                 // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
@@ -363,7 +365,7 @@ const serverLogic = (io, userNames, rooms) => {
 
                         if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
                         // Rest of the players are assinged the waiting screen as it is not their turn. 
-                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole});
+                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole, username: currentPlayerUsername});
                     }
                 }
                 
