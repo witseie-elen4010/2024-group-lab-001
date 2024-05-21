@@ -134,36 +134,14 @@ const loginEmailPassword = async (myEmail, myPassword, req, res) => {
     const loginPassword = myPassword;
 
     try {
-        /*
+        
         const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
         console.log('Firebase: A user has logged in.');
         monitorAuthState(req, res);
-        */
-
-        const userCredential = await signInWithEmailAndPassword(auth, loginEmail, loginPassword);
-        const userUID = userCredential.user.uid;
-        const userDoc = doc(firestore, `users/${userUID}`);
-        const userSnapshot = await getDoc(userDoc);
-
-        if (!userSnapshot.exists()) {
-            console.error('Firebase: User document does not exist.');
-            res.status(401).send('Login failed');
-            return;
-        }
-
-        const userData = userSnapshot.data();
-
-        if (userData.role === 'admin') {
-            console.log('Firebase: An admin user has logged in.');
-        } else {
-            console.log('Firebase: A general user has logged in.');
-        }
-
-        monitorAuthState(req, res);
         return; // Return here to prevent further execution
-    } catch (error) {
+    } 
+    catch (error) {
         console.log('Firebase: There was an error logging in.');
-        console.log(error);
         res.status(401).send('Login failed'); // Send response for login failure
     }
 }

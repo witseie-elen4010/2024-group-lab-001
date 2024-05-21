@@ -29,7 +29,7 @@ app.get('/account', (req, res) => {
 });
 
 // Route for serving admin.html
-app.get('/admin', (req, res) => {
+app.get('/admin', requireLogin, (req, res) => {
     console.log('Route: Account')
     console.log(`Express route accessed with Session ID: ${req.sessionID} on \'/admin\'`);
     res.sendFile(path.join(__dirname, '..', 'views', 'admin.html'));
