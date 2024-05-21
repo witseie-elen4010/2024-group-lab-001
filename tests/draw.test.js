@@ -360,8 +360,9 @@ test('User is able to change the color to purple', async ({page}) => {
 test('User is able to change the color in the color picker', async ({page}) => {
   try{
   await page.goto('http://localhost:3000/draw');
-  await page.getByRole('textbox').click();
-  await page.getByRole('textbox').fill('#b71a1a');
+  await page.waitForTimeout(1000);
+  await page.locator('#colorPicker').click();
+  await page.locator('#colorPicker').fill('#b71a1a');
 
   let drawingColor = await page.evaluate(() => {
     const canvas = document.getElementById('drawing-canvas');
