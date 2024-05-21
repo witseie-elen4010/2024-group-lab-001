@@ -349,6 +349,11 @@ const serverLogic = (io, userNames, rooms) => {
                         }
                     }
                 }
+                if (room.players.size === 0) {
+                    // Remove the room from the map
+                    console.log("Room deleted");
+                    rooms.delete(roomId);
+                }
             }
         });    
 
