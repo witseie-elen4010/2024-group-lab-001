@@ -9,8 +9,10 @@ const requireLogin = (req, res, next) => {
         // User is authenticated, proceed to the next middleware
         next();
     } else {
-        // User is not authenticated, redirect to login page or send an error response
-        res.status(401).send('Unauthorized. Please login first.');
+        // User is not authenticated, redirect to login page
+        // Server side
+        res.redirect('/account?alert=Unauthorized. Please login first.');
+        //res.status(401).send('Unauthorized. Please login first.');
     }
 };
 

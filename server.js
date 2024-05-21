@@ -51,7 +51,7 @@ app.post('/api/signup', function (req, res) {
     createNewAccount(req.body.signupEmail, req.body.signupUsername, req.body.signupPassword, req, res)
     .then(() => {
         // Save username in session
-        req.session.username = req.body.guestUsername;
+        req.session.username = req.body.signupUsername;
         log('Session Username Saved As:', req.session.username);
         // Set isLoggedIn to true in the session
         req.session.isLoggedIn = true;

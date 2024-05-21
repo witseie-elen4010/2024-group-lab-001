@@ -336,10 +336,8 @@ const serverLogic = (io, userNames, rooms) => {
                 stateOfGame = 'started';
                 const room = rooms.get(roomId);
                 const playerCount = room.players.size;
-                const remainingUsernames = Array.from(rooms.get(roomId).players.values());
-
+                
                 // Send events to each player to begin the game 
-
                 // Convert players to an array. Map stores sequential order of when added to the map so array would be in a sequential order of when user joined the room.
                 // Starting with user that created the room.
                 let players = Array.from(room.players.keys()) 
@@ -350,8 +348,12 @@ const serverLogic = (io, userNames, rooms) => {
                 room.turn = 0; 
                 room.drawingAndPrompts = [];
 
+                let currentPlayerUsername = '';
+                // Get the remaining usernames excluding the current player
+                let remainingUsernames = Array.from(room.players.values())
+
                 // Emit to the first player that their role 
-                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames});
+                io.to(players[room.playerOrder[room.turn]]).emit("game-started",{gameState:room.roles[room.turn],remainingUsernames:remainingUsernames, username: currentPlayerUsername});
 
                 // Loop through all players and provide the required intial emits to switch specific players to their corresponding screens 
                 for(let i = 0; i < players.length; i++) {
@@ -360,10 +362,11 @@ const serverLogic = (io, userNames, rooms) => {
                         let numberOfTurns = 0;
                         let currentRoundRole = room.roles[room.turn]; 
                         let currentRoundPlayer = room.players.get(players[room.playerOrder[room.turn]]);
-
+                        currentPlayerUsername = ''
+                        
                         if(i > room.turn){numberOfTurns = i - room.turn; message = `${numberOfTurns} round(s) until your turn.`}
                         // Rest of the players are assinged the waiting screen as it is not their turn. 
-                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole});
+                        io.to(players[room.playerOrder[i]]).emit("game-started",{gameState:GameState.WAITING,remainingUsernames:remainingUsernames,numberOfTurns: message, currentRoundPlayer:currentRoundPlayer, currentRoundRole:currentRoundRole, username: currentPlayerUsername});
                     }
                 }
                 
