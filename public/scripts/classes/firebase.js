@@ -28,44 +28,14 @@ const dotenv = require('dotenv');
 const { sign } = require('crypto');
 
 dotenv.config()
-/*const{
-    API_KEY,
-    AUTH_DOMAIN,
-    PROJECT_ID,
-    STORAGE_BUCKET,
-    MEASSAGING_SENDER_ID,
-    APP_ID,
-    MEASUREMENT_ID
-} = process.env
 
 const firebaseApp = initializeApp({
-    apiKey: API_KEY,
-    authDomain: AUTH_DOMAIN,
-    projectId: PROJECT_ID,
-    storageBucket: STORAGE_BUCKET,
-    messagingSenderId: MEASSAGING_SENDER_ID,
-    appId: APP_ID,
-    measurementId: MEASUREMENT_ID
-})*/
-
-/*
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyAyUL73lnqRDZ-1HP_F-3CWhgaXoCYlC_E",
-    authDomain: "miscommunication-mayhem.firebaseapp.com",
-    projectId: "miscommunication-mayhem",
-    storageBucket: "miscommunication-mayhem.appspot.com",
-    messagingSenderId: "619420848727",
-    appId: "1:619420848727:web:9205b82fbb712b71940912"
-  });
-*/
-
-const firebaseApp = initializeApp({
-    apiKey: "AIzaSyAM0d1FWsRSF_cN9qAGEikehCzyZvs1N1I",
-    authDomain: "miscommunication-mayhem-ddd0b.firebaseapp.com",
-    projectId: "miscommunication-mayhem-ddd0b",
-    storageBucket: "miscommunication-mayhem-ddd0b.appspot.com",
-    messagingSenderId: "691034734112",
-    appId: "1:691034734112:web:ab2a371ab4c4263cebc645"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID
 });
 
 const firestore = getFirestore();
