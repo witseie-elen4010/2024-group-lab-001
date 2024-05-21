@@ -69,6 +69,16 @@ body {
     width: 40%;
 }
 
+.admin-container-screen {
+    background-color: #fff;; /* Set background color to transparent */
+    display: flex;
+    flex-direction: row; /* Stack items vertically */
+    justify-content: center; /* Ensure space between the columns */
+    padding: 20px;
+    text-align: center;
+    width: 65%;
+}
+
 
 .prompt-container {
     align-items: center; /* Center items horizontally */
@@ -258,6 +268,16 @@ body {
     color: #dbdbdb;
 }
 
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding-top: 20px;
+    border-radius: 10px;
+    width: 100%;
+}
+
 /* Input Field */
 .input-field i {
     color: #003167;
@@ -300,6 +320,32 @@ body {
     padding: 10px 35px; /* Adjust padding to accommodate the icon */
     transition: all 0.2s ease;
     box-shadow: 3px 3px 0px #003167; 
+}
+
+.input-box-admin {
+    position: relative; /* Make the input box a positioning context for the icon */
+    width: 100%;
+}
+
+.input-box-admin i {
+    position: absolute; /* Position the icon absolutely inside the input box */
+    color: #003167;
+    font-size: 20px;
+    top: 50%;
+    left:20px; /* Adjust the left position of the icon as needed */
+    transform: translateY(-50%) translateX(-25%);
+    transition: all 0.2s ease;
+}
+
+.input-box-admin input {
+    margin: 5px;
+    border: 2px solid #003167;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 35px; /* Adjust padding to accommodate the icon */
+    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px #003167; 
+    width: 100%;
 }
 
 .input-field input {

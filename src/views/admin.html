@@ -11,6 +11,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/account.css">
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/lobby.css">
 </head>
 <body>
     <!-- Header -->
@@ -26,8 +27,27 @@
         </div>
     </header>
 
-    <div class="container">
-        <span class="title">Administrator Dashboard</span>
+    <div class="container admin-container-screen">
+        <div class="left-column-admin">
+            <span class="title">User Logs</span>
+            <div id="logsContent" class="logs-content"></div>
+        </div>
+        
+        <div class="right-column-admin">
+            <span class="title">Administrator Dashboard</span>
+            <form action="api/getLogs" method="post" class="admin-form">
+                <!-- Number of logs input field -->
+                <div class="input-box-admin">
+                    <i class="uil uil-keyboard icon"></i>
+                    <input type="text" id="logCount" name="logCount" placeholder="Enter the number of logs you'd like to query." required>
+                </div>
+                <!-- Button -->
+                <button id="getLogsButton" class="button account-button">Get Logs</button>
+            </form>
+            <button id="viewLogsButton" class="button account-button">View Logs</button>
+        </div>
     </div>
+    
+    <script type="module" src="/scripts/classes/admin.js"></script>
 </body>
 </html>

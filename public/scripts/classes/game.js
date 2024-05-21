@@ -103,7 +103,6 @@ function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUserna
     copyToClipboard(copyButton,roomId);
     leftDiv.appendChild(copyButton);
 
-    if(isHost){
     // Create a button element to start the game
     const startgameButton = document.createElement('button');
     startgameButton.className = 'button start-button';
@@ -112,7 +111,6 @@ function switchLobbyScreen(roomId, playerCount, currentUsername, remainingUserna
     startgameButton.textContent = 'Start Game';
     startGame(startgameButton,playerCount,roomId);
     leftDiv.appendChild(startgameButton);
-    }
 
     // Right div for displaying usernames
     const centerDiv = document.createElement('div');
@@ -397,6 +395,8 @@ function switchToPromptEntryScreen()
     resetPromptTimer();
     let promptCounter = document.getElementById("promptCountdownTimer");
     let promptSubmitButton = document.getElementById("prompt-button");
+    let promptInputBox = document.getElementById("promptInput");
+    let randomPromptButton = document.getElementById("randomPromptButton");
     // Timer to end the session of prompting
     const promptCountdownInterval = setInterval(() => {
         promptCounter.innerText = promptCountdown + " seconds"; // Update counter text with countdown
@@ -407,6 +407,11 @@ function switchToPromptEntryScreen()
             clearInterval(promptCountdownInterval);
 
         });
+
+        if(promptCountdown<5 && promptInputBox.value.length == 0 && promptSubmitted == false){
+            randomPromptButton.click();
+            console.log("Forcing random prompt");
+        }
 
         if (promptCountdown < 0 && promptSubmitted == false) {
             promptCounter.innerText = "Prompting Time is Up"; // Update counter text when game starts
@@ -536,19 +541,29 @@ function endGame(data) {
 }
 
 function clearPrompts() {
-    const initialPromptContainer = document.getElementById('initialPrompt');
-    const promptContainer = document.getElementById('finalPrompt');
+    const endGameContainer = document.getElementById('endGameResults');
+    endGameContainer.innerHTML = '';
 
-    // Remove all child elements from the initialPromptContainer
-    while (initialPromptContainer.firstChild) {
-        initialPromptContainer.removeChild(initialPromptContainer.firstChild);
-    }
+    createDivs();
 
-    // Remove all child elements from the promptContainer
-    while (promptContainer.firstChild) {
-        promptContainer.removeChild(promptContainer.firstChild);
-    }
 }
+
+function createDivs() {
+    const divs = [
+        { class: 'prompt-container-end', id: 'initialPrompt' },
+        { class: 'drawing-container-end', id: 'initialDrawing' },
+        { class: 'prompt-container-end', id: 'finalPrompt' },
+        { class: 'drawing-container-end', id: 'finalDrawing' },
+    ];
+
+    divs.forEach(div => {
+        const newDiv = document.createElement('div');
+        newDiv.className = div.class;
+        newDiv.id = div.id;
+        document.body.appendChild(newDiv);
+    });
+}
+
 
 export default {
     switchLobbyScreen,

@@ -144,6 +144,30 @@ app.post('/api/guestLogin', function (req, res) {
     });
 })
 
+// Getting logs from database
+const { getLogs } = require('./public/scripts/classes/firebase');
+let logArray = [];
+//const { printLogs } = require('./public/scripts/classes/admin');
+app.post('/api/getLogs', async function (req, res) {
+    console.log('Logs button clicked');
+
+    let numberOfLogs = req.body.logCount;
+    if(numberOfLogs < 1) {
+        numberOfLogs = 1;
+    }
+    
+    logArray = await getLogs(numberOfLogs);
+    console.log('Log Array Received');
+    
+    logArray.forEach(element => {
+        console.log(element);
+    });
+})
+
+app.get('/api/list', function (req, res) {
+    res.json(logArray) // Respond with JSON
+  })
+
 // === Server Port ===
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {

@@ -470,6 +470,7 @@ test('User can click the return to lobby button to return to the start game scre
       {
           test.skip("Users are not displayed correct screens after the second turn")
       }   
+
 });
 
 // Drawings and prompts visible at the end of the game
