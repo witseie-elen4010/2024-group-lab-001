@@ -45,7 +45,32 @@ We propose evaluating Socket.IO as a real-time communication solution for the fo
 - Security: Since Socket.IO establishes a persistent connection, security considerations are crucial. Proper authentication and authorization mechanisms need to be implemented to prevent unauthorized access.
 - Performance Considerations: Sending large amounts of data through real-time connections can impact performance. Careful message design and optimization are necessary.
 
+## 3. Express-Session
+---
+### 3.1 Context
+
+For managing user sessions and ensuring secure handling of user data within the application, a robust session management solution is required. Session management is crucial for maintaining user state across multiple requests and ensuring a seamless user experience. We considered several options, including custom session management solutions and other third-party libraries. However, these options either lacked comprehensive support or required extensive implementation effort.
+
+### 3.2 Solution
+
+We propose using `express-session` as the session management solution for the following reasons:
+
+- **Ease of Integration:** `express-session` integrates seamlessly with Express, the web framework used in our application. This allows for quick and straightforward implementation.
+- **Session Storage:** `express-session` supports various session storage options, including in-memory storage for development and scalable solutions like Redis or MongoDB for production.
+- **Security:** `express-session` offers built-in security features such as session ID rotation, secure cookies, and support for HTTPS to protect against common web vulnerabilities.
+- **Customization:** The library provides extensive configuration options, allowing us to tailor session management to meet our specific requirements, such as setting session expiration times and controlling cookie properties.
+- **Community Support:** `express-session` is widely used and well-documented, with active community support and regular updates, ensuring long-term reliability.
+
+### 3.3 Consequences
+
+- **Memory Usage:** Using in-memory session storage can lead to increased memory usage on the server. For production environments, using a more scalable solution like Redis is recommended to mitigate this issue.
+- **Configuration Complexity:** Properly configuring session management to balance security and performance can be complex. Ensuring that session cookies are secure, HTTP-only, and have appropriate expiration settings requires careful consideration.
+- **Scalability:** While `express-session` is suitable for initial deployment, high-traffic applications may require distributed session storage solutions to handle the increased load effectively.
+- **Security Considerations:** Storing sensitive session data requires robust security practices to prevent unauthorized access and session hijacking. Implementing HTTPS and regularly rotating session keys are necessary measures.
+
 ---
 ### References
 ---
 [1] J.P. Henderson,  "architecture-decision-record," GitHub, Oct. 18, 2023. Availabe: https://github.com/joelparkerhenderson/architecture-decision-record/tree/main/locales/en/templates/decision-record-template-for-alexandrian-pattern (accessed Apr. 29, 2024).
+
+[2] “Express cookie-session middleware,” expressjs.com. https://expressjs.com/en/resources/middleware/cookie-session.html (accessed May. 22, 2024).
